@@ -49,7 +49,7 @@
       padding: 24px; margin-bottom: 24px; position: relative; overflow: hidden;
     }
     .stage-container {
-      position: relative; width: 100%; aspect-ratio: 1800 / 1289;
+      position: relative; width: 100%; aspect-ratio: 1100 / 960;
       background: #fbfbfd; border-radius: 12px; overflow: hidden;
     }
     /* All scene layers share the same coordinate space */
@@ -222,6 +222,142 @@
     .reference-footnote em { font-style: italic; }
     .reference-footnote a { color: var(--breyell); text-decoration: none; }
     .reference-footnote a:hover { text-decoration: underline; }
+
+    /* =====================================================================
+       Ni2+ concentration bar (HTML overlay below the schematic).
+       Animates as a vermillion bar that SHRINKS from right to left as
+       treatment progresses. The 20 µg/L dashed threshold becomes visible
+       once the bar crosses below it. */
+    .ni-bar {
+      margin-top: 14px;
+      padding: 14px 18px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #ebebef;
+      font-size: 12px;
+      color: #1d1d1f;
+    }
+    .ni-bar-header {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .ni-bar-label {
+      font-weight: 600; color: #1d1d1f;
+    }
+    .ni-bar-readout {
+      font-family: "SF Mono", "Menlo", monospace; color: var(--nickel);
+      font-weight: 600;
+    }
+    .ni-bar-track {
+      position: relative;
+      height: 22px;
+      background: #f3f3f6;
+      border: 1px solid #e0e0e5;
+      border-radius: 11px;
+      overflow: visible;
+    }
+    .ni-bar-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 91.7%;  /* 55 µg/L / 60 µg/L scale */
+      background: linear-gradient(90deg, var(--nickel) 0%, #b94d00 100%);
+      border-radius: 11px 0 0 11px;
+      transition: width 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      z-index: 1;
+    }
+    .ni-bar-fill.is-final {
+      border-radius: 11px;
+    }
+    .ni-bar-threshold {
+      position: absolute;
+      left: 33.33%;  /* 20 µg/L / 60 µg/L scale */
+      top: -6px; bottom: -6px;
+      width: 0;
+      border-left: 2px dashed #1d1d1f;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 600ms ease;
+    }
+    .ni-bar-threshold.is-visible {
+      opacity: 1;
+    }
+    .ni-bar-threshold::before {
+      content: "20 µg/L limit";
+      position: absolute;
+      left: 5px; top: -16px;
+      font-size: 10px; font-weight: 600;
+      color: #1d1d1f;
+      white-space: nowrap;
+    }
+    .ni-bar-scale {
+      display: flex; justify-content: space-between;
+      margin-top: 6px;
+      font-size: 10px; color: var(--muted);
+    }
+
+    /* =====================================================================
+       pH badge — small floating pill that updates pH through stages.
+       Position: absolutely placed inside .stage-container, near the
+       TB1 outlet pipe so the reader associates pH with the treated water. */
+    .ph-badge {
+      position: absolute;
+      right: 4%; top: 38%;
+      padding: 5px 12px;
+      background: #fff;
+      border: 1px solid #d2d2d7;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      font-size: 12px; font-weight: 600;
+      color: #1d1d1f;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 500ms ease, transform 500ms ease, background 400ms ease, border-color 400ms ease;
+      z-index: 9;
+      pointer-events: none;
+    }
+    .ph-badge.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ph-badge .ph-value {
+      font-family: "SF Mono", "Menlo", monospace;
+      color: var(--breyell);
+      margin-left: 4px;
+    }
+    .ph-badge.has-crossed {
+      background: #effaf3;
+      border-color: var(--calcium);
+    }
+    .ph-badge.has-crossed .ph-value { color: var(--calcium); }
+
+    /* =====================================================================
+       One-shot glow on the two Ni²⁺ capture cards when they appear.
+       Card ⁷ (CaCO3 + Ni) glows green; card ⁸ (Residual MnO2 + Ni) glows purple. */
+    @keyframes glow-pulse-green {
+      0%   { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+      40%  { box-shadow: 0 4px 38px rgba(0,158,115,0.65); }
+      100% { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    }
+    @keyframes glow-pulse-purple {
+      0%   { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+      40%  { box-shadow: 0 4px 38px rgba(204,121,167,0.65); }
+      100% { box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    }
+    .svg-anim.chem-cap.is-visible .eq-card {
+      animation: glow-pulse-green 1400ms cubic-bezier(0.2,0.7,0.2,1) 1;
+    }
+    .svg-anim.chem-cap-mn.is-visible .eq-card {
+      animation: glow-pulse-purple 1400ms cubic-bezier(0.2,0.7,0.2,1) 1;
+    }
+
+    /* Travelling pulse circle on the water-flow arrows (SVG) */
+    .flow-pulse {
+      opacity: 0;
+      fill: var(--breyell);
+    }
+    .flow-pulse.is-firing {
+      opacity: 1;
+    }
     /* Marker legend (the explanation of the schematic's marker symbols) */
     .marker-legend {
       margin-top: 22px; padding: 20px 22px;
@@ -297,9 +433,13 @@
           </div>
         </div>
 
+        <!-- pH badge: a single floating pill that updates pH through the stages.
+             Raw water enters at pH 5.8 and rises to pH 7.2 after Magnodol + CaCO3. -->
+        <div class="ph-badge" id="phBadge">pH<span class="ph-value" id="phValue">&nbsp;5.8</span></div>
+
         <!-- Layer C: schematic SVG -->
         <svg id="schematicLayer" class="layer schematic-layer"
-             viewBox="0 0 1100 880" preserveAspectRatio="xMidYMid meet"
+             viewBox="0 0 1100 960" preserveAspectRatio="xMidYMid meet"
              xmlns="http://www.w3.org/2000/svg">
           <defs>
             <!-- Pressurised Druckfilter (Vorfilter) cylinder gradient -->
@@ -418,6 +558,21 @@
                   d="M 618 180 L 760 180 L 800 260"
                   fill="none" stroke="#0072B2" stroke-width="6" stroke-linecap="round"
                   stroke-linejoin="round"/>
+
+            <!-- Hidden master path that traces the full TB1 water journey:
+                 raw-water inlet → Vorfilter → F-V.-F. → Sammelbecken.
+                 The flow-pulse circle below animates along this path. -->
+            <path id="t1_journey"
+                  d="M 60 180 L 160 180 L 310 180 L 460 180 L 618 180 L 760 180 L 800 260"
+                  fill="none" stroke="none"/>
+
+            <!-- Flow-pulse: small circle that travels along the journey path -->
+            <circle id="t1Pulse" class="flow-pulse" r="7" cx="0" cy="0">
+              <animateMotion id="t1PulseMotion" dur="4s" repeatCount="1"
+                             begin="indefinite" fill="freeze">
+                <mpath xlink:href="#t1_journey"/>
+              </animateMotion>
+            </circle>
           </g>
 
           <!-- =============== TRAIN TB 2 (BOTTOM) =============== -->
@@ -542,7 +697,7 @@
           <!-- =============== CHEMISTRY OVERLAYS — FALL-VERDÜSUNGS-FILTER (three layers) =============== -->
           <g id="chemCO2">
             <!-- CO2 release card — slim, bright, positioned right above the spray nozzle ring -->
-            <foreignObject class="svg-anim chem-co2" x="385" y="30" width="220" height="60">
+            <foreignObject class="svg-anim chem-co2" x="385" y="10" width="220" height="80">
               <div xmlns="http://www.w3.org/1999/xhtml" class="eq-card co2 bright">
                 <div class="eq-title">CO<sub>2</sub> stripping &nbsp;&middot;&nbsp; <span class="marker">⁵</span></div>
                 <div class="eq-body">
@@ -618,26 +773,26 @@
             </foreignObject>
 
             <!-- TB 2 Vorfilter — Iron oxidation half-reaction (Eq. 13, mechanism) -->
-            <foreignObject class="svg-anim chem-fe-half" x="20" y="745" width="320" height="60">
+            <foreignObject class="svg-anim chem-fe-half" x="20" y="745" width="320" height="90">
               <div xmlns="http://www.w3.org/1999/xhtml" class="eq-card iron-half">
                 <div class="eq-title">Iron(II) oxidation (electron transfer) &nbsp;&middot;&nbsp; <span class="marker">³</span></div>
                 <div class="eq-body">
                   Fe<sup>2+</sup> + &frac14;&nbsp;O<sub>2</sub> + H<sup>+</sup>
                   &rarr; Fe<sup>3+</sup> + &frac12;&nbsp;H<sub>2</sub>O
                 </div>
-                <div class="eq-note">half-reaction driving Eq. 15 (Vorfilter Fe(OH)<sub>3</sub> precipitation)</div>
+                <div class="eq-note">half-reaction driving the Fe(OH)<sub>3</sub> precipitation in the Vorfilter</div>
               </div>
             </foreignObject>
 
             <!-- TB 2 Vorfilter — Manganese oxidation half-reaction (Eq. 14, mechanism) -->
-            <foreignObject class="svg-anim chem-mn-half" x="20" y="813" width="320" height="60">
+            <foreignObject class="svg-anim chem-mn-half" x="20" y="845" width="320" height="95">
               <div xmlns="http://www.w3.org/1999/xhtml" class="eq-card mn-half">
                 <div class="eq-title">Manganese(II) oxidation (electron transfer) &nbsp;&middot;&nbsp; <span class="marker">⁴</span></div>
                 <div class="eq-body">
                   Mn<sup>2+</sup> + &frac12;&nbsp;O<sub>2</sub> + 2&nbsp;H<sup>+</sup>
                   &rarr; Mn<sup>4+</sup> + H<sub>2</sub>O
                 </div>
-                <div class="eq-note">half-reaction driving Eq. 16 (Vorfilter, partial) and Eq. 22 (F-V.-F., full)</div>
+                <div class="eq-note">half-reaction driving partial MnO<sub>2</sub> in the Vorfilter and the residual MnO<sub>2</sub> capture in the F-V.-F.</div>
               </div>
             </foreignObject>
           </g>
@@ -660,6 +815,26 @@
       <div class="controls">
         <button onclick="play()" id="btnPlay">&#9654; Play</button>
         <button onclick="reset()">&#8635; Reset</button>
+      </div>
+    </div>
+
+    <!-- =====================================================================
+         Ni²⁺ concentration bar — shrinks as treatment removes Ni²⁺ from the water.
+         Raw water ~55 µg/L → after CaCO3 capture ~30 µg/L → after residual MnO2 ~12 µg/L.
+         The 20 µg/L dashed threshold becomes visible once the bar crosses below it. -->
+    <div class="ni-bar" id="niBar">
+      <div class="ni-bar-header">
+        <span class="ni-bar-label">Ni²⁺ concentration through the plant</span>
+        <span class="ni-bar-readout"><span id="niBarValue">55</span>&nbsp;µg/L</span>
+      </div>
+      <div class="ni-bar-track">
+        <div class="ni-bar-threshold" id="niBarThreshold"></div>
+        <div class="ni-bar-fill" id="niBarFill"></div>
+      </div>
+      <div class="ni-bar-scale">
+        <span>0 µg/L (raw)</span>
+        <span style="text-align:center;">20 µg/L drinking-water limit</span>
+        <span>60 µg/L (max scale)</span>
       </div>
     </div>
 
@@ -746,6 +921,34 @@
       var chemFeHalfElems = schematicLayer.querySelectorAll('.chem-fe-half');
       var chemMnHalfElems = schematicLayer.querySelectorAll('.chem-mn-half');
 
+      // New narrative-overlay refs (Ni²⁺ bar, pH badge, flow pulse)
+      var niBarFill      = document.getElementById('niBarFill');
+      var niBarThreshold = document.getElementById('niBarThreshold');
+      var niBarValue     = document.getElementById('niBarValue');
+      var phBadge        = document.getElementById('phBadge');
+      var phValue        = document.getElementById('phValue');
+      var t1PulseMotion  = document.getElementById('t1PulseMotion');
+      var t1Pulse        = document.getElementById('t1Pulse');
+
+      // Helpers — update Ni²⁺ bar (concentration in µg/L) and pH badge
+      function setNi(ugPerL) {
+        var pct = Math.max(0, Math.min(100, (ugPerL / 60) * 100));
+        if (niBarFill) niBarFill.style.width = pct + '%';
+        if (niBarValue) niBarValue.textContent = String(ugPerL);
+        if (niBarThreshold) {
+          if (ugPerL < 20) niBarThreshold.classList.add('is-visible');
+          else             niBarThreshold.classList.remove('is-visible');
+        }
+        if (niBarFill && ugPerL < 18) niBarFill.classList.add('is-final');
+      }
+      function setPh(value, crossed) {
+        if (phValue) phValue.textContent = '\u00a0' + value;
+        if (phBadge) {
+          phBadge.classList.add('is-visible');
+          if (crossed) phBadge.classList.add('has-crossed');
+        }
+      }
+
       var played = false;
       var timeouts = [];
 
@@ -783,6 +986,12 @@
           photoCaption.classList.remove('visible');
           schematicLayer.classList.add('visible');
           setVisible(trainBaseElems, true);
+          // Initialise Ni²⁺ at raw-water level (55 µg/L) and show pH at 5.8
+          setNi(55);
+          setPh('5.8', false);
+          // Fire the travelling flow pulse on the TB1 journey path
+          if (t1Pulse) t1Pulse.classList.add('is-firing');
+          try { if (t1PulseMotion && t1PulseMotion.beginElement) t1PulseMotion.beginElement(); } catch (e) {}
           stageProgress.textContent = 'stage 2 \u00b7 schematic';
         }, 6000));
 
@@ -815,27 +1024,36 @@
         }, 20500));
 
         // Stage 7 - 24.5 s: CO2 stripping at the F-V.-F. spray nozzle (marker 5)
+        // pH rises slightly from CO2 removal (5.8 → 6.0); Ni²⁺ unchanged.
         timeouts.push(setTimeout(function () {
           setVisible(chemCO2Elems, true);
+          setPh('6.0', false);
           stageProgress.textContent = 'stage 7 \u00b7 CO\u2082 stripping (marker \u2075)';
         }, 24500));
 
         // Stage 8 - 28.5 s: Magnodol dissolution on the dolomite bed (marker 6)
+        // pH crosses the 6.5 mobilisation threshold here (6.0 → 6.8). Highlight the badge.
         timeouts.push(setTimeout(function () {
           setVisible(chemDolElems, true);
-          stageProgress.textContent = 'stage 8 \u00b7 Magnodol dissolution (marker \u2076)';
+          setPh('6.8', true);                 // crossed = true → green highlight
+          stageProgress.textContent = 'stage 8 \u00b7 Magnodol dissolution (marker \u2076) \u00b7 pH crosses 6.5';
         }, 28500));
 
-        // Stage 9 - 32.5 s: CaCO3 reprecipitation + Ni capture (marker 7)
+        // Stage 9 - 32.5 s: CaCO3 reprecipitation + Ni capture (marker 7, r²=0.86 Ni-Ca)
+        // First Ni capture site: Ni²⁺ drops from 55 to ~30 µg/L. pH rises to 7.2.
         timeouts.push(setTimeout(function () {
           setVisible(chemCapElems, true);
-          stageProgress.textContent = 'stage 9 \u00b7 CaCO\u2083 + Ni\u00b2\u207a (marker \u2077)';
+          setNi(30);
+          setPh('7.2', true);
+          stageProgress.textContent = 'stage 9 \u00b7 CaCO\u2083 + Ni\u00b2\u207a (marker \u2077) \u00b7 Ni 55 \u2192 30 \u00b5g/L';
         }, 32500));
 
-        // Stage 10 - 36.5 s: Residual MnO2 + Ni capture (marker 8)
+        // Stage 10 - 36.5 s: Residual MnO2 + Ni capture (marker 8, r²=0.66 Ni-Mn)
+        // Second Ni capture site: Ni²⁺ drops from ~30 to ~12 µg/L, crossing the 20 µg/L limit.
         timeouts.push(setTimeout(function () {
           setVisible(chemCapMnElems, true);
-          stageProgress.textContent = 'stage 10 \u00b7 residual MnO\u2082 + Ni\u00b2\u207a (marker \u2078)';
+          setNi(12);
+          stageProgress.textContent = 'stage 10 \u00b7 residual MnO\u2082 + Ni\u00b2\u207a (marker \u2078) \u00b7 Ni 30 \u2192 12 \u00b5g/L (under limit)';
         }, 36500));
       }
 
@@ -856,6 +1074,13 @@
         setVisible(chemCapMnElems, false);
         setVisible(chemFeHalfElems, false);
         setVisible(chemMnHalfElems, false);
+        // Reset narrative overlays
+        if (niBarFill) { niBarFill.style.width = '91.7%'; niBarFill.classList.remove('is-final'); }
+        if (niBarValue) niBarValue.textContent = '55';
+        if (niBarThreshold) niBarThreshold.classList.remove('is-visible');
+        if (phBadge) { phBadge.classList.remove('is-visible'); phBadge.classList.remove('has-crossed'); }
+        if (phValue) phValue.textContent = '\u00a05.8';
+        if (t1Pulse) t1Pulse.classList.remove('is-firing');
         stageProgress.textContent = 'stage 0 \u00b7 photograph';
       }
 
