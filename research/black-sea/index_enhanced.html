@@ -26,8 +26,46 @@
     background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased; line-height: 1.45;
+    padding-top: 58px; /* push everything below the fixed site nav */
   }
   .container { max-width: 1480px; margin: 0 auto; padding: 24px clamp(16px, 3vw, 40px); }
+
+  /* ---------------- SITE NAV (always visible — matches the rest of osmancankandemiroglu.com) ---------------- */
+  .site-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+  .site-nav__inner {
+    max-width: 1480px; margin: 0 auto;
+    padding: 12px clamp(16px, 3vw, 40px);
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .site-nav__brand {
+    font-size: 17px; font-weight: 600; letter-spacing: -0.01em;
+    color: var(--text); text-decoration: none; line-height: 1.2;
+  }
+  .site-nav__brand small {
+    display: block; font-size: 11px; font-weight: 400; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--subtle); margin-top: 2px;
+  }
+  .site-nav__list {
+    display: flex; gap: clamp(16px, 2.4vw, 28px); align-items: center;
+    list-style: none; margin: 0; padding: 0;
+  }
+  .site-nav__link {
+    font-size: 14px; color: var(--subtle); text-decoration: none;
+    transition: color 0.16s ease;
+  }
+  .site-nav__link:hover,
+  .site-nav__link[aria-current="page"] { color: var(--text); }
+  @media (max-width: 720px) {
+    .site-nav__brand small { display: none; }
+    .site-nav__list { gap: 14px; }
+    .site-nav__link { font-size: 13px; }
+  }
 
   header {
     display: flex; align-items: baseline; justify-content: space-between;
@@ -169,6 +207,25 @@
 </style>
 </head>
 <body>
+
+<!-- ========== SITE NAV (always visible — matches osmancankandemiroglu.com header) ========== -->
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="../../index.html">
+      Osman Can Kandemiroglu
+      <small>Marine Molecular Biogeochemistry</small>
+    </a>
+    <nav>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="../../index.html">Home</a></li>
+        <li><a class="site-nav__link" href="../../about.html">About</a></li>
+        <li><a class="site-nav__link" href="../index.html" aria-current="page">Research</a></li>
+        <li><a class="site-nav__link" href="../../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
 <div class="container">
 
 <header>
