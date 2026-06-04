@@ -2035,16 +2035,12 @@ M  END`;
     bioGroups.forEach((g) => g.classList.add('in-view'));
   }
 
-  // ---------------- Site nav: hidden on hero, shows when scrolling UP past hero ----------------
+  // ---------------- Site nav: hidden inside the hero zone, visible past it ----------------
   const siteNav = document.getElementById('site-nav');
   if (siteNav) {
-    let lastY = window.scrollY;
+    const HERO_THRESHOLD = 0.7; // user must be past 70% of viewport before nav reveals
     let navVisible = false;
-    let accumUp = 0;           // running tally of upward movement since last direction flip
-    let accumDown = 0;         // running tally of downward movement since last direction flip
-    const REVEAL_PX = 12;      // cumulative upward distance needed to reveal
-    const HIDE_PX = 12;        // cumulative downward distance needed to hide
-    const HERO_THRESHOLD = 0.7; // must be past 70% of viewport before nav can show
+    let navTicking = false;
 
     function setNavVisible(show) {
       if (show === navVisible) return;
@@ -2053,35 +2049,19 @@ M  END`;
       siteNav.setAttribute('aria-hidden', show ? 'false' : 'true');
     }
 
-    let navTicking = false;
+    function evalNav() {
+      const pastHero = window.scrollY > window.innerHeight * HERO_THRESHOLD;
+      setNavVisible(pastHero);
+      navTicking = false;
+    }
     function onNavScroll() {
       if (navTicking) return;
       navTicking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY;
-        const dy = y - lastY;
-        const pastHero = y > window.innerHeight * HERO_THRESHOLD;
-
-        if (!pastHero) {
-          // In the hero zone: always hide; reset accumulators
-          setNavVisible(false);
-          accumUp = 0; accumDown = 0;
-        } else if (dy < 0) {
-          // Scrolling UP — accumulate, reveal when we cross the threshold
-          accumUp += -dy;
-          accumDown = 0;
-          if (accumUp >= REVEAL_PX) setNavVisible(true);
-        } else if (dy > 0) {
-          // Scrolling DOWN — accumulate, hide when we cross the threshold
-          accumDown += dy;
-          accumUp = 0;
-          if (accumDown >= HIDE_PX) setNavVisible(false);
-        }
-        lastY = y;
-        navTicking = false;
-      });
+      requestAnimationFrame(evalNav);
     }
     window.addEventListener('scroll', onNavScroll, { passive: true });
+    window.addEventListener('resize', onNavScroll, { passive: true });
+    evalNav();
   }
 
   // ---------------- Smooth anchor-link scrolling with offset ----------------
