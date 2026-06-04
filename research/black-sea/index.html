@@ -2040,8 +2040,11 @@ M  END`;
   if (siteNav) {
     let lastY = window.scrollY;
     let navVisible = false;
-    const SCROLL_DELTA = 6;     // pixels of direction change required to trigger
-    const HERO_THRESHOLD = 0.6; // must be past 60% of viewport before nav can show
+    let accumUp = 0;           // running tally of upward movement since last direction flip
+    let accumDown = 0;         // running tally of downward movement since last direction flip
+    const REVEAL_PX = 12;      // cumulative upward distance needed to reveal
+    const HIDE_PX = 12;        // cumulative downward distance needed to hide
+    const HERO_THRESHOLD = 0.7; // must be past 70% of viewport before nav can show
 
     function setNavVisible(show) {
       if (show === navVisible) return;
@@ -2060,14 +2063,19 @@ M  END`;
         const pastHero = y > window.innerHeight * HERO_THRESHOLD;
 
         if (!pastHero) {
-          // In the hero zone: always hide the nav so the molecule has the stage
+          // In the hero zone: always hide; reset accumulators
           setNavVisible(false);
-        } else if (dy < -SCROLL_DELTA) {
-          // Scrolling UP, past the hero → reveal nav
-          setNavVisible(true);
-        } else if (dy > SCROLL_DELTA) {
-          // Scrolling DOWN → hide nav for clean reading
-          setNavVisible(false);
+          accumUp = 0; accumDown = 0;
+        } else if (dy < 0) {
+          // Scrolling UP — accumulate, reveal when we cross the threshold
+          accumUp += -dy;
+          accumDown = 0;
+          if (accumUp >= REVEAL_PX) setNavVisible(true);
+        } else if (dy > 0) {
+          // Scrolling DOWN — accumulate, hide when we cross the threshold
+          accumDown += dy;
+          accumUp = 0;
+          if (accumDown >= HIDE_PX) setNavVisible(false);
         }
         lastY = y;
         navTicking = false;
