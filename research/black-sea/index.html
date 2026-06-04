@@ -52,6 +52,76 @@
   }
   ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.32); }
 
+  /* ---------------- SITE NAV (hidden on load, shows on scroll-up) ---------------- */
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transform: translateY(-100%);
+    transition: transform 0.45s var(--ease-apple), opacity 0.35s var(--ease-apple);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .site-nav.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site-nav__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 12px clamp(24px, 6vw, 120px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .site-nav__brand {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  .site-nav__brand small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-top: 2px;
+  }
+  .site-nav__list {
+    display: flex;
+    gap: clamp(16px, 2.4vw, 28px);
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-nav__link {
+    font-size: 14px;
+    color: var(--subtle);
+    text-decoration: none;
+    transition: color 0.16s var(--ease-apple);
+  }
+  .site-nav__link:hover,
+  .site-nav__link[aria-current="page"] {
+    color: var(--text);
+  }
+  @media (max-width: 720px) {
+    .site-nav__brand small { display: none; }
+    .site-nav__list { gap: 14px; }
+    .site-nav__link { font-size: 13px; }
+  }
+
   /* ---------------- HERO ---------------- */
   .hero {
     position: relative;
@@ -831,6 +901,24 @@
 </style>
 </head>
 <body>
+
+<!-- ========== SITE NAV (hidden on load; reveals when scrolling UP past the hero) ========== -->
+<header class="site-nav" id="site-nav" aria-hidden="true">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="../../index.html">
+      Osman Can Kandemiroglu
+      <small>Marine Molecular Biogeochemistry</small>
+    </a>
+    <nav>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="../../index.html">Home</a></li>
+        <li><a class="site-nav__link" href="../../about.html">About</a></li>
+        <li><a class="site-nav__link" href="../index.html" aria-current="page">Research</a></li>
+        <li><a class="site-nav__link" href="../../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
 <!-- ========== HERO ========== -->
 <section class="hero" id="hero">
@@ -1945,6 +2033,47 @@ M  END`;
   } else {
     // Fallback — show all immediately
     bioGroups.forEach((g) => g.classList.add('in-view'));
+  }
+
+  // ---------------- Site nav: hidden on hero, shows when scrolling UP past hero ----------------
+  const siteNav = document.getElementById('site-nav');
+  if (siteNav) {
+    let lastY = window.scrollY;
+    let navVisible = false;
+    const SCROLL_DELTA = 6;     // pixels of direction change required to trigger
+    const HERO_THRESHOLD = 0.6; // must be past 60% of viewport before nav can show
+
+    function setNavVisible(show) {
+      if (show === navVisible) return;
+      navVisible = show;
+      siteNav.classList.toggle('is-visible', show);
+      siteNav.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+
+    let navTicking = false;
+    function onNavScroll() {
+      if (navTicking) return;
+      navTicking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        const dy = y - lastY;
+        const pastHero = y > window.innerHeight * HERO_THRESHOLD;
+
+        if (!pastHero) {
+          // In the hero zone: always hide the nav so the molecule has the stage
+          setNavVisible(false);
+        } else if (dy < -SCROLL_DELTA) {
+          // Scrolling UP, past the hero → reveal nav
+          setNavVisible(true);
+        } else if (dy > SCROLL_DELTA) {
+          // Scrolling DOWN → hide nav for clean reading
+          setNavVisible(false);
+        }
+        lastY = y;
+        navTicking = false;
+      });
+    }
+    window.addEventListener('scroll', onNavScroll, { passive: true });
   }
 
   // ---------------- Smooth anchor-link scrolling with offset ----------------
