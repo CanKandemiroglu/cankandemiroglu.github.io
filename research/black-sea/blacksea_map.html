@@ -169,9 +169,19 @@
     font-size: 10px !important;
   }
 
-  /* On mobile: collapse the sidebar narrower */
+  /* Touch feedback — touch devices don't fire :hover, so give a pressed state */
+  .corebtn:active, .actions button:active { transform: scale(0.98); background: rgba(255,255,255,0.82); }
+  .plink:active { background: rgba(43,111,158,0.22); }
+  #toggle:active { background: rgba(0,0,0,0.08); }
+
+  /* ===== Mobile tuning ===== */
   @media (max-width:560px){
+    /* Lighter glass — blur(22px) on 6+ stacked layers is GPU-heavy and janky on phones */
+    :root{ --glass-blur: blur(10px) saturate(140%); }
     #panel{ top:8px; right:8px; width: calc(100% - 16px); max-width: 320px; }
+    /* If the user expands the panel on a small screen, keep it within the viewport */
+    #panel .body{ max-height: 60vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .popup{ width: min(260px, 78vw); }
   }
 </style>
 </head>
@@ -319,7 +329,9 @@ function corePopup(c){
 }
 
 /* ---------------- map ------------------------------------------------------ */
+const embedded = (window.self !== window.top);   // true when shown inside an <iframe>
 const map = L.map('map', {minZoom:5, maxZoom:16, zoomControl:false,
+  scrollWheelZoom: !embedded,   // embedded: let the wheel scroll the page instead of trapping it
   layers:[gebcoColor, esriRef, bordersLayer, riversLayer, riverNames, coreLayer]});
 const BS = L.latLngBounds([40.8, 27.3], [47.3, 41.9]);   // whole Black Sea
 map.fitBounds(BS);
@@ -367,6 +379,18 @@ document.getElementById('toggle').onclick=function(){
   const p=document.getElementById('panel'); p.classList.toggle('min');
   this.textContent = p.classList.contains('min') ? '▸' : '▾';
 };
+
+/* ---------------- mobile behaviour ---------------------------------------- */
+/* On phones the panel is nearly full-width, so start it collapsed — the map
+   stays visible on load and the user expands the panel only if they want it. */
+if (window.matchMedia('(max-width:560px)').matches){
+  const p=document.getElementById('panel'); p.classList.add('min');
+  document.getElementById('toggle').textContent='▸';
+}
+/* Re-measure the map after rotation / container resize so tiles never go grey. */
+let _resizeT;
+window.addEventListener('resize', ()=>{ clearTimeout(_resizeT);
+  _resizeT=setTimeout(()=>map.invalidateSize(), 200); });
 </script>
 </body>
 </html>
