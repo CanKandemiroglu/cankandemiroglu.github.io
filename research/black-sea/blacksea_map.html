@@ -370,6 +370,11 @@ const flyB = (b)    => new Promise(res=>{ map.flyToBounds(b,{duration:1.8}); map
 function focusCore(i){ const c=CORES[i]; fly([c.lat,c.lon],11).then(()=>markers[i].openPopup()); }
 document.getElementById('whole').onclick=()=>{ map.closePopup(); flyB(BS); };
 document.getElementById('tour').onclick=async()=>{
+  /* On phones, tuck the panel away so the guided tour plays unobstructed */
+  if (window.matchMedia('(max-width:560px)').matches){
+    const p=document.getElementById('panel');
+    p.classList.add('min'); document.getElementById('toggle').textContent='▸';
+  }
   map.closePopup(); await flyB(BS); await wait(350);
   for(let i=0;i<CORES.length;i++){ await fly([CORES[i].lat,CORES[i].lon],11);
     markers[i].openPopup(); await wait(2400); markers[i].closePopup(); }
