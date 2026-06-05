@@ -411,20 +411,32 @@
     }
 
     /* =====================================================================
-       MOBILE-FLOW — portrait reflow at <= 700 px wide.
-       Above 700 px: desktop SVG schematic is shown; .mobile-flow is hidden.
-       At or below 700 px: SVG schematic is hidden, .mobile-flow takes over
-       with HTML equation cards stacked vertically under each treatment
-       stage (Vorfilter, Fall-Verdüsungs-Filter, Sammelbecken). The same
-       JS setVisible() finds the .svg-anim.chem-* classes on both desktop
+       MOBILE-FLOW — portrait reflow at <= 900 px wide (2026-06-05: raised from
+       700 px so tablets in portrait and large phones in landscape also get the
+       readable stacked layout instead of the desktop SVG schematic shrunk to
+       ~8 px text).
+       Above 900 px: desktop SVG schematic is shown; .mobile-flow is hidden.
+       At or below 900 px: SVG schematic is hidden, the hero photo is kept, and
+       .mobile-flow takes over with HTML equation cards stacked vertically under
+       each treatment stage (Vorfilter, Fall-Verdüsungs-Filter, Sammelbecken).
+       The same JS setVisible() finds the .svg-anim.chem-* classes on both desktop
        SVG cards and mobile HTML cards, so the animation timing is shared. */
     .mobile-flow { display: none; }
 
-    @media (max-width: 700px) {
+    @media (max-width: 900px) {
       .scene { padding: 40px 16px 32px; }
       h1 { font-size: clamp(22px, 6vw, 28px); }
       .lead { font-size: clamp(14px, 3.6vw, 16px); }
-      .viewport { display: none; }     /* hides stage-container + stage-meta + controls in one shot */
+      /* 2026-06-05 mobile patch: KEEP the photograph on mobile instead of hiding the
+         whole .viewport. The dense schematic SVG doesn't scale to phone width, so we
+         show only the hero photo and let the .mobile-flow cards carry the chemistry.
+         Keeping #stageContainer rendered also re-enables the IntersectionObserver
+         (it observes #stageContainer), so cards reveal on scroll-into-view instead of
+         via a blind 2.5 s timer. */
+      .viewport { padding: 12px; margin-bottom: 0; }
+      .stage-meta, .controls { display: none; }
+      .schematic-layer, .train-annotations, .photo-caption { display: none !important; }
+      .photo-layer { opacity: 1 !important; }   /* override the JS cross-fade so the photo stays */
       .mobile-flow {
         display: block;
         margin-top: 18px;
@@ -497,18 +509,27 @@
          setVisible() driver toggles them at the same instant it toggles the
          desktop SVG cards. The styling adapts to the HTML rather than SVG
          foreignObject context. */
+      /* 2026-06-05 mobile patch: mobile cards are ALWAYS readable (opacity:1) so the
+         chemistry shows even if JS never runs (no-JS / slow-JS resilience) and there
+         are no blank gaps while the timed sequence is pending. The JS setVisible()
+         driver adds .visible, which now drives a gentle transform-only entrance
+         rather than the opacity fade — so it stays a progressive-enhancement, not a
+         hard dependency for content to appear. */
       .mobile-flow .svg-anim {
         display: block;
         margin-bottom: 9px;
-        transform: scale(0.985);
+        opacity: 1;
+        transform: translateY(8px);
         transform-origin: top left;
+        transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
       }
       .mobile-flow .svg-anim:last-child { margin-bottom: 0; }
-      .mobile-flow .svg-anim.is-visible { transform: scale(1); }
+      .mobile-flow .svg-anim.visible { transform: translateY(0); }
       .mobile-flow .eq-card {
         font-size: 12.5px;
         padding: 9px 12px;
         line-height: 1.45;
+        backdrop-filter: none; -webkit-backdrop-filter: none;  /* blur buys nothing over the opaque card; saves GPU on low-end phones */
       }
       .mobile-flow .eq-title { font-size: 10.5px; }
       .mobile-flow .eq-body  { font-size: 13px; }
@@ -545,10 +566,27 @@
       .ni-bar-readout { align-self: flex-end; }
     }
 
+    /* 2026-06-05 tablet refinement — the stacked layout now also serves the
+       701–900 px range (iPad portrait, large phones in landscape). Undo the
+       phone-cramped padding/type and cap the column width so cards read at a
+       comfortable measure instead of stretching edge-to-edge. */
+    @media (min-width: 701px) and (max-width: 900px) {
+      .scene { padding: 56px 28px 44px; }
+      h1 { font-size: clamp(26px, 4.4vw, 34px); }
+      .lead { font-size: clamp(16px, 2.4vw, 19px); }
+      .mobile-flow { max-width: 620px; margin-left: auto; margin-right: auto; }
+      .mobile-flow .eq-card { font-size: 13.5px; padding: 11px 14px; }
+      .mobile-flow .eq-body { font-size: 14px; }
+      .mobile-flow .m-train-title { font-size: 14px; }
+      .ni-bar { max-width: 620px; margin-left: auto; margin-right: auto; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .layer, .svg-anim, .train-annotations, .photo-caption {
         transition: opacity 0.01s !important;
       }
+      /* neutralise the mobile card slide-in for reduced-motion users */
+      .mobile-flow .svg-anim { transform: none !important; transition: none !important; }
       .flow-path.flowing { animation: none; }
     }
   </style>
@@ -980,7 +1018,7 @@
     </div>
 
     <!-- =====================================================================
-         MOBILE-FLOW — shown only at viewports <= 700 px.
+         MOBILE-FLOW — shown only at viewports <= 900 px.
          Two filter trains stack vertically; each train shows its treatment
          stages and the equation cards that belong to them. Cards re-use the
          desktop .svg-anim + .chem-* class names so the JS setVisible() driver
