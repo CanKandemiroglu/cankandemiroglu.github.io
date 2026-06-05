@@ -307,6 +307,33 @@ h4 {
 .card--feature .card__desc { color: rgba(255, 255, 255, 0.78); }
 .card--feature .link-arrow { color: #6cb2ff; }
 
+/* "New" badge — Apple-style new-product label, top-right of a card */
+.card--new .card__eyebrow { padding-right: 62px; }
+.card__badge {
+  position: absolute;
+  top: clamp(20px, 2.6vw, 32px);
+  right: clamp(20px, 2.6vw, 32px);
+  z-index: 3;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: #fff;
+  background: #f56300;            /* Apple "New" orange */
+  padding: 5px 11px;
+  border-radius: 980px;
+  box-shadow: 0 2px 8px rgba(245, 99, 0, 0.32);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card__badge {
+    animation: badgePulse 2.6s var(--ease-in-out) infinite;
+  }
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 2px 8px rgba(245, 99, 0, 0.32); }
+    50%      { box-shadow: 0 2px 16px rgba(245, 99, 0, 0.55); }
+  }
+}
+
 /* ---------- Research article layout ---------- */
 .article {
   max-width: var(--maxw-prose);
