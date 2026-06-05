@@ -303,7 +303,10 @@ const riverNames = L.layerGroup(RIVER_LABELS.map(r =>
 /* ---------------- core markers -------------------------------------------- */
 const markers = CORES.map(c => L.circleMarker([c.lat, c.lon],
     {radius:8, color:'#ffffff', weight:2, fillColor:c.color, fillOpacity:1})
-  .bindPopup(corePopup(c), {maxWidth:280, autoPanPadding:[60,60]}));
+  .bindPopup(corePopup(c), {maxWidth:280,
+    /* Extra top clearance so the popup pans down clear of the "NW Black Sea
+       sediment cores" bar/pill instead of colliding with it. */
+    autoPanPaddingTopLeft:[20, 100], autoPanPaddingBottomRight:[20, 30]}));
 const coreLayer = L.layerGroup(markers);
 
 function corePopup(c){
