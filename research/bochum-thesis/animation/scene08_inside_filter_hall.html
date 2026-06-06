@@ -51,7 +51,11 @@
       padding: 24px; margin-bottom: 24px; position: relative; overflow: hidden;
     }
     .stage-container {
-      position: relative; width: 100%; aspect-ratio: 1100 / 960;
+      /* 2026-06-06: height extended 960 -> 1000 (viewBox matched below) to drop the
+         bottom edge ~40 units below the lowest cards (eq 4 / MANGANESE(II) OXIDATION),
+         so the bottom-left column clears the stage border on tall-font engines (Safari).
+         Card spacing is still governed by the JS collision pass; this only adds room. */
+      position: relative; width: 100%; aspect-ratio: 1100 / 1000;
       background: #fbfbfd; border-radius: 12px; overflow: hidden;
     }
     /* All scene layers share the same coordinate space */
@@ -651,7 +655,7 @@
 
         <!-- Layer C: schematic SVG -->
         <svg id="schematicLayer" class="layer schematic-layer"
-             viewBox="0 0 1100 960" preserveAspectRatio="xMidYMid meet"
+             viewBox="0 0 1100 1000" preserveAspectRatio="xMidYMid meet"
              xmlns="http://www.w3.org/2000/svg">
           <defs>
             <!-- Pressurised Druckfilter (Vorfilter) cylinder gradient -->
