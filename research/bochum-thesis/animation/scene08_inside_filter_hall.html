@@ -1049,7 +1049,7 @@
             </div>
           </div>
 
-          <div class="eq-overlay-card svg-anim chem-mn-vor" data-x="20" data-y="395" data-w="320">
+          <div class="eq-overlay-card svg-anim chem-mn-vor" data-x="20" data-y="412" data-w="320">
             <div class="eq-card mn">
               <div class="eq-title">Partial manganese(IV) oxide precipitation &nbsp;&middot;&nbsp; <span class="marker">²</span></div>
               <div class="eq-body" style="margin-top: 4px;">
@@ -1114,7 +1114,7 @@
             </div>
           </div>
 
-          <div class="eq-overlay-card svg-anim chem-fe-half" data-x="20" data-y="745" data-w="320">
+          <div class="eq-overlay-card svg-anim chem-fe-half" data-x="20" data-y="735" data-w="320">
             <div class="eq-card iron-half">
               <div class="eq-title">Iron(II) oxidation (electron transfer) &nbsp;&middot;&nbsp; <span class="marker">³</span></div>
               <div class="eq-body">
@@ -1714,7 +1714,7 @@
         // column. After placing everything, walk each x-column top-to-bottom and push
         // any card that would overlap the previous one down by a small gap. This is
         // engine-agnostic: whatever height each browser produces, cards never overlap.
-        var GAP = 8 * scale;
+        var GAP = 12 * scale;
         var byCol = {};
         for (var j = 0; j < cards.length; j++) {
           var key = cards[j].getAttribute('data-x');
@@ -1725,7 +1725,11 @@
             return (parseFloat(a.style.top) || 0) - (parseFloat(b.style.top) || 0);
           });
           for (var m = 1; m < group.length; m++) {
-            var prevBottom = (parseFloat(group[m - 1].style.top) || 0) + group[m - 1].getBoundingClientRect().height;
+            // Measure with offsetHeight (the layout border-box height, completely
+            // independent of the scale() transform) x scale. getBoundingClientRect()
+            // on a scale()/translateZ()-composited element is unreliable on Safari at
+            // measure time; offsetHeight is rock-solid on every engine.
+            var prevBottom = (parseFloat(group[m - 1].style.top) || 0) + group[m - 1].offsetHeight * scale;
             if ((parseFloat(group[m].style.top) || 0) < prevBottom + GAP) {
               group[m].style.top = (prevBottom + GAP) + 'px';
             }
