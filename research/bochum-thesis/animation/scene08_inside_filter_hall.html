@@ -143,11 +143,31 @@
       color: var(--ink);
       box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
-    /* 2026-06-05 Safari fix: don't let <foreignObject> clip its HTML. Safari's font
-       metrics can render the equation a few px taller than Chromium; with the default
-       clipping the bottom line gets cut ("crashing" boxes). Letting it overflow shows
-       the full card. */
-    foreignObject { overflow: visible; }
+    /* =====================================================================
+       2026-06-06 SAFARI/WEBKIT FIX — formula boxes off <foreignObject>.
+       Root cause: WebKit bug #23113 (open since 2009) — HTML inside an SVG
+       <foreignObject> mispaints whenever a child uses opacity/transform/position,
+       which our animated cards all do. It breaks on every WebKit browser (Safari
+       macOS + ALL iOS/iPadOS) while Chromium/Gecko render fine. The structural fix
+       is to stop putting HTML in the SVG: the equation cards now live in the HTML
+       #cardOverlay (plain DOM, composites correctly on every engine) and are
+       positioned over the schematic via getScreenCTM() in JS. The original SVG
+       <foreignObject> cards are hidden (kept in markup only as positional reference). */
+    .schematic-layer foreignObject { display: none !important; }
+
+    /* HTML overlay that carries the equation cards on top of the schematic.
+       Cards are absolutely placed (left/top/width/scale set by JS to match the
+       SVG's current scale) so they look identical to the old in-SVG cards but
+       render reliably in Safari. */
+    .card-overlay {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 4;
+    }
+    .card-overlay .eq-overlay-card {
+      position: absolute; top: 0; left: 0;
+      transform-origin: top left;
+      pointer-events: auto;
+    }
     .eq-card .eq-title {
       font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
       font-weight: 600; color: var(--muted); margin-bottom: 3px;
@@ -444,7 +464,7 @@
          via a blind 2.5 s timer. */
       .viewport { padding: 12px; margin-bottom: 0; }
       .stage-meta, .controls { display: none; }
-      .schematic-layer, .train-annotations, .photo-caption { display: none !important; }
+      .schematic-layer, .card-overlay, .train-annotations, .photo-caption { display: none !important; }
       .photo-layer { opacity: 1 !important; }   /* override the JS cross-fade so the photo stays */
       .mobile-flow {
         display: block;
@@ -1006,6 +1026,113 @@
           </g>
         </svg>
 
+        <!-- =====================================================================
+             HTML CARD OVERLAY (Safari/WebKit-safe replacement for the in-SVG
+             <foreignObject> equation cards). Each card carries its original SVG
+             user-space coords (data-x/-y/-w from the viewBox 0 0 1100 960); JS
+             positions + scales them to sit exactly where the old cards did. They
+             reuse the svg-anim + chem-* classes so the existing setVisible() reveal
+             timeline drives them unchanged. Hidden <=900px (mobile-flow takes over). -->
+        <div class="card-overlay" id="cardOverlay" aria-hidden="false">
+          <div class="eq-overlay-card svg-anim chem-iron" data-x="20" data-y="315" data-w="320">
+            <div class="eq-card iron">
+              <div class="eq-title">Iron(III) hydroxide precipitation &nbsp;&middot;&nbsp; <span class="marker">¹</span></div>
+              <div class="eq-body">
+                Fe<sup>2+</sup> + &frac14;&nbsp;O<sub>2</sub> + 5/2&nbsp;H<sub>2</sub>O
+                &rarr; Fe(OH)<sub>3</sub>&darr; + 2&nbsp;H<sup>+</sup>
+              </div>
+              <div class="eq-note">orange flocs retained on the Druckfilter gravel bed</div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-mn-vor" data-x="20" data-y="395" data-w="320">
+            <div class="eq-card mn">
+              <div class="eq-title">Partial manganese(IV) oxide precipitation &nbsp;&middot;&nbsp; <span class="marker">²</span></div>
+              <div class="eq-body" style="margin-top: 4px;">
+                Mn<sup>2+</sup> + &frac12;&nbsp;O<sub>2</sub> + H<sub>2</sub>O
+                &rarr; MnO<sub>2</sub>&darr; + 2&nbsp;H<sup>+</sup>
+              </div>
+              <div class="eq-note" style="margin-top: 5px;">
+                autocatalytic on existing MnO<sub>2</sub> grain coatings &mdash;
+                iron must clear first (Wisotzky, 2021)
+              </div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-co2" data-x="430" data-y="10" data-w="220">
+            <div class="eq-card co2 bright">
+              <div class="eq-title">CO<sub>2</sub> stripping &nbsp;&middot;&nbsp; <span class="marker">⁵</span></div>
+              <div class="eq-body">
+                CO<sub>2</sub>(aq) &harr; CO<sub>2</sub>(g)&uarr;
+              </div>
+              <div class="eq-note">spray-aerated nozzle ring</div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-dol" data-x="350" data-y="315" data-w="420">
+            <div class="eq-card dol">
+              <div class="eq-title">Magnodol dissolution (chemical de-acidification) &nbsp;&middot;&nbsp; <span class="marker">⁶</span></div>
+              <div class="eq-body" style="line-height: 1.5;">
+                CaCO<sub>3</sub>&middot;MgO + H<sub>2</sub>O + 3&nbsp;H<sub>2</sub>CO<sub>3</sub>&nbsp;&harr;<br/>
+                Ca<sup>2+</sup> + Mg<sup>2+</sup> + 4&nbsp;HCO<sub>3</sub><sup>&minus;</sup> + 2&nbsp;H<sub>2</sub>O
+              </div>
+              <div class="eq-note">
+                via Mg(OH)<sub>2</sub> intermediate &mdash; raises pH past 6.5
+              </div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-cap" data-x="350" data-y="425" data-w="420">
+            <div class="eq-card cap">
+              <div class="eq-title">Calcite reprecipitation + Ni&sup2;&#8314; capture &nbsp;&middot;&nbsp; <span class="marker">⁷</span></div>
+              <div class="eq-body" style="line-height: 1.5;">
+                2&nbsp;HCO<sub>3</sub><sup>&minus;</sup> + 2&nbsp;Ca<sup>2+</sup> + Mg(OH)<sub>2</sub>&nbsp;&harr;<br/>
+                2&nbsp;CaCO<sub>3</sub>&darr; + 2&nbsp;H<sub>2</sub>O + Mg<sup>2+</sup>
+              </div>
+              <div class="eq-note">
+                <strong>Ni<sup>2+</sup> co-incorporation site #1</strong> &mdash;
+                <em>r&sup2;&nbsp;=&nbsp;0.86 (Ni&ndash;Ca)</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-cap-mn" data-x="350" data-y="760" data-w="420">
+            <div class="eq-card cap-mn">
+              <div class="eq-title">Residual MnO<sub>2</sub> + Ni&sup2;&#8314; capture (Rest-Entmanganung) &nbsp;&middot;&nbsp; <span class="marker">⁸</span></div>
+              <div class="eq-body">
+                Mn<sup>2+</sup> + &frac12;&nbsp;O<sub>2</sub> + H<sub>2</sub>O
+                &harr; MnO<sub>2</sub>&darr; + 2&nbsp;H<sup>+</sup>
+              </div>
+              <div class="eq-note">
+                <strong>Ni<sup>2+</sup> co-incorporation site #2</strong> &mdash;
+                <em>r&sup2;&nbsp;=&nbsp;0.66 (Ni&ndash;Mn)</em>
+              </div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-fe-half" data-x="20" data-y="745" data-w="320">
+            <div class="eq-card iron-half">
+              <div class="eq-title">Iron(II) oxidation (electron transfer) &nbsp;&middot;&nbsp; <span class="marker">³</span></div>
+              <div class="eq-body">
+                Fe<sup>2+</sup> + &frac14;&nbsp;O<sub>2</sub> + H<sup>+</sup>
+                &rarr; Fe<sup>3+</sup> + &frac12;&nbsp;H<sub>2</sub>O
+              </div>
+              <div class="eq-note">half-reaction driving the Fe(OH)<sub>3</sub> precipitation in the Vorfilter</div>
+            </div>
+          </div>
+
+          <div class="eq-overlay-card svg-anim chem-mn-half" data-x="20" data-y="840" data-w="320">
+            <div class="eq-card mn-half">
+              <div class="eq-title">Manganese(II) oxidation (electron transfer) &nbsp;&middot;&nbsp; <span class="marker">⁴</span></div>
+              <div class="eq-body">
+                Mn<sup>2+</sup> + &frac12;&nbsp;O<sub>2</sub> + 2&nbsp;H<sup>+</sup>
+                &rarr; Mn<sup>4+</sup> + H<sub>2</sub>O
+              </div>
+              <div class="eq-note">half-reaction driving partial MnO<sub>2</sub> in the Vorfilter and the residual MnO<sub>2</sub> capture in the F-V.-F.</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Layer D: photograph caption -->
         <div class="photo-caption" id="photoCaption">
           <div class="h">Wasserwerk Breyell &middot; filter hall interior</div>
@@ -1533,6 +1660,48 @@
 
       // Auto-play fallback for preview panes that do not scroll
       setTimeout(function () { attemptStart(); }, 2500);
+
+      // -------- HTML card overlay positioning (Safari/WebKit foreignObject fix) --------
+      // The equation cards now live in #cardOverlay as plain HTML. We map each card's
+      // original SVG user-space coords (data-x/-y/-w in the 1100x960 viewBox) to screen
+      // pixels using the schematic SVG's getScreenCTM(), then scale the card by the SVG's
+      // current scale factor so it looks identical to the old in-SVG <foreignObject>.
+      // getScreenCTM() already accounts for viewBox + preserveAspectRatio, so this is
+      // correct at every screen width with no extra math.
+      var cardOverlay = document.getElementById('cardOverlay');
+      function positionOverlayCards() {
+        if (!cardOverlay || !schematicLayer) return;
+        // schematicLayer is display:none at <=900px (mobile-flow takes over) -> CTM null.
+        var ctm = schematicLayer.getScreenCTM();
+        if (!ctm) return;
+        var host = cardOverlay.getBoundingClientRect();
+        var scale = ctm.a; // uniform scale (no rotation/skew on this SVG)
+        var cards = cardOverlay.querySelectorAll('.eq-overlay-card');
+        for (var i = 0; i < cards.length; i++) {
+          var c = cards[i];
+          var x = parseFloat(c.getAttribute('data-x'));
+          var y = parseFloat(c.getAttribute('data-y'));
+          var w = parseFloat(c.getAttribute('data-w'));
+          var sx = ctm.a * x + ctm.e;   // user-space (x,y) -> absolute screen px
+          var sy = ctm.d * y + ctm.f;
+          c.style.left  = (sx - host.left) + 'px';
+          c.style.top   = (sy - host.top) + 'px';
+          c.style.width = w + 'px';                 // unscaled user-unit width...
+          c.style.transform = 'scale(' + scale + ')'; // ...then scaled like the SVG
+        }
+      }
+      // Reposition whenever the stage resizes (Safari 13.1+/13.4+), on load, and on
+      // window resize/orientation change. ResizeObserver fires once on observe(), which
+      // covers the initial placement after layout/fonts settle.
+      if ('ResizeObserver' in window) {
+        new ResizeObserver(positionOverlayCards).observe(stageContainer);
+      }
+      window.addEventListener('load', positionOverlayCards);
+      window.addEventListener('resize', positionOverlayCards);
+      window.addEventListener('orientationchange', positionOverlayCards);
+      // Belt-and-suspenders: also place once now and shortly after (fonts/layout).
+      positionOverlayCards();
+      setTimeout(positionOverlayCards, 300);
     })();
   </script>
 </body>
