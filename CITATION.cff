@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: >-
+  If you used the Marine Map Tool to make a figure, please cite it as below,
+  together with the data sources listed in the figure's "How to cite" box
+  (GEBCO/ETOPO bathymetry, Natural Earth, cmocean).
+type: software
+title: "Marine Map Tool"
+abstract: >-
+  A browser-based tool that turns coordinates or a region into a
+  publication-quality marine map (bathymetry with cmocean colormaps, scale
+  bar, north arrow, inset, station overlays), exports it to a chosen
+  journal's figure specification, and generates the PyGMT/R script that
+  reproduces the figure.
+authors:
+  - family-names: Kandemiroglu
+    given-names: Osman Can
+license: MIT
+version: 0.1.0
+date-released: "2026-07-05"
+url: "https://osmancankandemiroglu.com/app/"
+repository-code: "https://github.com/CanKandemiroglu/cankandemiroglu.github.io"
+# doi: 10.5281/zenodo.XXXXXXX  # mint via Zenodo on first tagged release, then uncomment
+references:
+  - type: article
+    title: "True colors of oceanography: Guidelines for effective and accurate colormap selection"
+    authors:
+      - family-names: Thyng
+        given-names: Kristen M.
+      - family-names: Greene
+        given-names: Chad A.
+      - family-names: Hetland
+        given-names: Robert D.
+      - family-names: Zimmerle
+        given-names: Heather M.
+      - family-names: DiMarco
+        given-names: Steven F.
+    journal: Oceanography
+    volume: 29
+    issue: 3
+    year: 2016
+    doi: 10.5670/oceanog.2016.66
