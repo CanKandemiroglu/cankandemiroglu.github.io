@@ -1,0 +1,15 @@
+{
+  "id": "limnology-oceanography-methods",
+  "title": "Limnology & Oceanography: Methods",
+  "publisher": "Wiley (on behalf of ASLO)",
+  "canvas": { "single_column_mm": 80, "double_column_mm": 168, "max_height_mm": 225 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 1200 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 600 },
+  "formats_accepted": ["pdf", "eps", "tiff"],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Maps count as combination figures -> supply vector PDF or 600 dpi raster. Single column ~80 mm, double column ~168 mm; keep within the ~225 mm text-height limit.",
+  "source_url": "https://aslopubs.onlinelibrary.wiley.com/hub/journal/15415856/forauthors.html",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

@@ -1,0 +1,140 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://osmancankandemiroglu.com/schemas/journal-record.schema.json",
+  "title": "Journal figure-spec record",
+  "description": "A single journal's figure/artwork requirements as consumed by marine-map-core's journals module. All linear dimensions are in millimetres; dpi values are dots per inch.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "publisher",
+    "canvas",
+    "raster_dpi",
+    "map_target",
+    "formats_accepted",
+    "colour_mode",
+    "min_font_pt",
+    "font_family_hint",
+    "notes",
+    "source_url",
+    "last_verified"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable kebab-case identifier; matches the record's filename (<id>.json) and its entry in index.json.",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable journal (or journal-family) title.",
+      "minLength": 1
+    },
+    "publisher": {
+      "type": "string",
+      "description": "Publisher, optionally with the learned society the journal is published on behalf of.",
+      "minLength": 1
+    },
+    "canvas": {
+      "type": "object",
+      "description": "Page geometry the figure must fit into, in millimetres.",
+      "additionalProperties": false,
+      "required": ["single_column_mm", "double_column_mm", "max_height_mm"],
+      "properties": {
+        "single_column_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Width of a single-column figure in mm."
+        },
+        "double_column_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Width of a full/double-column figure in mm."
+        },
+        "max_height_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Maximum usable figure height (text area) in mm."
+        }
+      }
+    },
+    "raster_dpi": {
+      "type": "object",
+      "description": "Recommended raster resolutions by figure class, in dots per inch.",
+      "additionalProperties": false,
+      "required": ["photo", "combination", "line"],
+      "properties": {
+        "photo": {
+          "type": "integer",
+          "minimum": 72,
+          "description": "Resolution for greyscale/colour photographs (halftones)."
+        },
+        "combination": {
+          "type": "integer",
+          "minimum": 72,
+          "description": "Resolution for combination figures (line art over a raster, e.g. a map)."
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 72,
+          "description": "Resolution for pure line art / bitmap."
+        }
+      }
+    },
+    "map_target": {
+      "type": "object",
+      "description": "Concrete export target the engine should aim for when producing a marine map.",
+      "additionalProperties": false,
+      "required": ["recommended_format", "recommended_dpi"],
+      "properties": {
+        "recommended_format": {
+          "type": "string",
+          "description": "Preferred file format for a map figure.",
+          "minLength": 1
+        },
+        "recommended_dpi": {
+          "type": "integer",
+          "minimum": 150,
+          "description": "Preferred export resolution for a raster map, in dpi."
+        }
+      }
+    },
+    "formats_accepted": {
+      "type": "array",
+      "description": "File formats the journal accepts for figures.",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "colour_mode": {
+      "type": "string",
+      "description": "Colour space the journal expects for colour figures.",
+      "enum": ["RGB", "CMYK", "RGB or CMYK"]
+    },
+    "min_font_pt": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Minimum in-figure label/font size in points at final printed size."
+    },
+    "font_family_hint": {
+      "type": "string",
+      "description": "Suggested font family/families for in-figure text.",
+      "minLength": 1
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text, publisher-specific guidance (caveats, widths, CMYK warnings, etc.)."
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Link to the authoritative author/figure-guidelines page the record is derived from.",
+      "pattern": "^https?://"
+    },
+    "last_verified": {
+      "type": "string",
+      "description": "ISO-8601 date (YYYY-MM-DD) the record was last checked against source_url, or the sentinel 'VERIFY-BEFORE-SHIP' to flag an unverified default.",
+      "minLength": 1
+    }
+  }
+}

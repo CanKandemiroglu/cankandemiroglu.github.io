@@ -21,7 +21,8 @@ export {
 } from './furniture.js';
 export { suggestProjection } from './projection.js';
 export {
-  terrariumToElevation, elevationToTerrarium, applyColormapToTerrarium,
+  terrariumToElevation, elevationToTerrarium, terrariumStats,
+  applyColormapToTerrarium,
 } from './terrain.js';
 export {
   sniffDelimiter, parseDelimited, guessColumns, toStations, stationsToGeoJSON,

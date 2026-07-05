@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marine Map Tool — publication-quality bathymetric maps in the browser</title>
+  <meta name="description" content="Turn coordinates or a region into a publication-quality marine map: GEBCO/ETOPO bathymetry with cmocean colormaps, scale bar, north arrow, inset, station overlays — exported to your journal's exact figure spec, with the PyGMT/R script that reproduces it." />
+
+  <link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css" />
+  <link rel="stylesheet" href="app.css" />
+
+  <!-- Vendored libraries (see vendor/*/LICENSE): MapLibre GL JS (BSD-3),
+       maplibre-contour (BSD-3), pdf-lib (MIT), SheetJS (Apache-2.0) -->
+  <script src="vendor/maplibre-gl/maplibre-gl.js" defer></script>
+  <script src="vendor/maplibre-contour/index.min.js" defer></script>
+  <script src="vendor/pdf-lib/pdf-lib.min.js" defer></script>
+  <script src="vendor/sheetjs/xlsx.full.min.js" defer></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar__brand">
+    <a class="topbar__home" href="../index.html" title="Back to osmancankandemiroglu.com">←</a>
+    <h1>Marine Map Tool</h1>
+    <span class="topbar__tag">beta</span>
+  </div>
+  <div class="topbar__mode" role="group" aria-label="Interface mode">
+    <button type="button" id="mode-quick" class="modebtn" aria-pressed="true">Quick</button>
+    <button type="button" id="mode-pub" class="modebtn" aria-pressed="false">Publication</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+
+    <details class="panel" id="panel-region" open>
+      <summary>Region</summary>
+      <div class="panel__body">
+        <label class="field">Preset
+          <select id="region-preset">
+            <option value="">— choose a region —</option>
+            <option value="27.5,41.0,42.5,47.5">Black Sea</option>
+            <option value="6.5,53.6,9.2,54.8">German Bight / Helgoland</option>
+            <option value="1.0,38.2,4.8,40.4">Balearic Sea / Mallorca</option>
+            <option value="-6.5,30.0,36.5,46.0">Mediterranean Sea</option>
+            <option value="-80,0,20,65">North Atlantic</option>
+            <option value="-180,-85,180,85">World</option>
+          </select>
+        </label>
+        <div class="grid2">
+          <label class="field">West <input type="number" id="region-west" step="0.1" min="-180" max="360" value="27.5" /></label>
+          <label class="field">East <input type="number" id="region-east" step="0.1" min="-180" max="360" value="42.5" /></label>
+          <label class="field">South <input type="number" id="region-south" step="0.1" min="-85" max="85" value="41.0" /></label>
+          <label class="field">North <input type="number" id="region-north" step="0.1" min="-85" max="85" value="47.5" /></label>
+        </div>
+        <div class="btnrow">
+          <button type="button" id="region-apply" class="btn btn--primary">Go to region</button>
+          <button type="button" id="region-from-view" class="btn">Use current view</button>
+        </div>
+        <p class="hint">The exported figure uses exactly this region. <span id="projection-hint"></span></p>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-bathy" open>
+      <summary>Bathymetry &amp; colour</summary>
+      <div class="panel__body">
+        <label class="field">Colormap (cmocean)
+          <select id="cmap-select"></select>
+        </label>
+        <div class="swatch" id="cmap-swatch" title="cmocean colormap preview"></div>
+        <label class="check"><input type="checkbox" id="cmap-reverse" /> Reverse colormap</label>
+        <label class="field">Depth range floor: <output id="depth-min-out">−8000 m</output>
+          <input type="range" id="depth-min" min="-11000" max="-200" step="100" value="-8000" />
+        </label>
+        <label class="check pub-only"><input type="checkbox" id="hillshade-on" checked /> Hillshade relief</label>
+        <label class="check"><input type="checkbox" id="contours-on" checked /> Isobaths (depth contours)</label>
+        <label class="field pub-only">Isobath interval
+          <select id="contour-interval">
+            <option value="auto" selected>Auto (by zoom)</option>
+            <option value="100">100 m</option>
+            <option value="250">250 m</option>
+            <option value="500">500 m</option>
+            <option value="1000">1000 m</option>
+          </select>
+        </label>
+        <label class="field pub-only">Land style
+          <select id="land-style">
+            <option value="flat" selected>Flat grey</option>
+            <option value="transparent">Transparent</option>
+          </select>
+        </label>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-stations">
+      <summary>Stations</summary>
+      <div class="panel__body">
+        <p class="hint">Upload a CSV, TSV or Excel table with latitude/longitude columns. Nothing leaves your browser.</p>
+        <input type="file" id="stations-file" accept=".csv,.tsv,.txt,.xlsx,.xls" />
+        <div class="btnrow">
+          <button type="button" id="stations-demo" class="btn">Load demo stations</button>
+          <button type="button" id="stations-clear" class="btn" disabled>Clear</button>
+        </div>
+        <div id="stations-mapping" class="mapping" hidden>
+          <div class="grid2">
+            <label class="field">Latitude <select id="map-lat"></select></label>
+            <label class="field">Longitude <select id="map-lon"></select></label>
+            <label class="field">Name <select id="map-name"></select></label>
+            <label class="field">Value <select id="map-value"></select></label>
+          </div>
+          <button type="button" id="stations-remap" class="btn">Re-read columns</button>
+        </div>
+        <div class="grid2 pub-only">
+          <label class="field">Symbol size (mm) <input type="number" id="station-size" min="0.5" max="8" step="0.1" value="2.2" /></label>
+          <label class="field">Colour <input type="color" id="station-color" value="#e4572e" /></label>
+        </div>
+        <label class="check pub-only"><input type="checkbox" id="station-by-value" /> Colour by value (cmocean thermal)</label>
+        <label class="check"><input type="checkbox" id="station-labels" checked /> Show names on export</label>
+        <p id="stations-status" class="hint"></p>
+        <ul id="stations-errors" class="errors"></ul>
+      </div>
+    </details>
+
+    <details class="panel pub-only" id="panel-furniture">
+      <summary>Cartographic furniture</summary>
+      <div class="panel__body">
+        <label class="field">Figure title (optional) <input type="text" id="fig-title" placeholder="e.g. Study area and sampling stations" /></label>
+        <label class="check"><input type="checkbox" id="furn-scalebar" checked /> Scale bar</label>
+        <label class="check"><input type="checkbox" id="furn-north" checked /> North arrow</label>
+        <label class="check"><input type="checkbox" id="furn-graticule" checked /> Graticule + coordinate labels</label>
+        <label class="check"><input type="checkbox" id="furn-inset" checked /> Inset locator (globe)</label>
+        <p class="hint">The data-attribution line is always included — it keeps your figure compliant with the data licences.</p>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-export" open>
+      <summary>Journal &amp; export</summary>
+      <div class="panel__body">
+        <label class="field">Journal figure spec
+          <select id="journal-select"><option value="">Generic (no journal)</option></select>
+        </label>
+        <div class="grid2">
+          <label class="field">Width
+            <select id="journal-columns">
+              <option value="1">1 column</option>
+              <option value="2" selected>2 columns</option>
+            </select>
+          </label>
+          <label class="field pub-only">PNG resolution
+            <select id="export-dpi">
+              <option value="spec" selected>Journal spec</option>
+              <option value="300">300 dpi</option>
+              <option value="600">600 dpi</option>
+            </select>
+          </label>
+        </div>
+        <div id="journal-summary" class="specbox" hidden></div>
+        <ul id="journal-warnings" class="warnings"></ul>
+        <div class="btnrow">
+          <button type="button" id="export-preview" class="btn">Preview figure</button>
+        </div>
+        <div class="btnrow">
+          <button type="button" id="export-png" class="btn btn--primary">PNG</button>
+          <button type="button" id="export-pdf" class="btn btn--primary">PDF</button>
+          <button type="button" id="export-svg" class="btn pub-only">SVG</button>
+        </div>
+        <p class="hint pub-only">Need TIFF/EPS? Export the PyGMT script below and render locally — that's also the reproducible, citable path.</p>
+        <div class="btnrow pub-only">
+          <button type="button" id="export-pygmt" class="btn">PyGMT script (.py)</button>
+          <button type="button" id="export-r" class="btn">R script (.R)</button>
+        </div>
+        <p id="export-status" class="hint" role="status" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-cite">
+      <summary>How to cite</summary>
+      <div class="panel__body">
+        <textarea id="cite-text" rows="9" readonly></textarea>
+        <div class="btnrow">
+          <button type="button" id="cite-copy" class="btn">Copy text</button>
+          <button type="button" id="cite-bibtex" class="btn">Copy BibTeX</button>
+        </div>
+        <p class="hint">Free to use. If this tool saved you time, cite it — the DOI lands with the first tagged release (see <a href="https://github.com/CanKandemiroglu/cankandemiroglu.github.io/blob/main/CITATION.cff" target="_blank" rel="noopener">CITATION.cff</a>).</p>
+      </div>
+    </details>
+
+    <footer class="sidebar__footer">
+      <p>Open source (<a href="https://github.com/CanKandemiroglu/cankandemiroglu.github.io/tree/main/core" target="_blank" rel="noopener">core, MIT</a>) · no login · no tracking · figures render entirely in your browser.</p>
+    </footer>
+  </aside>
+
+  <main class="mapwrap">
+    <div id="map" aria-label="Interactive bathymetric map" role="application"></div>
+    <div class="overlay overlay--scale" id="scalebar" aria-hidden="true">
+      <div class="scalebar__bar" id="scalebar-bar"></div>
+      <div class="scalebar__label" id="scalebar-label"></div>
+    </div>
+    <div class="overlay overlay--north" id="north-arrow" aria-hidden="true" title="North">
+      <svg viewBox="0 0 24 34" width="22" height="31"><path d="M12 2 L18 26 L12 21 L6 26 Z" fill="#20303c"/><text x="12" y="33" text-anchor="middle" font-size="9" fill="#20303c" font-family="Helvetica, Arial, sans-serif">N</text></svg>
+    </div>
+    <canvas class="overlay overlay--colorbar" id="colorbar" width="240" height="46" aria-hidden="true"></canvas>
+    <div class="overlay overlay--coords" id="coords" aria-hidden="true"></div>
+  </main>
+</div>
+
+<dialog id="preview-dialog">
+  <div class="preview__head">
+    <strong>Export preview</strong>
+    <span id="preview-meta"></span>
+    <button type="button" id="preview-close" class="btn">Close</button>
+  </div>
+  <div class="preview__body"><img id="preview-img" alt="Figure export preview" /></div>
+</dialog>
+
+</body>
+</html>

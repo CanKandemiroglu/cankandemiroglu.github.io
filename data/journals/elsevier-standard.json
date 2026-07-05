@@ -1,0 +1,15 @@
+{
+  "id": "elsevier-standard",
+  "title": "Elsevier (standard artwork guidelines)",
+  "publisher": "Elsevier (e.g. Computers & Geosciences, Environmental Modelling & Software)",
+  "canvas": { "single_column_mm": 90, "double_column_mm": 190, "max_height_mm": 240 },
+  "raster_dpi": { "photo": 300, "combination": 500, "line": 1000 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 500 },
+  "formats_accepted": ["tiff", "eps", "pdf"],
+  "colour_mode": "RGB or CMYK",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Elsevier artwork: line 1000 dpi, combination (halftone + line, e.g. a map) 500 dpi, halftone/photo 300 dpi. Single column ~90 mm, double column ~190 mm. Colour figures may be requested in CMYK -- cmocean is RGB, so export RGB and verify the CMYK proof.",
+  "source_url": "https://www.elsevier.com/authors/policies-and-guidelines/artwork-and-media-instructions",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

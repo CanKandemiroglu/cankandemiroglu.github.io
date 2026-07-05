@@ -1,0 +1,15 @@
+{
+  "id": "frontiers-in-marine-science",
+  "title": "Frontiers in Marine Science",
+  "publisher": "Frontiers",
+  "canvas": { "single_column_mm": 85, "double_column_mm": 180, "max_height_mm": 235 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 600 },
+  "map_target": { "recommended_format": "tiff", "recommended_dpi": 600 },
+  "formats_accepted": ["tiff", "eps", "pdf"],
+  "colour_mode": "RGB",
+  "min_font_pt": 8,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Frontiers accepts TIFF/EPS/PDF at 300-600 dpi (>=300 dpi required, 600 dpi recommended for maps). Single column ~85 mm, double column ~180 mm. Use Arial/Courier/Times; minimum label size 8 pt.",
+  "source_url": "https://www.frontiersin.org/guidelines/author-guidelines",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

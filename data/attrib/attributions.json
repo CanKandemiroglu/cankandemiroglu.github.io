@@ -1,0 +1,114 @@
+{
+  "sources": [
+    {
+      "id": "tool",
+      "name": "Marine Map Tool",
+      "licence": "MIT",
+      "url": "https://osmancankandemiroglu.com/app/",
+      "doi": null,
+      "citation": "Kandemiroglu, O.C. (2026). Marine Map Tool (v{version}). https://osmancankandemiroglu.com/app/ — DOI pending (Zenodo, see CITATION.cff).",
+      "bibtex": "@software{kandemiroglu_marine_map_tool,\n  author  = {Kandemiroglu, Osman Can},\n  title   = {Marine Map Tool},\n  version = {{version}},\n  year    = {2026},\n  url     = {https://osmancankandemiroglu.com/app/},\n  note    = {DOI pending (Zenodo, see CITATION.cff)}\n}",
+      "attribution": "Marine Map Tool",
+      "note": "DOI pending — mint a version-specific DOI via Zenodo on the first tagged release (see CITATION.cff), then update this entry."
+    },
+    {
+      "id": "terrainTiles",
+      "name": "Terrain Tiles on AWS Open Data",
+      "licence": "Public domain sources / Mapzen attribution requested",
+      "url": "https://registry.opendata.aws/terrain-tiles/",
+      "doi": null,
+      "citation": "Terrain Tiles on AWS Open Data (Mapzen/Linux Foundation). DEM sources include ETOPO1 (NOAA), SRTM (NASA), GMTED2010 (USGS), and others. https://registry.opendata.aws/terrain-tiles/",
+      "bibtex": null,
+      "attribution": "Bathymetry: Terrain Tiles (Mapzen/AWS)",
+      "note": "Composite of public-domain DEMs; the underlying source varies by location and zoom level."
+    },
+    {
+      "id": "etopo2022",
+      "name": "ETOPO 2022 15 Arc-Second Global Relief Model",
+      "licence": "Public domain (U.S. Government work)",
+      "url": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+      "doi": "10.25921/fd45-gt74",
+      "citation": "NOAA National Centers for Environmental Information (2022): ETOPO 2022 15 Arc-Second Global Relief Model. NOAA NCEI. https://doi.org/10.25921/fd45-gt74",
+      "bibtex": "@misc{etopo2022,\n  author    = {{NOAA National Centers for Environmental Information}},\n  title     = {ETOPO 2022 15 Arc-Second Global Relief Model},\n  year      = {2022},\n  publisher = {NOAA NCEI},\n  doi       = {10.25921/fd45-gt74},\n  url       = {https://doi.org/10.25921/fd45-gt74}\n}",
+      "attribution": "Bathymetry: ETOPO 2022 (NOAA)",
+      "note": null
+    },
+    {
+      "id": "gebco",
+      "name": "GEBCO 2024 Grid",
+      "licence": "Public domain",
+      "url": "https://www.gebco.net/",
+      "doi": "10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f",
+      "citation": "GEBCO Compilation Group (2024): GEBCO 2024 Grid. https://doi.org/10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f",
+      "bibtex": "@misc{gebco2024,\n  author = {{GEBCO Compilation Group}},\n  title  = {GEBCO 2024 Grid},\n  year   = {2024},\n  doi    = {10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f},\n  url    = {https://doi.org/10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f}\n}",
+      "attribution": "Bathymetry: GEBCO 2024",
+      "note": "VERIFY current grid release before shipping — GEBCO issues a new grid most years."
+    },
+    {
+      "id": "naturalEarth",
+      "name": "Natural Earth",
+      "licence": "Public domain",
+      "url": "https://www.naturalearthdata.com/",
+      "doi": null,
+      "citation": "Natural Earth. Free vector and raster map data. https://www.naturalearthdata.com/ (public domain).",
+      "bibtex": null,
+      "attribution": "Made with Natural Earth",
+      "note": "No attribution legally required; credit appreciated."
+    },
+    {
+      "id": "cmocean",
+      "name": "cmocean colormaps",
+      "licence": "MIT",
+      "url": "https://matplotlib.org/cmocean/",
+      "doi": "10.5670/oceanog.2016.66",
+      "citation": "Thyng, K.M., Greene, C.A., Hetland, R.D., Zimmerle, H.M., & DiMarco, S.F. (2016). True colors of oceanography: Guidelines for effective and accurate colormap selection. Oceanography 29(3):9-13. https://doi.org/10.5670/oceanog.2016.66",
+      "bibtex": "@article{thyng2016truecolors,\n  author  = {Thyng, Kristen M. and Greene, Chad A. and Hetland, Robert D. and Zimmerle, Heather M. and DiMarco, Steven F.},\n  title   = {True colors of oceanography: Guidelines for effective and accurate colormap selection},\n  journal = {Oceanography},\n  volume  = {29},\n  number  = {3},\n  pages   = {9--13},\n  year    = {2016},\n  doi     = {10.5670/oceanog.2016.66}\n}",
+      "attribution": "cmocean colormaps (Thyng et al. 2016)",
+      "note": null
+    },
+    {
+      "id": "emodnet",
+      "name": "EMODnet Digital Bathymetry (DTM)",
+      "licence": "CC-BY 4.0",
+      "url": "https://emodnet.ec.europa.eu/en/bathymetry",
+      "doi": null,
+      "citation": "EMODnet Bathymetry Consortium: EMODnet Digital Bathymetry (DTM). https://emodnet.ec.europa.eu/en/bathymetry",
+      "bibtex": null,
+      "attribution": "Bathymetry: EMODnet DTM",
+      "note": "VERIFY the DTM release year + DOI when the EMODnet layer ships (Phase 3)."
+    },
+    {
+      "id": "marineRegions",
+      "name": "MarineRegions.org",
+      "licence": "CC-BY 4.0",
+      "url": "https://www.marineregions.org/",
+      "doi": null,
+      "citation": "Flanders Marine Institute — MarineRegions.org (EEZ/IHO products). https://www.marineregions.org/",
+      "bibtex": null,
+      "attribution": "Boundaries: MarineRegions.org",
+      "note": "Phase 3 overlay; per-product citation required when used."
+    },
+    {
+      "id": "gmt",
+      "name": "Generic Mapping Tools (GMT)",
+      "licence": "LGPL-3.0-or-later",
+      "url": "https://www.generic-mapping-tools.org/",
+      "doi": "10.1029/2019GC008515",
+      "citation": "Wessel, P., et al. (2019). The Generic Mapping Tools version 6. Geochemistry, Geophysics, Geosystems, 20, 5556-5564. https://doi.org/10.1029/2019GC008515",
+      "bibtex": "@article{wessel2019gmt6,\n  author  = {Wessel, Paul and Luis, Joaquim F. and Uieda, Leonardo and Scharroo, Remko and Wobbe, Florian and Smith, Walter H. F. and Tian, Dongdong},\n  title   = {The Generic Mapping Tools version 6},\n  journal = {Geochemistry, Geophysics, Geosystems},\n  volume  = {20},\n  pages   = {5556--5564},\n  year    = {2019},\n  doi     = {10.1029/2019GC008515}\n}",
+      "attribution": "GMT 6",
+      "note": null
+    },
+    {
+      "id": "pygmt",
+      "name": "PyGMT",
+      "licence": "BSD-3-Clause",
+      "url": "https://www.pygmt.org/",
+      "doi": null,
+      "citation": "Uieda, L., et al. PyGMT: A Python interface for the Generic Mapping Tools. https://www.pygmt.org/",
+      "bibtex": null,
+      "attribution": "PyGMT",
+      "note": "Cite the version-specific Zenodo DOI of the PyGMT release you run (see pygmt.org)."
+    }
+  ]
+}

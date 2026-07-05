@@ -1,0 +1,15 @@
+{
+  "id": "plos-one",
+  "title": "PLOS ONE",
+  "publisher": "PLOS (Public Library of Science)",
+  "canvas": { "single_column_mm": 52, "double_column_mm": 190, "max_height_mm": 230 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 600 },
+  "map_target": { "recommended_format": "tiff", "recommended_dpi": 600 },
+  "formats_accepted": ["tiff", "eps"],
+  "colour_mode": "RGB",
+  "min_font_pt": 8,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Figures uploaded as TIFF or EPS at 300-600 dpi. Width 52-190 mm (min ~52 mm single column, max 190 mm), max height ~230 mm. Arial/Times/Symbol fonts only; labels 8-12 pt.",
+  "source_url": "https://journals.plos.org/plosone/s/figures",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}
