@@ -1,0 +1,30 @@
+{
+  "id": "pnas",
+  "title": "Proceedings of the National Academy of Sciences (PNAS)",
+  "publisher": "National Academy of Sciences",
+  "canvas": {
+    "single_column_mm": 87,
+    "double_column_mm": 178,
+    "max_height_mm": 230
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 1200
+  },
+  "map_target": {
+    "recommended_format": "pdf",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "tiff",
+    "eps",
+    "pdf"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 6,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "PNAS column widths: 1-column ~8.7 cm, 1.5-column ~11.4 cm, 2-column ~17.8 cm; 300–600 dpi or vector; RGB. Minimum 6–8 pt type at final size.",
+  "source_url": "https://www.pnas.org/author-center/submitting-your-manuscript",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

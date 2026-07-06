@@ -1,0 +1,30 @@
+{
+  "id": "journal-of-phycology",
+  "title": "Journal of Phycology",
+  "publisher": "Wiley",
+  "canvas": {
+    "single_column_mm": 80,
+    "double_column_mm": 166,
+    "max_height_mm": 225
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 1000
+  },
+  "map_target": {
+    "recommended_format": "pdf",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "pdf",
+    "eps",
+    "tiff"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Wiley: combination figures (maps) at 600 dpi or vector PDF; halftones 300 dpi; line art 1000 dpi. Single column ~80 mm, double column ~166 mm.",
+  "source_url": "https://authorservices.wiley.com/asset/photos/electronic_artwork_guidelines.pdf",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

@@ -23,10 +23,10 @@ const byId = Object.fromEntries(records.map((r) => [r.id, r]));
 
 test('index.json exposes a journals array of ids', () => {
   assert.ok(Array.isArray(index.journals));
-  assert.equal(index.journals.length, 9);
+  assert.ok(index.journals.length >= 9, 'expected at least the 9 Phase-1 records');
 });
 
-test('index.json lists exactly the 9 record files present on disk', () => {
+test('index.json lists exactly the record files present on disk', () => {
   const onDisk = readdirSync(JOURNALS_DIR)
     .filter((f) => f.endsWith('.json') && f !== 'index.json' && f !== 'schema.json')
     .map((f) => f.replace(/\.json$/, ''))

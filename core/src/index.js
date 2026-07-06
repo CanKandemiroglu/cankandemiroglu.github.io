@@ -32,3 +32,16 @@ export {
 } from './citation.js';
 export { generatePyGMT } from './scripts/pygmt.js';
 export { generateRScript } from './scripts/rscript.js';
+export {
+  haversineMeters, sampleLine, lonLatToTilePixel, uniqueTiles,
+  buildProfile, profileToCSV,
+} from './transect.js';
+export {
+  gbifTaxonMatchURL, gbifOccurrenceURL, obisOccurrenceURL, bboxWKT,
+  parseGBIF, parseOBIS, occurrencesToStations, dedupeOccurrences,
+} from './occurrences.js';
+export {
+  ANTHROPIC_MESSAGES_ENDPOINT, ANTHROPIC_VERSION, DEFAULT_ASSISTANT_MODEL,
+  ASSISTANT_MODELS, buildAssistantSystemPrompt, buildAssistantRequest,
+  anthropicHeaders, extractAssistantText,
+} from './assistant.js';
