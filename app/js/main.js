@@ -52,6 +52,19 @@ const state = {
 const EEZ_WFS = 'https://geo.vliz.be/geoserver/MarineRegions/wfs';
 let drawState = null;   // active transect draw handler
 let occAbort = null;
+let transectBusy = false;
+
+/** MapLibre bounds can exceed ±180/±90 (world-copies, zoomed-out views); the
+ *  occurrence/EEZ query APIs reject that. Clamp to a valid, non-degenerate box. */
+function viewportBounds() {
+  const b = map.getBounds();
+  const clampLon = (v) => Math.max(-180, Math.min(180, v));
+  const clampLat = (v) => Math.max(-89.9, Math.min(89.9, v));
+  let west = clampLon(b.getWest());
+  let east = clampLon(b.getEast());
+  if (east <= west) { west = -180; east = 180; } // wrapped/degenerate -> whole world
+  return { west, south: clampLat(b.getSouth()), east, north: clampLat(b.getNorth()) };
+}
 
 let journals = [];       // loaded records
 let map = null;
@@ -320,13 +333,13 @@ async function toggleEEZ(on) {
     $('eez-status').textContent = 'Exclusive Economic Zones from MarineRegions.org (CC-BY). Loaded on demand for the current view.';
     return;
   }
-  const b = map.getBounds();
+  const b = viewportBounds();
   $('eez-status').textContent = 'Loading EEZ boundaries for the current view…';
   const params = new URLSearchParams({
     service: 'WFS', version: '2.0.0', request: 'GetFeature',
     typeName: 'MarineRegions:eez', outputFormat: 'application/json',
     srsName: 'CRS:84', count: '120',
-    bbox: `${b.getWest()},${b.getSouth()},${b.getEast()},${b.getNorth()},CRS:84`,
+    bbox: `${b.west},${b.south},${b.east},${b.north},CRS:84`,
   });
   try {
     const resp = await fetch(`${EEZ_WFS}?${params.toString()}`);
@@ -395,6 +408,9 @@ function cancelTransectDraw() {
 }
 
 async function runTransect(a, b) {
+  if (transectBusy) return;
+  transectBusy = true;
+  $('transect-draw').disabled = true;
   $('transect-status').textContent = 'Sampling the seafloor along your line…';
   try {
     const { profile } = await computeTransect(a, b);
@@ -413,6 +429,9 @@ async function runTransect(a, b) {
     }
   } catch (err) {
     $('transect-status').textContent = `Transect failed: ${err.message}`;
+  } finally {
+    transectBusy = false;
+    $('transect-draw').disabled = false;
   }
 }
 
@@ -432,8 +451,7 @@ async function fetchOccurrences() {
   const taxon = $('occ-taxon').value.trim();
   const source = $('occ-source').value;
   const limit = Number($('occ-limit').value);
-  const b = map.getBounds();
-  const bounds = { west: b.getWest(), south: b.getSouth(), east: b.getEast(), north: b.getNorth() };
+  const bounds = viewportBounds();
   occAbort?.abort();
   occAbort = new AbortController();
   $('occ-status').textContent = `Querying ${source.toUpperCase()}…`;
@@ -584,7 +602,8 @@ async function runExport(kind) {
   const status = (t) => { $('export-status').textContent = t; };
   try {
     applyRegion(false);
-    const result = await exportFigure(state, kind, { demSource, onStatus: status });
+    const eezData = $('layer-eez').checked ? (map.getSource('eez')?._data || null) : null;
+    const result = await exportFigure(state, kind, { demSource, eezData, onStatus: status });
     if (kind === 'preview') {
       $('preview-img').src = result.dataURL;
       $('preview-meta').textContent =

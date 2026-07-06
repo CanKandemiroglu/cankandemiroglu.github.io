@@ -13,6 +13,12 @@ north arrow, graticule, inset locator — exported to a chosen journal's figure
 spec (width in mm, dpi, format, font floor) as PNG/PDF/SVG, together with the
 **PyGMT or R script that reproduces the figure**.
 
+Also (Phase 3): draw a line to read an in-browser **bathymetric depth
+profile**, toggle **EEZ boundaries** (Marine Regions), import **GBIF/OBIS**
+species occurrences as stations, and open an **optional** cartography assistant
+(off by default, your own Anthropic key, answers grounded in the selected
+journal's spec — never needed to use the tool).
+
 - Live: <https://osmancankandemiroglu.com/app/>
 - Everything renders client-side; no login, no API keys, no tracking.
 - The figure engine is open source: [`/core`](core/) (MIT, dependency-free ES
