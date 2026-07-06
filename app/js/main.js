@@ -47,6 +47,7 @@ const state = {
   attributionLine: '',
   transect: { profile: null },
   assistant: { history: [], key: '', model: DEFAULT_ASSISTANT_MODEL },
+  activeSources: new Set(), // data layers in use -> propagated into citations
 };
 
 const EEZ_WFS = 'https://geo.vliz.be/geoserver/MarineRegions/wfs';
@@ -318,9 +319,14 @@ function updateJournalSummary() {
 
 /* --------------------------------------------------------------- cite UI */
 
+/** Cited sources = the always-on set plus any data layers currently in use. */
+function citeSources() {
+  return [...CITE_SOURCES, ...state.activeSources];
+}
+
 function updateCiteBox() {
-  state.attributionLine = attributionLine(CITE_SOURCES.filter((s) => s !== 'tool'));
-  $('cite-text').value = buildCitationText({ sources: CITE_SOURCES, accessedDate: today() });
+  state.attributionLine = attributionLine(citeSources().filter((s) => s !== 'tool'));
+  $('cite-text').value = buildCitationText({ sources: citeSources(), accessedDate: today() });
 }
 
 /* --------------------------------------------------------- data layers */
@@ -330,6 +336,8 @@ const emptyFC = () => ({ type: 'FeatureCollection', features: [] });
 async function toggleEEZ(on) {
   if (!on) {
     map.getSource('eez')?.setData(emptyFC());
+    state.activeSources.delete('marineRegions');
+    updateCiteBox();
     $('eez-status').textContent = 'Exclusive Economic Zones from MarineRegions.org (CC-BY). Loaded on demand for the current view.';
     return;
   }
@@ -347,8 +355,9 @@ async function toggleEEZ(on) {
     const fc = await resp.json();
     map.getSource('eez').setData(fc);
     const n = fc.features?.length || 0;
+    if (n) { state.activeSources.add('marineRegions'); updateCiteBox(); }
     $('eez-status').textContent = n
-      ? `${n} EEZ polygon${n === 1 ? '' : 's'} in view · Flanders Marine Institute, MarineRegions.org (CC-BY).`
+      ? `${n} EEZ polygon${n === 1 ? '' : 's'} in view · Flanders Marine Institute, MarineRegions.org (CC-BY) — now in your figure's "How to cite".`
       : 'No EEZ polygons in the current view — zoom to a coastline.';
   } catch (err) {
     $('layer-eez').checked = false;
@@ -447,35 +456,52 @@ function clearTransect() {
 
 /* -------------------------------------------------------- occurrences */
 
+/** One or two valid {west,south,east,north} boxes covering the current view,
+ *  splitting at the antimeridian so each box has west < east in [-180,180]. */
+function occurrenceBoxes() {
+  const b = map.getBounds();
+  const clampLat = (v) => Math.max(-89.9, Math.min(89.9, v));
+  const south = clampLat(b.getSouth());
+  const north = clampLat(b.getNorth());
+  const rawW = b.getWest();
+  const rawE = b.getEast();
+  if (rawE - rawW >= 360) return [{ west: -180, south, east: 180, north }]; // whole world
+  const wrap = (v) => (((v + 180) % 360) + 360) % 360 - 180;
+  const west = wrap(rawW);
+  const east = wrap(rawE);
+  if (west <= east) return [{ west, south, east, north }];
+  // Crosses the antimeridian: two boxes, [west,180] and [-180,east].
+  return [{ west, south, east: 180, north }, { west: -180, south, east, north }];
+}
+
 async function fetchOccurrences() {
   const taxon = $('occ-taxon').value.trim();
   const source = $('occ-source').value;
   const limit = Number($('occ-limit').value);
-  const bounds = viewportBounds();
+  const boxes = occurrenceBoxes();
   occAbort?.abort();
   occAbort = new AbortController();
   $('occ-status').textContent = `Querying ${source.toUpperCase()}…`;
   try {
-    let url;
-    let parse;
-    if (source === 'gbif') {
-      url = gbifOccurrenceURL({ scientificName: taxon || null, bounds, limit });
-      parse = parseGBIF;
-    } else {
-      url = obisOccurrenceURL({ scientificName: taxon || null, bounds, size: limit });
-      parse = parseOBIS;
-    }
-    const resp = await fetch(url, { signal: occAbort.signal });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const list = dedupeOccurrences(parse(await resp.json()));
+    const results = await Promise.all(boxes.map(async (bounds) => {
+      const url = source === 'gbif'
+        ? gbifOccurrenceURL({ scientificName: taxon || null, bounds, limit })
+        : obisOccurrenceURL({ scientificName: taxon || null, bounds, size: limit });
+      const resp = await fetch(url, { signal: occAbort.signal });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return (source === 'gbif' ? parseGBIF : parseOBIS)(await resp.json());
+    }));
+    const list = dedupeOccurrences(results.flat());
     if (!list.length) {
       $('occ-status').textContent = `No georeferenced ${source.toUpperCase()} records${taxon ? ` for "${taxon}"` : ''} in this view.`;
       return;
     }
+    state.activeSources.add(source); // 'gbif' | 'obis' -> into citations
     ingestStations(occurrencesToStations(list),
       `${list.length} ${source.toUpperCase()} occurrence${list.length === 1 ? '' : 's'}${taxon ? ` of "${taxon}"` : ''}.`);
+    updateCiteBox();
     $('occ-status').textContent =
-      `Plotted ${list.length} ${source.toUpperCase()} occurrence${list.length === 1 ? '' : 's'} as stations. Data: ${source === 'gbif' ? 'GBIF.org' : 'OBIS (obis.org)'}.`;
+      `Plotted ${list.length} ${source.toUpperCase()} occurrence${list.length === 1 ? '' : 's'} as stations, now credited in "How to cite". Data: ${source === 'gbif' ? 'GBIF.org' : 'OBIS (obis.org)'}.`;
   } catch (err) {
     if (err.name !== 'AbortError') $('occ-status').textContent = `Query failed: ${err.message}`;
   }
@@ -587,7 +613,7 @@ function buildFigureState() {
       minFontPt: spec.minFontPt,
     },
     citations: buildCitationText({
-      sources: [...CITE_SOURCES, 'gmt', 'pygmt'],
+      sources: [...citeSources(), 'gmt', 'pygmt'],
       accessedDate: today(),
     }).split('\n'),
     accessedDate: today(),
@@ -819,7 +845,7 @@ function wireUI() {
     setStatus('Citation text copied.');
   });
   $('cite-bibtex').addEventListener('click', async () => {
-    await navigator.clipboard.writeText(buildBibTeX({ sources: CITE_SOURCES }));
+    await navigator.clipboard.writeText(buildBibTeX({ sources: citeSources() }));
     setStatus('BibTeX copied.');
   });
 }

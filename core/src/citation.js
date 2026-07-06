@@ -259,6 +259,38 @@ export const DATA_SOURCES = deepFreeze({
       'Cite the version-specific Zenodo DOI of the PyGMT release you run ' +
       '(see pygmt.org).',
   },
+
+  gbif: {
+    id: 'gbif',
+    name: 'GBIF.org',
+    licence: 'Records under per-dataset licences (mostly CC0/CC-BY/CC-BY-NC)',
+    url: 'https://www.gbif.org/',
+    doi: null,
+    citation:
+      'GBIF.org — GBIF Occurrence Download of the taxa/region shown. ' +
+      'https://www.gbif.org/ (cite the DOI of your specific download).',
+    bibtex: null,
+    attribution: 'Occurrences: GBIF.org',
+    note:
+      'When you use GBIF occurrences in a figure, generate and cite a GBIF ' +
+      'download DOI (gbif.org) so the contributing datasets are credited.',
+  },
+
+  obis: {
+    id: 'obis',
+    name: 'OBIS (Ocean Biodiversity Information System)',
+    licence: 'CC-BY (per-dataset)',
+    url: 'https://obis.org/',
+    doi: null,
+    citation:
+      'OBIS (Ocean Biodiversity Information System). ' +
+      'Intergovernmental Oceanographic Commission of UNESCO. https://obis.org/',
+    bibtex: null,
+    attribution: 'Occurrences: OBIS',
+    note:
+      'Cite OBIS and the contributing datasets shown in the record metadata ' +
+      'when you use OBIS occurrences.',
+  },
 });
 
 /**

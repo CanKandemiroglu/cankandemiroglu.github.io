@@ -109,16 +109,24 @@ async function handleWebhook(request, env) {
   if (!ok) return new Response('bad signature', { status: 400 });
 
   const event = JSON.parse(payload);
-  if (event.type === 'checkout.session.completed') {
+  // Only enqueue on a genuinely PAID session (delayed-notification methods can
+  // fire completed while still 'unpaid'), and handle the settlement event too.
+  const settled = (event.type === 'checkout.session.completed'
+    || event.type === 'checkout.session.async_payment_succeeded')
+    && event.data.object.payment_status === 'paid';
+  if (settled) {
     const jobId = event.data.object.metadata?.jobId
       || event.data.object.client_reference_id;
     const raw = jobId && (await env.JOBS.get(jobId));
     if (raw) {
       const job = JSON.parse(raw);
-      job.paid = true;
-      job.status = 'queued';
-      await env.JOBS.put(jobId, JSON.stringify(job), { expirationTtl: 60 * 60 * 24 });
-      await env.RENDER_JOBS.send({ jobId, r2Key: job.r2Key, figureState: job.figureState });
+      // Idempotent: a duplicate/replayed delivery must not re-enqueue compute.
+      if (job.status !== 'queued' && job.status !== 'done') {
+        job.paid = true;
+        job.status = 'queued';
+        await env.JOBS.put(jobId, JSON.stringify(job), { expirationTtl: 60 * 60 * 24 });
+        await env.RENDER_JOBS.send({ jobId, r2Key: job.r2Key, figureState: job.figureState });
+      }
     }
   }
   return new Response('ok', { status: 200 });
@@ -138,18 +146,30 @@ async function jobStatus(url, env, origin) {
   return json(out, 200, origin);
 }
 
-/** Constant-time-ish Stripe webhook signature check using Web Crypto. */
+const WEBHOOK_TOLERANCE_S = 300; // Stripe's default replay window
+
+/** Verify a Stripe webhook signature with timestamp freshness + constant-time compare. */
 async function verifyStripe(payload, header, secret) {
   if (!secret) return false;
   const parts = Object.fromEntries(header.split(',').map((kv) => kv.split('=')));
-  const t = parts.t;
+  const t = Number(parts.t);
   const v1 = parts.v1;
-  if (!t || !v1) return false;
+  if (!Number.isFinite(t) || !v1) return false;
+  // Reject stale or future-dated signatures (replay protection).
+  if (Math.abs(Date.now() / 1000 - t) > WEBHOOK_TOLERANCE_S) return false;
   const key = await crypto.subtle.importKey(
     'raw', new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
   );
   const mac = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${t}.${payload}`));
   const expected = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, '0')).join('');
-  return expected === v1;
+  return timingSafeEqual(expected, v1);
+}
+
+/** Length-checked, non-early-exit string comparison. */
+function timingSafeEqual(a, b) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
