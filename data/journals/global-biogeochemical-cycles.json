@@ -1,0 +1,30 @@
+{
+  "id": "global-biogeochemical-cycles",
+  "title": "Global Biogeochemical Cycles",
+  "publisher": "American Geophysical Union (Wiley)",
+  "canvas": {
+    "single_column_mm": 95,
+    "double_column_mm": 190,
+    "max_height_mm": 230
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 1200
+  },
+  "map_target": {
+    "recommended_format": "pdf",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "pdf",
+    "eps",
+    "ai"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "AGU accepts PDF/EPS/AI; maps are combination figures at 300–600 dpi or vector. Single column ~95 mm (one column), full width ~190 mm. Use a sans-serif font ≥ 6 pt at final size.",
+  "source_url": "https://www.agu.org/publish-with-agu/publish/author-resources/graphic-requirements",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

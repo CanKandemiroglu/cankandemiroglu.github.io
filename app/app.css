@@ -166,5 +166,31 @@ dialog#preview-dialog::backdrop { background: rgb(20 30 40 / 55%); }
 .preview__body { overflow: auto; padding: 0.8rem; background: #eceae4; }
 .preview__body img { display: block; max-width: 100%; height: auto; background: #fff; box-shadow: 0 2px 14px rgb(0 0 0 / 18%); }
 
+/* ---------- transect / occurrences / assistant ---------- */
+#transect-plot { border: 1px solid var(--line); border-radius: 7px; background: #fff; margin: 0.2rem 0; }
+
+.assistant-setup__summary { font-size: 0.78rem; color: var(--ink-soft); cursor: pointer; padding: 0.2rem 0; }
+#assistant-setup { border: 1px dashed var(--line); border-radius: 7px; padding: 0.3rem 0.5rem; margin-bottom: 0.5rem; }
+#assistant-setup .field { margin-top: 0.4rem; }
+.assistant-log {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  max-height: 15rem; overflow-y: auto; margin-bottom: 0.5rem;
+}
+.assistant-log:empty { display: none; }
+.assistant-msg { font-size: 0.8rem; line-height: 1.5; padding: 0.45rem 0.6rem; border-radius: 8px; white-space: pre-wrap; }
+.assistant-msg--user { background: var(--accent); color: #fff; align-self: flex-end; max-width: 85%; }
+.assistant-msg--bot { background: var(--paper); border: 1px solid var(--line); color: var(--ink); align-self: flex-start; max-width: 92%; }
+.assistant-ask { display: flex; gap: 0.4rem; }
+.assistant-ask input { flex: 1; }
+
+.map-draw-hint {
+  position: absolute; z-index: 6; top: 12px; left: 50%; transform: translateX(-50%);
+  background: rgb(28 40 48 / 92%); color: #fff; font-size: 0.8rem;
+  padding: 0.35rem 0.8rem; border-radius: 999px; pointer-events: none;
+}
+
+.sidebar__support { font-size: 0.72rem; color: var(--ink-soft); margin: 0 0 0.4rem; }
+.sidebar__support a { color: var(--accent); }
+
 /* MapLibre chrome tweaks */
 .maplibregl-ctrl-attrib { font-size: 0.66rem; }

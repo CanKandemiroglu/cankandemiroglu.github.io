@@ -1,0 +1,30 @@
+{
+  "id": "ices-journal-of-marine-science",
+  "title": "ICES Journal of Marine Science",
+  "publisher": "Oxford University Press (on behalf of ICES)",
+  "canvas": {
+    "single_column_mm": 84,
+    "double_column_mm": 174,
+    "max_height_mm": 230
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 1200
+  },
+  "map_target": {
+    "recommended_format": "tiff",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "tiff",
+    "eps",
+    "pdf"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "OUP: combination figures 600 dpi, halftones 300 dpi, line art 1200 dpi. Single column ~84 mm, double column ~174 mm.",
+  "source_url": "https://academic.oup.com/icesjms/pages/General_Instructions",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

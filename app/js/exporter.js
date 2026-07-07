@@ -97,7 +97,7 @@ export function computeLayout(state, spec, dpi) {
  * Render the map region into an offscreen canvas at the layout's resolution
  * using a second, non-interactive MapLibre instance.
  */
-export async function renderMapImage(state, layout, { demSource, timeoutMs = 60000 } = {}) {
+export async function renderMapImage(state, layout, { demSource, eezData = null, timeoutMs = 60000 } = {}) {
   const maplibregl = window.maplibregl;
   const pixelRatio = layout.dpi / 96;
   const cssW = Math.max(Math.round(layout.map.w / pixelRatio), 50);
@@ -130,6 +130,8 @@ export async function renderMapImage(state, layout, { demSource, timeoutMs = 600
   map.on('load', () => {
     // Push live data into the export style before waiting for idle.
     map.getSource('stations')?.setData(stationsFC(state));
+    // Carry the EEZ overlay into the figure so the export matches the screen.
+    if (eezData) map.getSource('eez')?.setData(eezData);
     if (state.furniture.graticule) {
       const interval = graticuleInterval(
         Math.max(b.east - b.west, b.north - b.south));
@@ -201,14 +203,14 @@ async function drawFurniture(surface, layout, state) {
  * Produce the composed figure. kind: 'png' | 'pdf' | 'svg' | 'preview'.
  * Returns {blob, filename, layout} ('preview' returns a dataURL instead of a blob).
  */
-export async function exportFigure(state, kind, { demSource, onStatus = () => {} } = {}) {
+export async function exportFigure(state, kind, { demSource, eezData = null, onStatus = () => {} } = {}) {
   const spec = resolveSpec(state);
   const dpi = kind === 'preview' ? 150
     : (state.exportDpi === 'spec' ? spec.dpi : Number(state.exportDpi));
   const layout = computeLayout(state, spec, dpi);
 
   onStatus(`Rendering map at ${dpi} dpi (${layout.W}×${layout.H} px)…`);
-  const mapCanvas = await renderMapImage(state, layout, { demSource });
+  const mapCanvas = await renderMapImage(state, layout, { demSource, eezData });
 
   const stem = `marine-map_${spec.journalId || 'generic'}_${state.journal.columns}col`;
 

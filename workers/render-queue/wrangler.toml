@@ -1,0 +1,43 @@
+# Cloudflare Worker: paid render queue for the Marine Map Tool (Phase 3).
+#
+# NOT DEPLOYED. This is a ready-to-deploy scaffold. To bring it up on your own
+# Cloudflare account (see workers/README.md for the full walkthrough):
+#
+#   npm i -g wrangler
+#   wrangler login
+#   wrangler queues create marine-render-jobs
+#   wrangler r2 bucket create marine-render-out
+#   wrangler secret put STRIPE_SECRET_KEY          # or LEMONSQUEEZY_API_KEY
+#   wrangler secret put STRIPE_WEBHOOK_SECRET
+#   wrangler deploy
+#
+# The render container in /render consumes the queue and writes finished
+# publication files to the R2 bucket; this Worker only enqueues paid jobs and
+# hands back a signed download URL once the render is done.
+
+name = "marine-render-queue"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+# Static site + free client export stay on Cloudflare Pages; this Worker is the
+# only compute that costs money, and the per-export fee covers it.
+workers_dev = true
+
+[[queues.producers]]
+queue = "marine-render-jobs"
+binding = "RENDER_JOBS"
+
+[[r2_buckets]]
+binding = "RENDER_OUT"
+bucket_name = "marine-render-out"
+
+[[kv_namespaces]]
+binding = "JOBS"          # job-id -> {status, r2Key, paid}
+id = "REPLACE_WITH_KV_ID" # wrangler kv namespace create JOBS
+
+[vars]
+# Non-secret config. Set the price and currency to match your Stripe/Lemon
+# Squeezy product. Secrets (API keys, webhook secret) go via `wrangler secret`.
+PRICE_CENTS = "300"
+CURRENCY = "eur"
+ALLOWED_ORIGIN = "https://osmancankandemiroglu.com"

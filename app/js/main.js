@@ -10,7 +10,12 @@ import {
   selectJournal, FALLBACK_SPEC,
   buildCitationText, buildBibTeX, attributionLine,
   suggestProjection, generatePyGMT, generateRScript,
+  gbifTaxonMatchURL, gbifOccurrenceURL, obisOccurrenceURL,
+  parseGBIF, parseOBIS, occurrencesToStations, dedupeOccurrences,
+  ASSISTANT_MODELS, DEFAULT_ASSISTANT_MODEL, ANTHROPIC_MESSAGES_ENDPOINT,
+  buildAssistantRequest, anthropicHeaders, extractAssistantText,
 } from '../../core/src/index.js';
+import { computeTransect, drawProfile, transectCSV } from './transect.js';
 import {
   registerCmoceanProtocol, setupContours, buildMapStyle,
   cmoceanTileURL, contourTileURL, stationColorExpression,
@@ -40,7 +45,27 @@ const state = {
   journal: { record: null, columns: 2, format: 'pdf' },
   exportDpi: 'spec',
   attributionLine: '',
+  transect: { profile: null },
+  assistant: { history: [], key: '', model: DEFAULT_ASSISTANT_MODEL },
+  activeSources: new Set(), // data layers in use -> propagated into citations
 };
+
+const EEZ_WFS = 'https://geo.vliz.be/geoserver/MarineRegions/wfs';
+let drawState = null;   // active transect draw handler
+let occAbort = null;
+let transectBusy = false;
+
+/** MapLibre bounds can exceed ±180/±90 (world-copies, zoomed-out views); the
+ *  occurrence/EEZ query APIs reject that. Clamp to a valid, non-degenerate box. */
+function viewportBounds() {
+  const b = map.getBounds();
+  const clampLon = (v) => Math.max(-180, Math.min(180, v));
+  const clampLat = (v) => Math.max(-89.9, Math.min(89.9, v));
+  let west = clampLon(b.getWest());
+  let east = clampLon(b.getEast());
+  if (east <= west) { west = -180; east = 180; } // wrapped/degenerate -> whole world
+  return { west, south: clampLat(b.getSouth()), east, north: clampLat(b.getNorth()) };
+}
 
 let journals = [];       // loaded records
 let map = null;
@@ -294,9 +319,257 @@ function updateJournalSummary() {
 
 /* --------------------------------------------------------------- cite UI */
 
+/** Cited sources = the always-on set plus any data layers currently in use. */
+function citeSources() {
+  return [...CITE_SOURCES, ...state.activeSources];
+}
+
 function updateCiteBox() {
-  state.attributionLine = attributionLine(CITE_SOURCES.filter((s) => s !== 'tool'));
-  $('cite-text').value = buildCitationText({ sources: CITE_SOURCES, accessedDate: today() });
+  state.attributionLine = attributionLine(citeSources().filter((s) => s !== 'tool'));
+  $('cite-text').value = buildCitationText({ sources: citeSources(), accessedDate: today() });
+}
+
+/* --------------------------------------------------------- data layers */
+
+const emptyFC = () => ({ type: 'FeatureCollection', features: [] });
+
+async function toggleEEZ(on) {
+  if (!on) {
+    map.getSource('eez')?.setData(emptyFC());
+    state.activeSources.delete('marineRegions');
+    updateCiteBox();
+    $('eez-status').textContent = 'Exclusive Economic Zones from MarineRegions.org (CC-BY). Loaded on demand for the current view.';
+    return;
+  }
+  const b = viewportBounds();
+  $('eez-status').textContent = 'Loading EEZ boundaries for the current view…';
+  const params = new URLSearchParams({
+    service: 'WFS', version: '2.0.0', request: 'GetFeature',
+    typeName: 'MarineRegions:eez', outputFormat: 'application/json',
+    srsName: 'CRS:84', count: '120',
+    bbox: `${b.west},${b.south},${b.east},${b.north},CRS:84`,
+  });
+  try {
+    const resp = await fetch(`${EEZ_WFS}?${params.toString()}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const fc = await resp.json();
+    map.getSource('eez').setData(fc);
+    const n = fc.features?.length || 0;
+    if (n) { state.activeSources.add('marineRegions'); updateCiteBox(); }
+    $('eez-status').textContent = n
+      ? `${n} EEZ polygon${n === 1 ? '' : 's'} in view · Flanders Marine Institute, MarineRegions.org (CC-BY) — now in your figure's "How to cite".`
+      : 'No EEZ polygons in the current view — zoom to a coastline.';
+  } catch (err) {
+    $('layer-eez').checked = false;
+    $('eez-status').textContent = `Could not load the EEZ layer: ${err.message}`;
+  }
+}
+
+/* ------------------------------------------------------------ transect */
+
+function startTransectDraw() {
+  cancelTransectDraw();
+  const pts = [];
+  const hint = document.createElement('div');
+  hint.className = 'map-draw-hint';
+  hint.textContent = 'Click the start point of your transect.';
+  map.getContainer().appendChild(hint);
+  map.getCanvas().style.cursor = 'crosshair';
+  $('transect-draw').textContent = 'Drawing…';
+  $('transect-draw').disabled = true;
+
+  const onClick = (e) => {
+    pts.push([e.lngLat.lng, e.lngLat.lat]);
+    if (pts.length === 1) {
+      hint.textContent = 'Click the end point.';
+      map.getSource('transect').setData({
+        type: 'FeatureCollection',
+        features: [{ type: 'Feature', geometry: { type: 'Point', coordinates: pts[0] }, properties: {} }],
+      });
+    } else {
+      map.getSource('transect').setData(transectFC(pts));
+      cancelTransectDraw();
+      runTransect({ lon: pts[0][0], lat: pts[0][1] }, { lon: pts[1][0], lat: pts[1][1] });
+    }
+  };
+  drawState = { onClick, hint };
+  map.on('click', onClick);
+}
+
+function transectFC(pts) {
+  return {
+    type: 'FeatureCollection',
+    features: [
+      { type: 'Feature', geometry: { type: 'LineString', coordinates: pts }, properties: {} },
+      ...pts.map((c) => ({ type: 'Feature', geometry: { type: 'Point', coordinates: c }, properties: {} })),
+    ],
+  };
+}
+
+function cancelTransectDraw() {
+  if (!drawState) return;
+  map.off('click', drawState.onClick);
+  drawState.hint.remove();
+  map.getCanvas().style.cursor = '';
+  $('transect-draw').textContent = 'Draw a line';
+  $('transect-draw').disabled = false;
+  drawState = null;
+}
+
+async function runTransect(a, b) {
+  if (transectBusy) return;
+  transectBusy = true;
+  $('transect-draw').disabled = true;
+  $('transect-status').textContent = 'Sampling the seafloor along your line…';
+  try {
+    const { profile } = await computeTransect(a, b);
+    state.transect.profile = profile;
+    const plot = $('transect-plot');
+    plot.style.display = 'block';
+    drawProfile(plot, profile);
+    $('transect-clear').disabled = false;
+    $('transect-csv').disabled = false;
+    const withData = profile.points.filter((p) => Number.isFinite(p.elev));
+    if (withData.length < 2) {
+      $('transect-status').textContent = 'No bathymetry along that line (try a marine area).';
+    } else {
+      $('transect-status').textContent =
+        `${(profile.length / 1000).toFixed(1)} km · deepest ${formatDepth(profile.min)} · shallowest ${formatDepth(profile.max)}.`;
+    }
+  } catch (err) {
+    $('transect-status').textContent = `Transect failed: ${err.message}`;
+  } finally {
+    transectBusy = false;
+    $('transect-draw').disabled = false;
+  }
+}
+
+function clearTransect() {
+  cancelTransectDraw();
+  state.transect.profile = null;
+  map.getSource('transect')?.setData(emptyFC());
+  $('transect-plot').style.display = 'none';
+  $('transect-status').textContent = '';
+  $('transect-clear').disabled = true;
+  $('transect-csv').disabled = true;
+}
+
+/* -------------------------------------------------------- occurrences */
+
+/** One or two valid {west,south,east,north} boxes covering the current view,
+ *  splitting at the antimeridian so each box has west < east in [-180,180]. */
+function occurrenceBoxes() {
+  const b = map.getBounds();
+  const clampLat = (v) => Math.max(-89.9, Math.min(89.9, v));
+  const south = clampLat(b.getSouth());
+  const north = clampLat(b.getNorth());
+  const rawW = b.getWest();
+  const rawE = b.getEast();
+  if (rawE - rawW >= 360) return [{ west: -180, south, east: 180, north }]; // whole world
+  const wrap = (v) => (((v + 180) % 360) + 360) % 360 - 180;
+  const west = wrap(rawW);
+  const east = wrap(rawE);
+  if (west <= east) return [{ west, south, east, north }];
+  // Crosses the antimeridian: two boxes, [west,180] and [-180,east].
+  return [{ west, south, east: 180, north }, { west: -180, south, east, north }];
+}
+
+async function fetchOccurrences() {
+  const taxon = $('occ-taxon').value.trim();
+  const source = $('occ-source').value;
+  const limit = Number($('occ-limit').value);
+  const boxes = occurrenceBoxes();
+  occAbort?.abort();
+  occAbort = new AbortController();
+  $('occ-status').textContent = `Querying ${source.toUpperCase()}…`;
+  try {
+    const results = await Promise.all(boxes.map(async (bounds) => {
+      const url = source === 'gbif'
+        ? gbifOccurrenceURL({ scientificName: taxon || null, bounds, limit })
+        : obisOccurrenceURL({ scientificName: taxon || null, bounds, size: limit });
+      const resp = await fetch(url, { signal: occAbort.signal });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return (source === 'gbif' ? parseGBIF : parseOBIS)(await resp.json());
+    }));
+    const list = dedupeOccurrences(results.flat());
+    if (!list.length) {
+      $('occ-status').textContent = `No georeferenced ${source.toUpperCase()} records${taxon ? ` for "${taxon}"` : ''} in this view.`;
+      return;
+    }
+    state.activeSources.add(source); // 'gbif' | 'obis' -> into citations
+    ingestStations(occurrencesToStations(list),
+      `${list.length} ${source.toUpperCase()} occurrence${list.length === 1 ? '' : 's'}${taxon ? ` of "${taxon}"` : ''}.`);
+    updateCiteBox();
+    $('occ-status').textContent =
+      `Plotted ${list.length} ${source.toUpperCase()} occurrence${list.length === 1 ? '' : 's'} as stations, now credited in "How to cite". Data: ${source === 'gbif' ? 'GBIF.org' : 'OBIS (obis.org)'}.`;
+  } catch (err) {
+    if (err.name !== 'AbortError') $('occ-status').textContent = `Query failed: ${err.message}`;
+  }
+}
+
+/** Load a plain [{lon,lat,name,value}] list as the station set. */
+function ingestStations(stations, statusText) {
+  state.stations.list = stations;
+  const values = stations.map((s) => s.value).filter((v) => Number.isFinite(v));
+  state.stations.valueRange = values.length ? { min: Math.min(...values), max: Math.max(...values) } : null;
+  state.stations.raw = null;
+  $('stations-mapping').hidden = true;
+  $('stations-clear').disabled = false;
+  $('stations-status').textContent = statusText;
+  $('stations-errors').innerHTML = '';
+  syncStationsToMap();
+}
+
+/* ------------------------------------------------------------ assistant */
+
+function pushAssistantMsg(role, text) {
+  const el = document.createElement('div');
+  el.className = `assistant-msg assistant-msg--${role === 'user' ? 'user' : 'bot'}`;
+  el.textContent = text;
+  $('assistant-log').appendChild(el);
+  $('assistant-log').scrollTop = $('assistant-log').scrollHeight;
+}
+
+async function askAssistant() {
+  const question = $('assistant-input').value.trim();
+  if (!question) return;
+  const key = $('assistant-key').value.trim();
+  if (!key) {
+    $('assistant-status').textContent = 'Add your Anthropic API key above to use the assistant (it stays in your browser).';
+    $('assistant-setup').open = true;
+    return;
+  }
+  state.assistant.model = $('assistant-model').value;
+  if ($('assistant-remember').checked) {
+    try { localStorage.setItem('mmt_anthropic_key', key); } catch { /* ignore */ }
+  }
+  pushAssistantMsg('user', question);
+  $('assistant-input').value = '';
+  $('assistant-status').textContent = 'Thinking…';
+  $('assistant-send').disabled = true;
+  try {
+    const body = buildAssistantRequest({
+      record: state.journal.record,
+      question,
+      history: state.assistant.history,
+      model: state.assistant.model,
+    });
+    const resp = await fetch(ANTHROPIC_MESSAGES_ENDPOINT, {
+      method: 'POST',
+      headers: anthropicHeaders(key),
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error?.message || `HTTP ${resp.status}`);
+    const answer = extractAssistantText(data) || '(no answer)';
+    pushAssistantMsg('bot', answer);
+    state.assistant.history.push({ role: 'user', text: question }, { role: 'assistant', text: answer });
+    $('assistant-status').textContent = '';
+  } catch (err) {
+    $('assistant-status').textContent = `Assistant error: ${err.message}`;
+  } finally {
+    $('assistant-send').disabled = false;
+  }
 }
 
 /* ------------------------------------------------------------ script gen */
@@ -340,7 +613,7 @@ function buildFigureState() {
       minFontPt: spec.minFontPt,
     },
     citations: buildCitationText({
-      sources: [...CITE_SOURCES, 'gmt', 'pygmt'],
+      sources: [...citeSources(), 'gmt', 'pygmt'],
       accessedDate: today(),
     }).split('\n'),
     accessedDate: today(),
@@ -355,7 +628,8 @@ async function runExport(kind) {
   const status = (t) => { $('export-status').textContent = t; };
   try {
     applyRegion(false);
-    const result = await exportFigure(state, kind, { demSource, onStatus: status });
+    const eezData = $('layer-eez').checked ? (map.getSource('eez')?._data || null) : null;
+    const result = await exportFigure(state, kind, { demSource, eezData, onStatus: status });
     if (kind === 'preview') {
       $('preview-img').src = result.dataURL;
       $('preview-meta').textContent =
@@ -518,6 +792,35 @@ function wireUI() {
     state.furniture.inset = e.target.checked;
   });
 
+  // data layers
+  $('layer-eez').addEventListener('change', (e) => toggleEEZ(e.target.checked));
+
+  // transect
+  $('transect-draw').addEventListener('click', startTransectDraw);
+  $('transect-clear').addEventListener('click', clearTransect);
+  $('transect-csv').addEventListener('click', () => {
+    if (!state.transect.profile) return;
+    downloadBlob(new Blob([transectCSV(state.transect.profile)], { type: 'text/csv' }), 'transect_profile.csv');
+  });
+
+  // occurrences
+  $('occ-fetch').addEventListener('click', fetchOccurrences);
+  $('occ-taxon').addEventListener('keydown', (e) => { if (e.key === 'Enter') fetchOccurrences(); });
+
+  // assistant
+  $('assistant-model').innerHTML = ASSISTANT_MODELS
+    .map((m) => `<option value="${m.id}"${m.id === DEFAULT_ASSISTANT_MODEL ? ' selected' : ''}>${escapeHTML(m.label)}</option>`)
+    .join('');
+  try {
+    const saved = localStorage.getItem('mmt_anthropic_key');
+    if (saved) { $('assistant-key').value = saved; $('assistant-remember').checked = true; }
+  } catch { /* ignore */ }
+  $('assistant-send').addEventListener('click', askAssistant);
+  $('assistant-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') askAssistant(); });
+  $('assistant-remember').addEventListener('change', (e) => {
+    if (!e.target.checked) { try { localStorage.removeItem('mmt_anthropic_key'); } catch { /* ignore */ } }
+  });
+
   // journal + export
   $('journal-select').addEventListener('change', (e) => {
     state.journal.record = journals.find((j) => j.id === e.target.value) || null;
@@ -542,7 +845,7 @@ function wireUI() {
     setStatus('Citation text copied.');
   });
   $('cite-bibtex').addEventListener('click', async () => {
-    await navigator.clipboard.writeText(buildBibTeX({ sources: CITE_SOURCES }));
+    await navigator.clipboard.writeText(buildBibTeX({ sources: citeSources() }));
     setStatus('BibTeX copied.');
   });
 }

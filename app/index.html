@@ -122,6 +122,83 @@
       </div>
     </details>
 
+    <details class="panel" id="panel-layers">
+      <summary>Data layers</summary>
+      <div class="panel__body">
+        <label class="check"><input type="checkbox" id="layer-eez" /> EEZ boundaries (Marine Regions)</label>
+        <p class="hint" id="eez-status">Exclusive Economic Zones from MarineRegions.org (CC-BY). Loaded on demand for the current view.</p>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-transect">
+      <summary>Transect (depth profile)</summary>
+      <div class="panel__body">
+        <p class="hint">Draw a line across the seafloor to read its bathymetric profile — sampled in your browser from the same DEM as the map.</p>
+        <div class="btnrow">
+          <button type="button" id="transect-draw" class="btn btn--primary">Draw a line</button>
+          <button type="button" id="transect-clear" class="btn" disabled>Clear</button>
+        </div>
+        <p id="transect-status" class="hint"></p>
+        <canvas id="transect-plot" width="520" height="200" style="width:100%;height:180px;display:none;"></canvas>
+        <div class="btnrow">
+          <button type="button" id="transect-csv" class="btn" disabled>Download profile CSV</button>
+        </div>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-occurrences">
+      <summary>Species occurrences (GBIF / OBIS)</summary>
+      <div class="panel__body">
+        <p class="hint">Plot georeferenced records for a taxon in the current view. Points become stations you can style and export.</p>
+        <label class="field">Taxon name
+          <input type="text" id="occ-taxon" placeholder="e.g. Emiliania huxleyi" autocomplete="off" />
+        </label>
+        <div class="grid2">
+          <label class="field">Source
+            <select id="occ-source">
+              <option value="gbif">GBIF</option>
+              <option value="obis">OBIS (marine)</option>
+            </select>
+          </label>
+          <label class="field">Max points
+            <select id="occ-limit">
+              <option value="100">100</option>
+              <option value="200" selected>200</option>
+              <option value="300">300</option>
+            </select>
+          </label>
+        </div>
+        <div class="btnrow">
+          <button type="button" id="occ-fetch" class="btn btn--primary">Fetch occurrences</button>
+        </div>
+        <p id="occ-status" class="hint"></p>
+      </div>
+    </details>
+
+    <details class="panel" id="panel-assistant">
+      <summary>Cartography assistant <span class="topbar__tag">optional</span></summary>
+      <div class="panel__body">
+        <p class="hint">An optional helper that answers figure-design questions <strong>grounded in the selected journal's spec</strong>. It's off by default and never needed — the tool works fully without it. It uses <strong>your own</strong> Anthropic API key (stored only in this browser) and calls the API directly.</p>
+        <details id="assistant-setup">
+          <summary class="assistant-setup__summary">API key &amp; model</summary>
+          <label class="field">Anthropic API key (BYOK)
+            <input type="password" id="assistant-key" placeholder="sk-ant-…" autocomplete="off" />
+          </label>
+          <label class="field">Model
+            <select id="assistant-model"></select>
+          </label>
+          <label class="check"><input type="checkbox" id="assistant-remember" /> Remember key in this browser</label>
+          <p class="hint">Get a key at <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a>. Usage is billed to your key. The key never leaves your browser except in the direct call to Anthropic.</p>
+        </details>
+        <div id="assistant-log" class="assistant-log" aria-live="polite"></div>
+        <div class="assistant-ask">
+          <input type="text" id="assistant-input" placeholder="e.g. What dpi and width should my map be?" autocomplete="off" />
+          <button type="button" id="assistant-send" class="btn btn--primary">Ask</button>
+        </div>
+        <p id="assistant-status" class="hint"></p>
+      </div>
+    </details>
+
     <details class="panel pub-only" id="panel-furniture">
       <summary>Cartographic furniture</summary>
       <div class="panel__body">
@@ -187,6 +264,11 @@
     </details>
 
     <footer class="sidebar__footer">
+      <p class="sidebar__support">
+        Free forever. If it saved you time:
+        <a href="https://ko-fi.com/osmancankandemiroglu" target="_blank" rel="noopener">Ko-fi</a> ·
+        <a href="https://github.com/sponsors/CanKandemiroglu" target="_blank" rel="noopener">GitHub Sponsors</a>
+      </p>
       <p>Open source (<a href="https://github.com/CanKandemiroglu/cankandemiroglu.github.io/tree/main/core" target="_blank" rel="noopener">core, MIT</a>) · no login · no tracking · figures render entirely in your browser.</p>
     </footer>
   </aside>

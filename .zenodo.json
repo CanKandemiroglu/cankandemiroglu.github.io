@@ -1,0 +1,31 @@
+{
+  "title": "Marine Map Tool / marine-map-core",
+  "description": "A browser-based tool (and its open-source, dependency-free figure engine) that turns coordinates or a region into a publication-quality marine map — GEBCO/ETOPO-derived bathymetry with cmocean colormaps, scale bar, north arrow, graticule, inset locator, station overlays — exported to a chosen journal's figure specification together with the PyGMT/R script that reproduces the figure.",
+  "creators": [
+    {
+      "name": "Kandemiroglu, Osman Can",
+      "orcid": "0000-0002-4453-3613",
+      "affiliation": "University of Bremen"
+    }
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "oceanography",
+    "bathymetry",
+    "cartography",
+    "cmocean",
+    "GEBCO",
+    "scientific figures",
+    "reproducibility",
+    "PyGMT"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://osmancankandemiroglu.com/app/",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

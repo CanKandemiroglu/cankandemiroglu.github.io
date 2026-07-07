@@ -105,6 +105,8 @@ export function buildMapStyle(state, { demSource = null, forExport = false } = {
       maxzoom: 12,
     },
     graticule: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+    eez: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
+    transect: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
     stations: { type: 'geojson', data: { type: 'FeatureCollection', features: [] } },
   };
   if (demSource) {
@@ -153,6 +155,25 @@ export function buildMapStyle(state, { demSource = null, forExport = false } = {
       source: 'graticule',
       layout: vis(state.furniture.graticule),
       paint: { 'line-color': 'rgba(60, 75, 90, 0.35)', 'line-width': 0.7, 'line-dasharray': [2, 2] },
+    },
+    {
+      id: 'eez',
+      type: 'line',
+      source: 'eez',
+      paint: { 'line-color': 'rgba(180, 60, 40, 0.75)', 'line-width': 1.1, 'line-dasharray': [4, 2] },
+    },
+    {
+      id: 'transect-line',
+      type: 'line',
+      source: 'transect',
+      paint: { 'line-color': '#e4572e', 'line-width': 2.2 },
+    },
+    {
+      id: 'transect-pts',
+      type: 'circle',
+      source: 'transect',
+      filter: ['==', ['geometry-type'], 'Point'],
+      paint: { 'circle-radius': 4, 'circle-color': '#e4572e', 'circle-stroke-color': '#fff', 'circle-stroke-width': 1.5 },
     },
     {
       id: 'stations',

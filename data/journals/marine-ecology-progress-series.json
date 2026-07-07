@@ -1,0 +1,30 @@
+{
+  "id": "marine-ecology-progress-series",
+  "title": "Marine Ecology Progress Series",
+  "publisher": "Inter-Research Science Center",
+  "canvas": {
+    "single_column_mm": 87,
+    "double_column_mm": 180,
+    "max_height_mm": 230
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 1200
+  },
+  "map_target": {
+    "recommended_format": "tiff",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "tiff",
+    "eps",
+    "pdf"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 8,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "MEPS (Inter-Research): halftone/combination 300–600 dpi, line art 1200 dpi; TIFF or EPS. Single column ~87 mm, double column ~180 mm.",
+  "source_url": "https://www.int-res.com/journals/meps/guidelines-for-meps-authors/",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

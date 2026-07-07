@@ -112,10 +112,18 @@ sources listed in a figure's "How to cite" box.
 
 ## Contributing
 
-Issues and pull requests are welcome. Keep `src/` dependency-free and
-deterministic, add a `node:test` case for every change, and run `npm test`
-before submitting. Corrections to journal specs should update the JSON record
-and its `source_url`/`last_verified` fields, not the engine.
+Issues and pull requests are welcome — see [`CONTRIBUTING.md`](./CONTRIBUTING.md)
+(dev setup, ground rules, how journal records are verified) and the project
+[`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md). In short: keep `src/`
+dependency-free and deterministic, add a `node:test` case for every change,
+and run `npm test` before submitting.
+
+## Paper
+
+A JOSS paper describing this library lives in [`paper/`](./paper/)
+(`paper.md` + `paper.bib`); [`paper/SUBMISSION-CHECKLIST.md`](./paper/SUBMISSION-CHECKLIST.md)
+tracks the submission steps (Zenodo archive, verification of journal records,
+review readiness).
 
 ## Licence
 

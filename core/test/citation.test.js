@@ -25,6 +25,8 @@ const REQUIRED_IDS = [
   'marineRegions',
   'gmt',
   'pygmt',
+  'gbif',
+  'obis',
 ];
 
 const REQUIRED_KEYS = [
