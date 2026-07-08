@@ -8,7 +8,7 @@ import {
   formatDegree, formatDepth, colorbarTicks,
   parseDelimited, guessColumns, toStations, stationsToGeoJSON,
   selectJournal, FALLBACK_SPEC,
-  buildCitationText, buildBibTeX, attributionLine,
+  buildCitationText, buildBibTeX, attributionLine, DATA_SOURCES,
   suggestProjection, generatePyGMT, generateRScript,
   gbifTaxonMatchURL, gbifOccurrenceURL, obisOccurrenceURL,
   parseGBIF, parseOBIS, occurrencesToStations, dedupeOccurrences,
@@ -325,8 +325,21 @@ function citeSources() {
 }
 
 function updateCiteBox() {
+  // The exported figure still carries the compact, licence-required data
+  // credits (GEBCO/ETOPO, Natural Earth, cmocean, and any layers in use)
+  // baked onto the image — that is what keeps a published figure compliant.
+  // The cite box itself leads with how to cite the tool, i.e. your work.
   state.attributionLine = attributionLine(citeSources().filter((s) => s !== 'tool'));
-  $('cite-text').value = buildCitationText({ sources: citeSources(), accessedDate: today() });
+  const toolCitation = DATA_SOURCES.tool.citation.replace('{version}', '0.1.0');
+  const layerNames = [...state.activeSources]
+    .map((id) => DATA_SOURCES[id]?.name).filter(Boolean);
+  const extra = layerNames.length ? `, plus ${layerNames.join(', ')}` : '';
+  $('cite-text').value =
+    `How to cite the Marine Map Tool\n\n${toolCitation}\n\n` +
+    `Data note: figures made here use openly-licensed data (GEBCO/ETOPO ` +
+    `bathymetry, Natural Earth, cmocean colours${extra}). Those credits are ` +
+    `printed on the exported figure and listed in full in the project README — ` +
+    `keep them in your figure caption to stay licence-compliant.`;
 }
 
 /* --------------------------------------------------------- data layers */

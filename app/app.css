@@ -189,8 +189,6 @@ dialog#preview-dialog::backdrop { background: rgb(20 30 40 / 55%); }
   padding: 0.35rem 0.8rem; border-radius: 999px; pointer-events: none;
 }
 
-.sidebar__support { font-size: 0.72rem; color: var(--ink-soft); margin: 0 0 0.4rem; }
-.sidebar__support a { color: var(--accent); }
 
 /* MapLibre chrome tweaks */
 .maplibregl-ctrl-attrib { font-size: 0.66rem; }
