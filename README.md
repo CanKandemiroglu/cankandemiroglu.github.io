@@ -35,11 +35,30 @@ journal's spec — never needed to use the tool).
 | `/manuscripts/lo-methods` | L&O: Methods manuscript draft (Phase 2) |
 | `/workers`, `/render` | Phase-3 placeholders (optional paid server render) |
 
-### Reproducibility & citation
+### How to cite the tool
 
-Every export embeds the required data citations (Terrain Tiles/ETOPO/GEBCO,
-Natural Earth, cmocean). To cite the tool itself see [`CITATION.cff`](CITATION.cff)
-— a Zenodo DOI will be minted with the first tagged release.
+To cite the Marine Map Tool itself, use the author + version from
+[`CITATION.cff`](CITATION.cff) (a Zenodo DOI is minted with the first tagged
+release). The app's "How to cite" box shows this short form.
+
+### Data sources & attribution
+
+Figures made with this tool draw on openly-licensed data and libraries. The
+required credits are printed compactly on every exported figure; the full list
+is kept here (and in the Zenodo record) so the tool's own citation stays short:
+
+| Source | Used for | Licence |
+|---|---|---|
+| [GEBCO](https://www.gebco.net/) / [ETOPO 2022](https://doi.org/10.25921/fd45-gt74) via [Terrain Tiles (AWS/Mapzen)](https://registry.opendata.aws/terrain-tiles/) | bathymetry & relief | public domain (cite DOI) |
+| [Natural Earth](https://www.naturalearthdata.com/) | coastlines / land | public domain |
+| [cmocean](https://doi.org/10.5670/oceanog.2016.66) — Thyng et al. (2016) | colormaps | MIT |
+| [Marine Regions](https://www.marineregions.org/) (VLIZ) | EEZ boundaries (optional layer) | CC-BY 4.0 |
+| [GBIF](https://www.gbif.org/) / [OBIS](https://obis.org/) | species occurrences (optional layer) | per-dataset (mostly CC0/CC-BY) |
+| MapLibre GL JS, PyGMT/GMT, pdf-lib, SheetJS, maplibre-contour | rendering / export | BSD-3 / LGPL / MIT / Apache-2.0 |
+
+When you publish a figure, keep the credits printed on it in your figure
+caption — that satisfies the CC-BY / data-use requirements. Full per-source
+citations and DOIs live in [`/data/attrib/attributions.json`](data/attrib/attributions.json).
 
 ### Development
 
