@@ -1,0 +1,7 @@
+# security.txt for osmancankandemiroglu.com — RFC 9116
+# https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:osman@uni-bremen.de
+Expires: 2027-07-09T00:00:00.000Z
+Preferred-Languages: en, de
+Canonical: https://osmancankandemiroglu.com/.well-known/security.txt

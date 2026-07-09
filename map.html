@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Field map — Osman Can Kandemiroglu</title>
+  <meta name="description" content="Interactive map of marine sampling sites — Black Sea, Helgoland Mud Area, and Mallorca microbial mats — with GEBCO bathymetry and EMODnet high-resolution overlays for European seas." />
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Leaflet core -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-fullscreen@1.0.2/dist/leaflet.fullscreen.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-mouseposition@1.2.0/src/L.Control.MousePosition.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-minimap@3.6.1/dist/Control.MiniMap.min.css" />
+
+  <!-- Map styles -->
+  <link rel="stylesheet" href="assets/css/map.css" />
+</head>
+<body class="map-page">
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="index.html">
+        Osman Can Kandemiroglu
+        <small>Marine Molecular Biogeochemistry</small>
+      </a>
+      <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav>
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html">Home</a></li>
+          <li><a class="nav__link" href="about.html">About</a></li>
+          <li><a class="nav__link" href="research/index.html">Research</a></li>
+          <li><a class="nav__link" href="map.html" aria-current="page">Field map</a></li>
+          <li><a class="nav__link" href="app/index.html">Map tool</a></li>
+          <li><a class="nav__link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="map-hero">
+      <div class="container container--wide">
+        <p class="eyebrow map-hero__eyebrow">Field map</p>
+        <h1 class="map-hero__title">Where the molecules came from.</h1>
+        <p class="map-hero__lede">
+          Four stations span an anoxic basin, a temperate shelf and a hypersaline lagoon.
+          The depth shading is real — GEBCO bathymetry at the world scale,
+          EMODnet's 115&nbsp;m DTM where European seas come into focus.
+          Hover anywhere to read the seafloor; click a marker to step into the project.
+        </p>
+      </div>
+    </section>
+
+    <!-- Live region for screen-reader announcements -->
+    <div id="map-live" class="sr-only" role="status" aria-live="polite"
+         style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"></div>
+
+    <section class="map-shell" aria-label="Interactive field map">
+
+      <a href="#main" class="map-skip">Skip past map</a>
+
+      <!-- Map container -->
+      <div id="map" tabindex="0"></div>
+
+      <!-- Top-left toolbar: search + filter -->
+      <div class="map-toolbar" role="region" aria-label="Search and filter sampling sites">
+        <label class="map-search" for="search">
+          <span class="sr-only">Search sites</span>
+          <input id="search" type="search" placeholder="Search by name, region, expedition…"
+                 autocomplete="off" spellcheck="false" />
+        </label>
+        <div class="map-filter" role="group" aria-label="Filter by sample type">
+          <button type="button" class="map-filter__btn" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" class="map-filter__btn" data-filter="sediment_core" aria-pressed="false">Cores</button>
+          <button type="button" class="map-filter__btn" data-filter="microbial_mat" aria-pressed="false">Mats</button>
+          <button type="button" class="map-filter__btn" data-filter="water_sample" aria-pressed="false">Water</button>
+        </div>
+      </div>
+
+      <!-- Top-right actions -->
+      <div class="map-actions">
+        <button id="help-toggle" class="map-actions__btn" type="button"
+                aria-label="Keyboard shortcuts and help">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/>
+            <circle cx="12" cy="17" r="0.6" fill="currentColor"/>
+          </svg>
+        </button>
+        <div style="position:relative">
+          <button id="actions-toggle" class="map-actions__btn" type="button"
+                  aria-haspopup="true" aria-expanded="false" aria-label="More actions">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round">
+              <circle cx="12" cy="6"  r="1.4" fill="currentColor"/>
+              <circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+              <circle cx="12" cy="18" r="1.4" fill="currentColor"/>
+            </svg>
+          </button>
+          <div id="actions-menu" class="map-actions__menu" role="menu">
+            <button type="button" id="reset-view"     role="menuitem">Reset view</button>
+            <button type="button" id="export-geojson" role="menuitem">Export visible · GeoJSON</button>
+            <button type="button" id="export-csv"     role="menuitem">Export visible · CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom-left status -->
+      <div class="map-status map-card" aria-live="off">
+        <span id="count" class="map-status__count">— / — sites</span>
+        <span class="map-status__sep" aria-hidden="true"></span>
+        <span id="depth-readout" class="map-status__depth"></span>
+      </div>
+
+      <!-- Bottom-right legend -->
+      <aside class="map-legend map-card" aria-label="Map legend">
+        <p class="map-legend__title">Sample types</p>
+        <div class="map-legend__row">
+          <span class="map-legend__swatch map-legend__swatch--circle" style="background:var(--sample-core)"></span>
+          Sediment core
+        </div>
+        <div class="map-legend__row">
+          <span class="map-legend__swatch" style="background:var(--sample-mat)"></span>
+          Microbial mat
+        </div>
+        <div class="map-legend__row">
+          <span class="map-legend__swatch map-legend__swatch--circle" style="background:var(--sample-water)"></span>
+          Water sample
+        </div>
+        <p class="map-legend__title" style="margin-top:12px">Bathymetry · GEBCO</p>
+        <div class="map-legend__depth" aria-hidden="true">
+          <span style="background:var(--depth-1)"></span>
+          <span style="background:var(--depth-2)"></span>
+          <span style="background:var(--depth-3)"></span>
+          <span style="background:var(--depth-4)"></span>
+          <span style="background:var(--depth-5)"></span>
+        </div>
+        <div class="map-legend__depth-labels">
+          <span>0 m</span>
+          <span>−4000 m</span>
+        </div>
+      </aside>
+
+      <!-- Side panel -->
+      <aside id="map-panel" class="map-panel" role="dialog" aria-modal="false"
+             aria-labelledby="panel-title" aria-hidden="true" data-open="false" tabindex="-1">
+        <header class="map-panel__head">
+          <div id="panel-head-text" class="map-panel__head-text"></div>
+          <button id="panel-close" class="map-panel__close" type="button"
+                  aria-label="Close site details">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </header>
+        <div id="panel-body" class="map-panel__body"></div>
+      </aside>
+
+      <!-- Help overlay -->
+      <div id="map-help" class="map-help" role="dialog" aria-modal="true"
+           aria-labelledby="help-title" data-open="false">
+        <div class="map-help__card">
+          <h2 id="help-title" class="map-help__title">Map navigation</h2>
+          <div class="map-help__row"><span>Pan</span><span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or drag</span></div>
+          <div class="map-help__row"><span>Zoom</span><span><kbd>+</kbd> / <kbd>−</kbd> or scroll</span></div>
+          <div class="map-help__row"><span>Reset to all sites</span><span><kbd>H</kbd></span></div>
+          <div class="map-help__row"><span>Focus search</span><span><kbd>/</kbd></span></div>
+          <div class="map-help__row"><span>Open / close help</span><span><kbd>?</kbd></span></div>
+          <div class="map-help__row"><span>Close any overlay</span><span><kbd>Esc</kbd></span></div>
+          <div class="map-help__row"><span>Open a site</span><span>Click marker · <kbd>Tab</kbd> → <kbd>Enter</kbd></span></div>
+          <p style="margin-top:14px;font-size:12.5px;color:var(--ink-mute);line-height:1.5">
+            Bathymetry shading reads through GetFeatureInfo from the GEBCO 2024 grid — hover over the
+            ocean and watch the elevation readout in the lower-left. Tile providers are toggled in the
+            top-right layer switcher.
+          </p>
+        </div>
+      </div>
+
+      <!-- Lightbox -->
+      <div id="lightbox" class="lightbox" role="dialog" aria-modal="true"
+           aria-label="Photo viewer" aria-hidden="true" data-open="false">
+        <button id="lightbox-close" class="lightbox__close" type="button" aria-label="Close photo">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke="currentColor">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+        <img id="lightbox-img" alt="" />
+        <p id="lightbox-caption" class="lightbox__caption"></p>
+      </div>
+
+      <!-- Loading overlay -->
+      <div id="map-loading" class="map-loading">
+        <div class="map-loading__inner">
+          <span class="map-loading__dot"></span>
+          <span>Loading bathymetry…</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Notes below the map -->
+    <section class="section section--tight">
+      <div class="container container--prose">
+        <p class="eyebrow">About the map</p>
+        <h2 class="mt-2" style="font-size:clamp(24px,3vw,32px);font-weight:600;letter-spacing:-0.018em">
+          The seafloor, shaded honestly.
+        </h2>
+        <div class="prose mt-3">
+          <p>
+            The default basemap is the <strong>GEBCO 2024 Grid</strong> — the global,
+            authoritative bathymetric compilation maintained by the IOC and IHO.
+            For European seas (Black Sea, North Sea, Mediterranean) you can overlay the
+            <strong>EMODnet Bathymetry DTM</strong> at ~115 m resolution from the
+            top-right layer switcher — it sharpens the German Bight and Balearic shelves
+            in particular.
+          </p>
+          <p>
+            The four station coordinates currently displayed are
+            <em>approximate regional placeholders</em>; exact field-recorded GPS values will
+            replace them as each project is published. Each marker links through to its
+            full project page on this site.
+          </p>
+          <p style="font-size:13px;color:var(--ink-mute)">
+            Data sources: GEBCO Compilation Group (2024), DOI:&nbsp;10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f ·
+            EMODnet Bathymetry Consortium · OpenStreetMap contributors · OpenSeaMap · Esri Ocean Basemap ·
+            CARTO. Map engine: Leaflet 1.9.4.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container container--wide" style="display:flex; flex-wrap:wrap; gap:24px; justify-content:space-between; align-items:center;">
+      <p class="footer__line" style="margin:0;">© 2026 Osman Can Kandemiroglu · Bremen</p>
+      <p style="margin:0; font-size:13px;">
+        <a class="link-inline" href="impressum.html">Impressum</a>
+        ·
+        <a class="link-inline" href="datenschutz.html">Datenschutz</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Leaflet core -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- Plugins -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/leaflet-fullscreen@1.0.2/dist/Leaflet.fullscreen.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-mouseposition@1.2.0/src/L.Control.MousePosition.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/cloudybay/leaflet.latlng-graticule@master/leaflet.latlng-graticule.js"></script>
+  <script src="https://unpkg.com/leaflet-minimap@3.6.1/dist/Control.MiniMap.min.js"></script>
+
+  <!-- Map logic -->
+  <script src="assets/js/map.js"></script>
+</body>
+</html>

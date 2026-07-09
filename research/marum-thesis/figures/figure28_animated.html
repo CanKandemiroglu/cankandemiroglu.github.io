@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 28 — Co-culture synergy</title>
+<style>
+  :root {
+    --bg: #fbfbfd; --ink: #1d1d1f; --muted: #6e6e73;
+    --axis: #1d1d1f; --f10: #D55E00; --f13: #0072B2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .section { max-width: 1040px; margin: 0 auto; padding: 80px 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; max-width: 22ch;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px); line-height: 1.5;
+    color: var(--muted); max-width: 64ch; margin-bottom: 28px;
+  }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 40px; margin: 32px 0 8px; }
+  .stat .num { font-size: clamp(32px, 5vw, 48px); font-weight: 600; letter-spacing: -0.02em; }
+  .stat .num.f13 { color: var(--f13); }
+  .stat .lbl { font-size: 14px; color: var(--muted); margin-top: 2px; max-width: 24ch; }
+  .stage {
+    width: 100%; border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+    padding: 24px; margin-top: 8px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .ax-line { stroke: var(--axis); stroke-width: 1; }
+  .tick { stroke: var(--axis); stroke-width: 1; }
+  .grid { stroke: #ececef; stroke-width: 1; }
+  .tick-lbl { fill: var(--muted); font-size: 13px; }
+  .ax-title { fill: var(--ink); font-size: 14px; font-weight: 500; }
+  .row-name { fill: var(--ink); font-size: 14px; }
+  .row-sub { fill: #a1a1a6; font-size: 11px; }
+  .bar-val { font-size: 13px; font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 18px; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .legend .sq { width: 13px; height: 13px; border-radius: 3px; }
+  .caption {
+    margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 80ch;
+  }
+  .caption b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="eyebrow">Figure 28 · Result 4</div>
+  <h1>Mixed communities degrade more than the sum of their strains.</h1>
+  <p class="lead">
+    Eight co-culture combinations, each compared against what their individual
+    strains predict. Bar length is the synergy index &mdash; how far observed
+    degradation exceeds the additive expectation. Every bar points right.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">8 / 8</div><div class="lbl">co-cultures exceeded additive expectation</div></div>
+    <div class="stat"><div class="num f13">+76&ndash;102%</div><div class="lbl">synergy in F13 combinations &mdash; the weakest individual degraders</div></div>
+    <div class="stat"><div class="num">+11&ndash;22%</div><div class="lbl">synergy in F10 combinations</div></div>
+  </div>
+
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 880 540" role="img"
+         aria-label="Synergy index for eight co-culture combinations"></svg>
+    <div class="legend">
+      <div class="item"><span class="sq" style="background:var(--f13)"></span>F13 clade</div>
+      <div class="item"><span class="sq" style="background:var(--f10)"></span>F10 clade</div>
+      <div class="item">2 / 3 = strains in combination &middot; n.s. = not significant</div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <b>Co-culture composition determines alginate degradation efficiency.</b>
+    Synergy index <i>S</i> for eight co-culture combinations, sorted by
+    magnitude. <i>S</i>&nbsp;=&nbsp;(observed &minus; expected)&nbsp;/&nbsp;expected,
+    where expected &Delta;V% is the mean of constituent monoculture performance
+    (ADE-III). All eight values are positive, confirming synergistic
+    degradation. F13 combinations &mdash; built from the weakest individual
+    degraders &mdash; show the strongest synergy
+    (S&nbsp;=&nbsp;+76 to +102%; Cohen's <i>d</i>&nbsp;=&nbsp;1.10&ndash;1.44,
+    all P&nbsp;&lt;&nbsp;0.001), while F10 combinations show moderate synergy
+    (S&nbsp;=&nbsp;+11 to +22%); 13B01+9ZC77 did not reach significance.
+    Significance from one-sample <i>t</i>-tests against the additive null.
+    Bars draw in on view; in a static preview the final state is shown.
+  </p>
+</div>
+
+<script>
+(function () {
+  // ---- Synergy data (ADE_IV_Master.xlsx, sheet 'Synergy'), sorted by S ----
+  var data = [
+    { name: "12B01+ZF57",        exp: 36.5, obs: 73.8, s: 102.0, sig: "***", clade: "F13", n: 2 },
+    { name: "ZF57+9ZC13",        exp: 39.2, obs: 77.8, s: 98.4,  sig: "***", clade: "F13", n: 2 },
+    { name: "12B01+ZF57+9ZC13",  exp: 39.2, obs: 72.5, s: 85.1,  sig: "***", clade: "F13", n: 3 },
+    { name: "12B01+9ZC13",       exp: 41.9, obs: 73.5, s: 75.6,  sig: "***", clade: "F13", n: 2 },
+    { name: "13B01+ZF270+9ZC77", exp: 63.1, obs: 77.1, s: 22.1,  sig: "***", clade: "F10", n: 3 },
+    { name: "ZF270+9ZC77",       exp: 52.0, obs: 63.3, s: 21.5,  sig: "*",   clade: "F10", n: 2 },
+    { name: "13B01+ZF270",       exp: 68.8, obs: 79.2, s: 15.2,  sig: "*",   clade: "F10", n: 2 },
+    { name: "13B01+9ZC77",       exp: 68.5, obs: 75.7, s: 10.6,  sig: "ns",  clade: "F10", n: 2 }
+  ];
+  var colors = { F10: "#D55E00", F13: "#0072B2" };
+
+  // ---- Geometry ----
+  var W = 880, H = 540, mL = 210, mR = 90, mT = 36, mB = 60;
+  var pW = W - mL - mR, pH = H - mT - mB;
+  var xMax = 110;
+  var X = function (v) { return mL + v / xMax * pW; };
+  var rowH = pH / data.length;
+
+  var svg = document.getElementById("chart");
+  var NS = "http://www.w3.org/2000/svg";
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+
+  // ---- Vertical gridlines + x-axis ----
+  [0, 25, 50, 75, 100].forEach(function (v) {
+    svg.appendChild(el("line", { class: "grid", x1: X(v), y1: mT, x2: X(v), y2: mT + pH }));
+    svg.appendChild(el("line", { class: "tick", x1: X(v), y1: mT + pH, x2: X(v), y2: mT + pH + 5 }));
+    var t = el("text", { class: "tick-lbl", x: X(v), y: mT + pH + 22, "text-anchor": "middle" });
+    t.textContent = "+" + v + "%"; svg.appendChild(t);
+  });
+  svg.appendChild(el("line", { class: "ax-line", x1: X(0), y1: mT, x2: X(0), y2: mT + pH }));
+  var xt = el("text", { class: "ax-title", x: mL + pW / 2, y: H - 12, "text-anchor": "middle" });
+  xt.textContent = "Synergy index S  (observed vs additive expectation)"; svg.appendChild(xt);
+
+  // ---- Rows ----
+  var bars = [], vals = [];
+  data.forEach(function (d, i) {
+    var cy = mT + rowH * i + rowH / 2;
+    var c = colors[d.clade];
+    var barH = Math.min(26, rowH * 0.62);
+
+    var nm = el("text", { class: "row-name", x: mL - 14, y: cy - 2, "text-anchor": "end" });
+    nm.textContent = d.name; svg.appendChild(nm);
+    var sub = el("text", { class: "row-sub", x: mL - 14, y: cy + 13, "text-anchor": "end" });
+    sub.textContent = d.clade + " \u00b7 " + d.n + "-strain"; svg.appendChild(sub);
+
+    var r = el("rect", { x: X(0), y: cy - barH / 2, width: 0, height: barH, rx: 3, fill: c });
+    r.style.transition = "width 0.95s cubic-bezier(.2,.7,.2,1)";
+    r.style.transitionDelay = (0.12 + i * 0.09) + "s";
+    svg.appendChild(r);
+    bars.push({ r: r, w: X(d.s) - X(0) });
+
+    var vl = el("text", { class: "bar-val", x: X(d.s) + 10, y: cy + 4, "text-anchor": "start", fill: c });
+    vl.textContent = "+" + d.s.toFixed(0) + "%" + (d.sig === "ns" ? " n.s." : "");
+    vl.style.opacity = 0; vl.style.transition = "opacity 0.4s ease";
+    svg.appendChild(vl); vals.push(vl);
+  });
+
+  // ---- Animation ----
+  var played = false;
+  function play() {
+    if (played) return; played = true;
+    bars.forEach(function (b) { b.r.setAttribute("width", b.w); });
+    setTimeout(function () {
+      vals.forEach(function (v) { v.style.opacity = 1; });
+    }, 120 + data.length * 90 + 500);
+  }
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { play(); obs.disconnect(); } });
+    }, { threshold: 0.3 });
+    obs.observe(svg);
+    setTimeout(function () { if (!played) play(); }, 1200);
+  } else { play(); }
+})();
+</script>
+
+</body>
+</html>

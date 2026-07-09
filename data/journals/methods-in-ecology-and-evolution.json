@@ -1,0 +1,15 @@
+{
+  "id": "methods-in-ecology-and-evolution",
+  "title": "Methods in Ecology and Evolution",
+  "publisher": "Wiley (on behalf of BES)",
+  "canvas": { "single_column_mm": 80, "double_column_mm": 168, "max_height_mm": 225 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 1200 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 600 },
+  "formats_accepted": ["pdf", "eps", "tiff"],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "British Ecological Society / Wiley figure spec. Maps are combination figures -> vector PDF or 600 dpi raster. Single column ~80 mm, double column ~168 mm.",
+  "source_url": "https://besjournals.onlinelibrary.wiley.com/hub/journal/2041210x/author-guidelines",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

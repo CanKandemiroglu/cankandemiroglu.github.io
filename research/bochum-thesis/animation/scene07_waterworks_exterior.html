@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scene 7 &mdash; Waterworks exterior approach | Niederrhein nickel project</title>
+  <style>
+    :root {
+      --bg: #fbfbfd;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --hairline: #d2d2d7;
+      --card: #fff;
+      --nickel: #D55E00;
+      --breyell: #0072B2;
+      --kaldenkirchen: #E69F00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .scene {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 32px 60px;
+    }
+    .eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 22px;
+    }
+    .lead {
+      font-size: clamp(17px, 2vw, 21px);
+      color: var(--muted);
+      max-width: 65ch;
+      margin-bottom: 40px;
+    }
+    .viewport {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07);
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #0d0d10;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .stage-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* Building sits roughly in the upper-centre of the frame; bias the crop accordingly */
+      object-position: center 35%;
+      transform: scale(1.0);
+      transform-origin: 50% 40%;
+      transition: transform 9s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform, filter;
+    }
+    .stage-img.dollying {
+      /* Forward dolly: gentle scale increase, simulating approach to the building */
+      transform: scale(1.12);
+    }
+    .stage-img.stylised {
+      filter: saturate(0.78) brightness(1.04) hue-rotate(-4deg);
+    }
+    /* Pointer indicating the treatment-hall building */
+    .pointer {
+      position: absolute;
+      top: 52%;
+      left: 47%;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pointer.visible { opacity: 1; }
+    .pointer-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      margin: -5px;
+      background: var(--breyell);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(0, 114, 178, 0.25);
+    }
+    .pointer-label {
+      position: absolute;
+      top: -8px;
+      left: 28px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.55);
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .photo-caption {
+      position: absolute;
+      bottom: 16px;
+      left: 18px;
+      right: 18px;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.7s, transform 0.7s;
+      pointer-events: none;
+    }
+    .photo-caption.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .photo-caption .h {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+      color: #fff;
+    }
+    .stage-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding: 0 6px;
+    }
+    .stage-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .stage-label .num { color: var(--ink); font-weight: 600; }
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 22px;
+      border: 1px solid var(--hairline);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    button:hover { background: #f5f5f7; border-color: #b8b8be; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .caption {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 80ch;
+      border-top: 1px solid var(--hairline);
+      padding-top: 22px;
+      margin-top: 32px;
+    }
+    .caption strong { color: var(--ink); font-weight: 600; }
+    @media (max-width: 720px) {
+      .scene { padding: 48px 20px 40px; }
+      .pointer { width: 60px; height: 60px; left: 44%; }
+      .pointer-label { font-size: 11px; }
+      .photo-caption { font-size: 12px; bottom: 12px; left: 14px; right: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stage-img, .pointer, .photo-caption {
+        transition: none !important;
+      }
+      .stage-img.dollying { transform: scale(1.0); }
+    }
+  </style>
+</head>
+<body>
+  <section class="scene">
+    <div class="eyebrow">Scene 7 &middot; Waterworks exterior approach</div>
+    <h1>The raw water arrives at the treatment hall.</h1>
+    <p class="lead">
+      After travelling through the buried pipeline from Tiefbrunnen&nbsp;2, the raw groundwater reaches the treatment hall of Wasserwerk Breyell (Lobberich). The transition from outdoor to indoor framing marks the boundary between the field-scale mobilisation processes (Scenes&nbsp;2&ndash;6) and the chemical immobilisation processes within the filter train (Scenes&nbsp;8&ndash;9).
+    </p>
+
+    <div class="viewport">
+      <div class="stage-container" id="stageContainer">
+        <img id="stageImg" class="stage-img"
+             src="assets/L01.png"
+             alt="Photograph of the Wasserwerk Breyell treatment hall taken from the boundary of the property. A maize crop fills the foreground; a chain-link fence with blue mesh sections runs along the left side. The white treatment-hall building stands at the edge of the field with three windows visible on its facade and a treeline behind. The sky is partly cloudy. Photograph by Osman Can Kandemiroglu.">
+        <div class="pointer" id="pointer">
+          <span class="pointer-dot"></span>
+          <span class="pointer-label">treatment hall</span>
+        </div>
+        <div class="photo-caption" id="photoCaption">
+          <div class="h">Wasserwerk Breyell (Lobberich) treatment hall</div>
+          Pre-filter and post-filter stages are housed inside the building. Raw water enters from the buried pipeline.
+        </div>
+      </div>
+
+      <div class="stage-meta">
+        <div class="stage-label">
+          <span class="num">7</span> &middot; waterworks exterior approach
+        </div>
+      </div>
+
+      <div class="controls">
+        <button onclick="play()" id="btnPlay">&#9654; Play</button>
+        <button onclick="reset()">&#8635; Reset</button>
+      </div>
+    </div>
+
+    <div class="caption">
+      <strong>Figure (Scene 7).</strong> Photograph of the Wasserwerk Breyell (Lobberich) treatment hall taken from the perimeter of the well-field property, Niederrhein, Germany. The maize crop in the foreground reproduces the agricultural land-use context established in Scene&nbsp;1; the building behind the fence houses the two-stage filter train (Druckfilter and spray-aerated open Nachfilter) examined in Scene&nbsp;8 and the spent-filter sampling campaigns documented in thesis Abb.&nbsp;4.3 to Abb.&nbsp;4.7 (Kandemiroglu, 2011). Photograph by Osman Can Kandemiroglu.
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var img = document.getElementById('stageImg');
+      var pointer = document.getElementById('pointer');
+      var caption = document.getElementById('photoCaption');
+      var container = document.getElementById('stageContainer');
+      var btnPlay = document.getElementById('btnPlay');
+      var played = false;
+      var timeouts = [];
+
+      function clearTimeouts() {
+        for (var i = 0; i < timeouts.length; i++) clearTimeout(timeouts[i]);
+        timeouts = [];
+      }
+
+      function play() {
+        if (played) return;
+        played = true;
+        btnPlay.disabled = true;
+        timeouts.push(setTimeout(function () {
+          img.classList.add('dollying');
+        }, 200));
+        timeouts.push(setTimeout(function () {
+          pointer.classList.add('visible');
+        }, 2400));
+        timeouts.push(setTimeout(function () {
+          caption.classList.add('visible');
+        }, 3600));
+        timeouts.push(setTimeout(function () {
+          img.classList.add('stylised');
+        }, 6500));
+      }
+
+      function reset() {
+        clearTimeouts();
+        played = false;
+        btnPlay.disabled = false;
+        img.classList.remove('dollying');
+        img.classList.remove('stylised');
+        pointer.classList.remove('visible');
+        caption.classList.remove('visible');
+      }
+
+      window.play = play;
+      window.reset = reset;
+
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting && !played) {
+              play();
+              io.disconnect();
+            }
+          }
+        }, { threshold: 0.3 });
+        io.observe(container);
+      }
+
+      setTimeout(function () { if (!played) play(); }, 1200);
+    })();
+  </script>
+</body>
+</html>

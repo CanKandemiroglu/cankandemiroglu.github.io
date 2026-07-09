@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 26/27 — Phosphate gradient degradation</title>
+<style>
+  :root {
+    --bg: #fbfbfd; --ink: #1d1d1f; --muted: #6e6e73;
+    --axis: #1d1d1f; --bc: #009E73; --ag: #0072B2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .section { max-width: 1040px; margin: 0 auto; padding: 80px 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; max-width: 21ch;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px); line-height: 1.5;
+    color: var(--muted); max-width: 64ch; margin-bottom: 28px;
+  }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 40px; margin: 32px 0 8px; }
+  .stat .num { font-size: clamp(32px, 5vw, 48px); font-weight: 600; letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 14px; color: var(--muted); margin-top: 2px; max-width: 24ch; }
+  .stage {
+    width: 100%; border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+    padding: 24px; margin-top: 8px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .ax-line { stroke: var(--axis); stroke-width: 1; }
+  .tick { stroke: var(--axis); stroke-width: 1; }
+  .tick-lbl { fill: var(--muted); font-size: 13px; }
+  .ax-title { fill: var(--ink); font-size: 14px; font-weight: 500; }
+  .ref { stroke: #cfcfd2; stroke-width: 1; stroke-dasharray: 4 3; }
+  .bar-bc { fill: var(--bc); }
+  .bar-ag { fill: var(--ag); }
+  .val { font-size: 13px; font-weight: 600; }
+  .sig { font-size: 13px; font-weight: 600; fill: var(--ink); }
+  .fold { font-size: 12px; font-style: italic; fill: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 18px; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .legend .sq { width: 13px; height: 13px; border-radius: 3px; }
+  .caption {
+    margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 80ch;
+  }
+  .caption b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="eyebrow">Figure 26 / 27 · Result 2</div>
+  <h1>Phosphate is the switch that turns the broadcaster advantage on and off.</h1>
+  <p class="lead">
+    Six <i>Vibrio</i> strains degraded alginate particles across a phosphate
+    gradient. The gap between broadcasters and aggregators opens at intermediate
+    phosphate and closes at both extremes.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">2.1&times;</div><div class="lbl">broadcaster advantage at 0.2&nbsp;mM phosphate (82.5% vs 39.3%)</div></div>
+    <div class="stat"><div class="num">n.s.</div><div class="lbl">advantage at 0&nbsp;mM &mdash; phosphate depletion erases it</div></div>
+    <div class="stat"><div class="num">338</div><div class="lbl">particles tracked over 24.6 days</div></div>
+  </div>
+
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 900 540" role="img"
+         aria-label="Median volume reduction by phosphate level and secretion strategy"></svg>
+    <div class="legend">
+      <div class="item"><span class="sq" style="background:var(--bc)"></span>Broadcasters (12B01, 13B01)</div>
+      <div class="item"><span class="sq" style="background:var(--ag)"></span>Aggregators (ZF270, 9ZC77, 9ZC13, ZF57)</div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <b>Enzyme secretion strategy determines degradation rate in a
+    phosphate-dependent manner.</b> Median volume reduction (&Delta;V%,
+    T0&rarr;T2) of alginate particles pooled by secretion strategy &mdash;
+    broadcaster (green, n&nbsp;=&nbsp;92) and aggregator (blue,
+    n&nbsp;=&nbsp;246) &mdash; across a KH&#8322;PO&#8324; gradient (0, 0.05, 0.2,
+    0.4&nbsp;mM) in MMM-0-NC medium, 589.78&nbsp;h incubation. Bars show the
+    group median; italic values give the broadcaster/aggregator fold difference;
+    significance from two-sided Mann&ndash;Whitney <i>U</i> tests
+    (n.s. not significant, ** P&nbsp;&lt;&nbsp;0.01, *** P&nbsp;&lt;&nbsp;0.001).
+    The advantage peaks at 0.2&nbsp;mM and is statistically absent at both 0 and
+    0.4&nbsp;mM &mdash; phosphate acts as a specific metabolic switch rather than
+    a general nutrient signal.
+  </p>
+</div>
+
+<script>
+(function () {
+  // ---- Pooled medians by strategy and phosphate level (ADE-III) ----
+  var levels = [
+    { p: "0",    bc: 41.8, ag: 35.3, fold: "1.2\u00d7", sig: "n.s." },
+    { p: "0.05", bc: 58.8, ag: 29.9, fold: "2.0\u00d7", sig: "**"   },
+    { p: "0.2",  bc: 82.5, ag: 39.3, fold: "2.1\u00d7", sig: "***"  },
+    { p: "0.4",  bc: 66.9, ag: 54.2, fold: "1.2\u00d7", sig: "n.s." }
+  ];
+
+  // ---- Geometry ----
+  var W = 900, H = 540, mL = 70, mR = 28, mT = 56, mB = 80;
+  var pW = W - mL - mR, pH = H - mT - mB;
+  var yMax = 100;
+  var Y = function (v) { return mT + pH - v / yMax * pH; };
+
+  var svg = document.getElementById("chart");
+  var NS = "http://www.w3.org/2000/svg";
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+
+  // ---- Axes ----
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT + pH, x2: mL + pW, y2: mT + pH }));
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT, x2: mL, y2: mT + pH }));
+  [0, 20, 40, 60, 80, 100].forEach(function (v) {
+    svg.appendChild(el("line", { class: "tick", x1: mL - 5, y1: Y(v), x2: mL, y2: Y(v) }));
+    var t = el("text", { class: "tick-lbl", x: mL - 11, y: Y(v) + 4, "text-anchor": "end" });
+    t.textContent = v; svg.appendChild(t);
+  });
+  var yt = el("text", { class: "ax-title", x: 20, y: mT + pH / 2,
+    "text-anchor": "middle", transform: "rotate(-90 20 " + (mT + pH / 2) + ")" });
+  yt.textContent = "Median volume reduction (%)"; svg.appendChild(yt);
+  var xt = el("text", { class: "ax-title", x: mL + pW / 2, y: H - 12, "text-anchor": "middle" });
+  xt.textContent = "KH\u2082PO\u2084 concentration (mM)"; svg.appendChild(xt);
+
+  // ---- Bar groups ----
+  var groupW = pW / levels.length;
+  var barW = 56, gap = 14;
+  var bars = [], labels = [];
+
+  levels.forEach(function (L, i) {
+    var cx = mL + groupW * i + groupW / 2;
+    var xBc = cx - barW - gap / 2, xAg = cx + gap / 2;
+
+    // x tick label
+    var xl = el("text", { class: "tick-lbl", x: cx, y: mT + pH + 24, "text-anchor": "middle" });
+    xl.textContent = L.p; svg.appendChild(xl);
+
+    [["bc", xBc, L.bc, "#009E73"], ["ag", xAg, L.ag, "#0072B2"]].forEach(function (b) {
+      var fullY = Y(b[2]), h = mT + pH - fullY;
+      var r = el("rect", { class: b[0] === "bc" ? "bar-bc" : "bar-ag",
+        x: b[1], y: mT + pH, width: barW, height: 0, rx: 3 });
+      svg.appendChild(r);
+      bars.push({ r: r, y: fullY, h: h });
+      var vl = el("text", { class: "val", x: b[1] + barW / 2, y: fullY - 8,
+        "text-anchor": "middle", fill: b[3] });
+      vl.textContent = b[2].toFixed(1) + "%"; vl.style.opacity = 0;
+      vl.style.transition = "opacity 0.5s ease"; svg.appendChild(vl); labels.push(vl);
+    });
+
+    // significance bracket + fold
+    var topY = Math.min(Y(L.bc), Y(L.ag)) - 30;
+    var brG = el("g", {}); brG.style.opacity = 0; brG.style.transition = "opacity 0.5s ease";
+    brG.appendChild(el("line", { class: "ax-line", x1: xBc + barW / 2, y1: topY, x2: xAg + barW / 2, y2: topY }));
+    brG.appendChild(el("line", { class: "ax-line", x1: xBc + barW / 2, y1: topY, x2: xBc + barW / 2, y2: topY + 6 }));
+    brG.appendChild(el("line", { class: "ax-line", x1: xAg + barW / 2, y1: topY, x2: xAg + barW / 2, y2: topY + 6 }));
+    var st = el("text", { class: "sig", x: cx, y: topY - 6, "text-anchor": "middle" });
+    st.textContent = L.sig; brG.appendChild(st);
+    var fd = el("text", { class: "fold", x: cx, y: topY - 20, "text-anchor": "middle" });
+    fd.textContent = L.fold; brG.appendChild(fd);
+    svg.appendChild(brG); labels.push(brG);
+  });
+
+  // ---- Animation: bars grow, then values + brackets fade in ----
+  bars.forEach(function (b) {
+    b.r.style.transition = "y 0.9s cubic-bezier(.2,.7,.2,1), height 0.9s cubic-bezier(.2,.7,.2,1)";
+  });
+  var played = false;
+  function play() {
+    if (played) return; played = true;
+    bars.forEach(function (b, i) {
+      setTimeout(function () {
+        b.r.setAttribute("y", b.y); b.r.setAttribute("height", b.h);
+      }, 120 + i * 90);
+    });
+    setTimeout(function () {
+      labels.forEach(function (l) { l.style.opacity = 1; });
+    }, 120 + bars.length * 90 + 350);
+  }
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { play(); obs.disconnect(); } });
+    }, { threshold: 0.3 });
+    obs.observe(svg);
+    setTimeout(function () { if (!played) play(); }, 1200);
+  } else { play(); }
+})();
+</script>
+
+</body>
+</html>

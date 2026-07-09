@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure 3 · Raw-water nickel time series, BTB 2 and KTB 4 (1995–2008)</title>
+<style>
+  :root {
+    --bg:           #fbfbfd;
+    --ink:          #1d1d1f;
+    --ink-soft:     #424245;
+    --ink-mute:     #6e6e73;
+    --line:         #d2d2d7;
+    --line-faint:   #e8e8ed;
+    --grid:         #ececef;
+    --breyell:      #0072B2;
+    --kaldenkirchen:#E69F00;
+    --nickel:       #D55E00;
+    --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
+                 system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.003em;
+    padding: 22px 18px 28px;
+  }
+  .fig-wrap { max-width: 1100px; margin: 0 auto; }
+
+  .fig-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 6px;
+  }
+  .fig-title {
+    font-size: clamp(22px, 3.2vw, 32px);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 14px;
+    letter-spacing: -0.018em;
+    line-height: 1.18;
+  }
+  .fig-lead {
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+    max-width: 720px;
+  }
+
+  /* Stat row */
+  .stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px 38px;
+    margin: 0 0 22px;
+    padding: 0;
+    list-style: none;
+  }
+  .stat-row > .stat + .stat { margin-left: 0; }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0 38px 12px 0;
+  }
+  .stat-value {
+    display: block;
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-value.is-nickel { color: var(--nickel); }
+  .stat-label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.01em;
+    margin-top: 2px;
+  }
+
+  /* Chart card */
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--line-faint);
+    border-radius: 18px;
+    padding: 22px 22px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04),
+                0 6px 24px rgba(0,0,0,0.04);
+  }
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px 28px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 28px 4px 0;
+  }
+  .legend-item > * + * { margin-left: 8px; }
+  .legend-swatch {
+    display: inline-block;
+    width: 22px;
+    height: 3px;
+    border-radius: 1.5px;
+  }
+  .legend-swatch.is-marker {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px var(--breyell);
+    background: var(--breyell);
+  }
+  .legend-swatch.is-marker.is-kaldenkirchen {
+    box-shadow: 0 0 0 1px var(--kaldenkirchen);
+    background: var(--kaldenkirchen);
+  }
+  .legend-swatch.is-limit {
+    border-top: 2px dashed var(--ink);
+    height: 0;
+    background: none;
+    width: 26px;
+  }
+  svg.chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Caption */
+  .caption {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+    margin: 16px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line-faint);
+    max-width: 880px;
+  }
+  .caption strong { color: var(--ink-soft); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    body { padding: 16px 12px; }
+    .stat-row { gap: 18px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chart-anim { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div id="fig-wrap" class="fig-wrap">
+
+    <p class="fig-eyebrow">Result 1 · Figure 3 · Nickel time series, 1995–2008</p>
+    <h1 class="fig-title">Raw-water nickel at BTB 2 rose from 10 µg/L in 1995 to 58 µg/L in 2005, exceeding the 20 µg/L TrinkwV limit by a factor of 2.9.</h1>
+    <p class="fig-lead">
+      Routine monitoring at the two Stadtwerke Nettetal waterworks documented a sustained rise in
+      raw-water nickel concentrations from the mid-1990s onward. Wasserwerk Breyell production well
+      <strong>BTB 2</strong> began at 10 µg/L in 1995 (the laboratory limit of quantification),
+      crossed the 20 µg/L TrinkwV limit during the late 1990s, and reached <strong>58 µg/L</strong>
+      in 2005. Wasserwerk Kaldenkirchen production well <strong>KTB 4</strong> oscillated around the
+      limit and crossed it intermittently.
+    </p>
+
+    <ul class="stat-row">
+      <li class="stat">
+        <span class="stat-value is-nickel">58 µg/L</span>
+        <span class="stat-label">BTB 2 peak (2005)</span>
+      </li>
+      <li class="stat">
+        <span class="stat-value">20 µg/L</span>
+        <span class="stat-label">TrinkwV limit (Ni)</span>
+      </li>
+      <li class="stat">
+        <span class="stat-value">10 → 58 µg/L</span>
+        <span class="stat-label">BTB 2, 1995 → 2005</span>
+      </li>
+    </ul>
+
+    <div class="chart-card">
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-swatch is-marker" aria-hidden="true"></span>BTB 2 · Wasserwerk Breyell</span>
+        <span class="legend-item"><span class="legend-swatch is-marker is-kaldenkirchen" aria-hidden="true"></span>KTB 4 · Wasserwerk Kaldenkirchen</span>
+        <span class="legend-item"><span class="legend-swatch is-limit" aria-hidden="true"></span>20 µg/L · TrinkwV drinking-water limit</span>
+      </div>
+      <svg id="chart" class="chart" viewBox="0 0 800 480" role="img"
+           aria-label="Time-series of nickel concentration in raw water from Breyell well BTB 2 and Kaldenkirchen well KTB 4 between 1995 and 2009. The 20 µg/L drinking-water limit is shown as a dashed reference line. BTB 2 peaks at 61 µg/L in 2004.">
+        <!-- Chart axes, grid, lines, markers, callout — all built programmatically by JS below -->
+      </svg>
+    </div>
+
+    <p class="caption">
+      <strong>Nickel concentrations in raw water from Tiefbrunnen 2 (Wasserwerk Breyell,
+      BTB 2) and Tiefbrunnen 4 (Wasserwerk Kaldenkirchen, KTB 4), 1995–2008.</strong>
+      Routine raw-water samples drawn before treatment; n = 15 (BTB 2), n = 10 (KTB 4).
+      The dashed horizontal line marks the 20 µg/L nickel limit fixed by the German
+      Drinking Water Ordinance (<em>Trinkwasserverordnung</em> 2001, in force at the time
+      of the study; the limit remains 20 µg/L under the current TrinkwV). BTB 2 began
+      below the limit at 10 µg/L in 1995, rose past it through the late 1990s, and reached
+      its highest measured value of 58 µg/L in 2005. KTB 4 hovered close to the limit and
+      crossed it intermittently. Source: Kandemiroglu (2011), Abb. 1.1.&nbsp;*
+    </p>
+  </div>
+
+<script>
+  (function () {
+    'use strict';
+
+    // ===== Data (pixel-extracted from thesis Abb. 1.1, Kandemiroglu 2011) =====
+    // Each well has its own sampling dates. The two series are independent — no shared
+    // date column, no nulls. Both lines draw continuously through every measurement.
+    // Calibration: 9.35 px/µg/L vertically, 104.3 px/year horizontally on the source figure.
+    var btb2 = [
+      { year: 1995.4, val: 10 },
+      { year: 1997.6, val: 22 },
+      { year: 1998.0, val: 26 },
+      { year: 1998.5, val: 22 },
+      { year: 2001.0, val: 22 },
+      { year: 2003.7, val: 44 },
+      { year: 2004.5, val: 22 },
+      { year: 2005.5, val: 58 },   // peak
+      { year: 2005.9, val: 22 },
+      { year: 2006.4, val: 27 },
+      { year: 2006.8, val: 43 },
+      { year: 2007.4, val: 35 },
+      { year: 2007.7, val: 34 },
+      { year: 2008.3, val: 44 },
+      { year: 2008.7, val: 43 }
+    ];
+    var ktb4 = [
+      { year: 1995.3, val: 18 },
+      { year: 1997.6, val: 22 },
+      { year: 1998.0, val: 20 },
+      { year: 2000.9, val: 22 },
+      { year: 2003.7, val: 30 },
+      { year: 2006.5, val: 30 },
+      { year: 2006.8, val: 21 },
+      { year: 2007.3, val: 22 },
+      { year: 2007.7, val: 10 },
+      { year: 2008.3, val: 21 }
+    ];
+
+    // ===== Geometry =====
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var W = 800, H = 480;
+    var M = { top: 28, right: 36, bottom: 52, left: 60 };
+    var plotW = W - M.left - M.right;     // 704
+    var plotH = H - M.top - M.bottom;     // 400
+
+    var xMin = 1995, xMax = 2010;
+    var yMin = 0,    yMax = 70;
+
+    function x(year) { return M.left + (year - xMin) / (xMax - xMin) * plotW; }
+    function y(val)  { return M.top  + (yMax - val) / (yMax - yMin) * plotH; }
+
+    function el(name, attrs, parent) {
+      var n = document.createElementNS(SVG_NS, name);
+      if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(n);
+      return n;
+    }
+
+    var svg = document.getElementById('chart');
+
+    // ===== Grid =====
+    var gGrid = el('g', { 'class': 'grid' }, svg);
+    for (var v = 0; v <= 70; v += 10) {
+      el('line', {
+        x1: M.left, x2: W - M.right,
+        y1: y(v),   y2: y(v),
+        stroke: '#ececef',
+        'stroke-width': 1
+      }, gGrid);
+    }
+
+    // ===== Axes =====
+    // x-axis baseline (at y = 0)
+    el('line', {
+      x1: M.left, x2: W - M.right,
+      y1: y(0),   y2: y(0),
+      stroke: '#1d1d1f', 'stroke-width': 1.2
+    }, svg);
+    // y-axis
+    el('line', {
+      x1: M.left,    x2: M.left,
+      y1: M.top - 4, y2: y(0),
+      stroke: '#1d1d1f', 'stroke-width': 1.2
+    }, svg);
+
+    // ===== Axis ticks + labels =====
+    var xTicks = [1995, 2000, 2005, 2010];
+    xTicks.forEach(function (t) {
+      var xp = x(t);
+      el('line', {
+        x1: xp, x2: xp,
+        y1: y(0), y2: y(0) + 5,
+        stroke: '#1d1d1f', 'stroke-width': 1.2
+      }, svg);
+      var txt = el('text', {
+        x: xp, y: y(0) + 22,
+        'text-anchor': 'middle',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245'
+      }, svg);
+      txt.textContent = t;
+    });
+    // x-axis title
+    var xTitle = el('text', {
+      x: M.left + plotW / 2,
+      y: H - 8,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    xTitle.textContent = 'Year';
+
+    var yTicks = [0, 10, 20, 30, 40, 50, 60, 70];
+    yTicks.forEach(function (t) {
+      var yp = y(t);
+      el('line', {
+        x1: M.left - 5, x2: M.left,
+        y1: yp, y2: yp,
+        stroke: '#1d1d1f', 'stroke-width': 1.2
+      }, svg);
+      var txt = el('text', {
+        x: M.left - 9, y: yp + 4,
+        'text-anchor': 'end',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245',
+        'font-variant-numeric': 'tabular-nums'
+      }, svg);
+      txt.textContent = t;
+    });
+    // y-axis title
+    var yTitle = el('text', {
+      x: -(M.top + plotH / 2),
+      y: 18,
+      transform: 'rotate(-90)',
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    yTitle.textContent = 'Nickel concentration [µg/L]';
+
+    // ===== 20 µg/L limit line (drawn here so it sits BEHIND data; label drawn LATER so it sits ON TOP) =====
+    var limitY = y(20);
+    var limitLine = el('line', {
+      x1: M.left, x2: W - M.right,
+      y1: limitY, y2: limitY,
+      stroke: '#1d1d1f',
+      'stroke-width': 1.5,
+      'stroke-dasharray': '6 4',
+      'class': 'chart-anim limit-line'
+    }, svg);
+
+    // ===== Build series paths (each series is continuous — no nulls) =====
+    function buildPath(series) {
+      return series.map(function (p, i) {
+        return (i === 0 ? 'M ' : 'L ') + x(p.year).toFixed(2) + ' ' + y(p.val).toFixed(2);
+      }).join(' ');
+    }
+
+    var btb2Path = el('path', {
+      d: buildPath(btb2),
+      fill: 'none',
+      stroke: '#0072B2',
+      'stroke-width': 2.4,
+      'stroke-linejoin': 'round',
+      'stroke-linecap': 'round',
+      'class': 'chart-anim line-btb2'
+    }, svg);
+
+    var ktb4Path = el('path', {
+      d: buildPath(ktb4),
+      fill: 'none',
+      stroke: '#E69F00',
+      'stroke-width': 2.4,
+      'stroke-linejoin': 'round',
+      'stroke-linecap': 'round',
+      'class': 'chart-anim line-ktb4'
+    }, svg);
+
+    // ===== Markers (drawn AFTER lines so they sit on top) =====
+    function addMarkers(series, color, focal) {
+      var g = el('g', { 'class': 'markers chart-anim' }, svg);
+      series.forEach(function (p, i) {
+        var c = el('circle', {
+          cx: x(p.year),
+          cy: y(p.val),
+          r: focal && p.year === 2005.5 ? 5.2 : 3.6,
+          fill: '#fff',
+          stroke: color,
+          'stroke-width': 2,
+          'data-year': p.year,
+          'data-val':  p.val,
+          'data-well': series === btb2 ? 'BTB 2' : 'KTB 4'
+        }, g);
+        c._delay = i * 60;
+      });
+      return g;
+    }
+    var btb2Markers = addMarkers(btb2, '#0072B2', true);
+    var ktb4Markers = addMarkers(ktb4, '#E69F00', false);
+
+    // ===== Limit label (drawn AFTER series + markers so it sits ON TOP of any crossing data line) =====
+    el('rect', {
+      x: M.left + 4, y: limitY - 18,
+      width: 144, height: 16,
+      fill: '#fff',
+      'class': 'chart-anim limit-label-bg'
+    }, svg);
+    var limitLabel = el('text', {
+      x: M.left + 8,
+      y: limitY - 6,
+      'text-anchor': 'start',
+      'font-size': 11.5, 'font-weight': 600,
+      fill: '#1d1d1f',
+      'class': 'chart-anim'
+    }, svg);
+    limitLabel.textContent = '20 µg/L · TrinkwV limit';
+
+    // ===== Peak callout (BTB 2 at 2005.5, 58 µg/L) =====
+    var pxPeak = x(2005.5), pyPeak = y(58);
+    var calloutG = el('g', { 'class': 'chart-anim callout' }, svg);
+    // leader: from above-right of the peak marker, angled upward
+    el('line', {
+      x1: pxPeak + 6, y1: pyPeak - 4,
+      x2: pxPeak + 64, y2: pyPeak - 36,
+      stroke: '#D55E00', 'stroke-width': 1.5,
+      'stroke-linecap': 'round'
+    }, calloutG);
+    var calloutBg = el('rect', {
+      x: pxPeak + 60, y: pyPeak - 64,
+      width: 200, height: 50,
+      rx: 8, ry: 8,
+      fill: '#fff', stroke: '#D55E00', 'stroke-width': 1.5
+    }, calloutG);
+    var calloutT1 = el('text', {
+      x: pxPeak + 70, y: pyPeak - 42,
+      'font-size': 14, 'font-weight': 700,
+      fill: '#D55E00'
+    }, calloutG);
+    calloutT1.textContent = '58 µg/L · ~3× the limit';
+    var calloutT2 = el('text', {
+      x: pxPeak + 70, y: pyPeak - 24,
+      'font-size': 11.5, 'font-weight': 500,
+      fill: '#6e6e73'
+    }, calloutG);
+    calloutT2.textContent = 'BTB 2, 2005 — the peak';
+
+    // ===== Tooltip (one shared element) =====
+    var tipG = el('g', { 'class': 'tooltip', opacity: 0, 'pointer-events': 'none' }, svg);
+    var tipBg = el('rect', {
+      x: 0, y: 0, width: 130, height: 44,
+      rx: 8, ry: 8,
+      fill: 'rgba(29, 29, 31, 0.92)'
+    }, tipG);
+    var tipT1 = el('text', {
+      x: 10, y: 18,
+      'font-size': 12, 'font-weight': 600,
+      fill: '#fff'
+    }, tipG);
+    var tipT2 = el('text', {
+      x: 10, y: 34,
+      'font-size': 11, 'font-weight': 500,
+      fill: 'rgba(255,255,255,0.78)'
+    }, tipG);
+
+    function showTip(circle) {
+      var cx = +circle.getAttribute('cx');
+      var cy = +circle.getAttribute('cy');
+      var year = +circle.getAttribute('data-year');
+      var val = +circle.getAttribute('data-val');
+      var well = circle.getAttribute('data-well');
+      tipT1.textContent = well + ' · ' + val + ' µg/L';
+      // Format year: 2004.5 → "2004 (Jul)"; integer year unchanged
+      var disp = (year % 1 === 0) ? '' + year :
+                 Math.floor(year) + ' (' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Math.min(11, Math.floor((year % 1) * 12))] + ')';
+      tipT2.textContent = disp;
+      // Position to the right; flip left if too close to the right edge
+      var tipX = cx + 12, tipY = cy - 50;
+      if (tipX + 130 > W - 4) tipX = cx - 142;
+      if (tipY < 4) tipY = cy + 14;
+      tipG.setAttribute('transform', 'translate(' + tipX + ',' + tipY + ')');
+      tipG.setAttribute('opacity', 1);
+    }
+    function hideTip() {
+      tipG.setAttribute('opacity', 0);
+    }
+
+    // Wire up hover/focus on each marker
+    [btb2Markers, ktb4Markers].forEach(function (g) {
+      g.querySelectorAll('circle').forEach(function (c) {
+        c.style.cursor = 'pointer';
+        c.addEventListener('mouseenter', function () { showTip(c); });
+        c.addEventListener('mouseleave', hideTip);
+        c.addEventListener('focus',      function () { showTip(c); });
+        c.addEventListener('blur',       hideTip);
+        c.setAttribute('tabindex', '0');
+      });
+    });
+
+    // ===== Animation =====
+    // Strategy: every element renders visibly by default (so static screenshots / no-JS
+    // environments look fine). play() hides them briefly via inline styles, then reveals
+    // them with a transition. If play() never fires, the chart still looks complete.
+    var played = false;
+    function play() {
+      if (played) return;
+      played = true;
+
+      var ease = getComputedStyle(document.body).getPropertyValue('--ease') || 'cubic-bezier(0.16,1,0.3,1)';
+
+      // 1. Limit line — stroke-dashoffset reveal (left → right, 420 ms)
+      try {
+        var llen = (W - M.right) - M.left;  // plot width
+        limitLine.style.strokeDasharray  = '6 4, ' + llen;
+        limitLine.style.strokeDashoffset = llen;
+        limitLine.getBoundingClientRect();  // reflow
+        limitLine.style.transition = 'stroke-dashoffset 420ms ' + ease;
+        limitLine.style.strokeDashoffset = '0';
+      } catch (e) { /* fallback: line just stays visible */ }
+
+      // Limit label — fade in (or stays visible if transition not supported)
+      limitLabel.style.opacity = 0;
+      setTimeout(function () {
+        limitLabel.style.transition = 'opacity 0.36s ' + ease;
+        limitLabel.style.opacity = 1;
+      }, 380);
+
+      // 2. Series lines — draw left→right
+      setTimeout(function () {
+        [btb2Path, ktb4Path].forEach(function (p) {
+          try {
+            var len = p.getTotalLength();
+            p.style.strokeDasharray = len;
+            p.style.strokeDashoffset = len;
+            p.getBoundingClientRect();
+            p.style.transition = 'stroke-dashoffset 1100ms ' + ease;
+            p.style.strokeDashoffset = '0';
+          } catch (e) { /* fallback: line stays visible */ }
+        });
+      }, 420);
+
+      // 3. Markers — pop in by scaling from 0 → 1 (briefly hide then transition back)
+      setTimeout(function () {
+        [btb2Markers, ktb4Markers].forEach(function (g) {
+          g.querySelectorAll('circle').forEach(function (c) {
+            var d = c._delay || 0;
+            c.style.transformBox = 'fill-box';
+            c.style.transformOrigin = 'center';
+            c.style.transform = 'scale(0)';
+            c.style.opacity = 0;
+            setTimeout(function () {
+              c.style.transition = 'transform 0.34s ' + ease + ', opacity 0.28s ' + ease;
+              c.style.transform = 'scale(1)';
+              c.style.opacity = 1;
+            }, d);
+          });
+        });
+      }, 1450);
+
+      // 4. Callout fades in last
+      setTimeout(function () {
+        calloutG.style.opacity = 0;
+        calloutG.getBoundingClientRect();
+        calloutG.style.transition = 'opacity 0.42s ' + ease;
+        calloutG.style.opacity = 1;
+      }, 2300);
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) play(); });
+      }, { threshold: 0.3 });
+      io.observe(svg);
+    }
+    setTimeout(play, 1200);
+  })();
+</script>
+</body>
+</html>

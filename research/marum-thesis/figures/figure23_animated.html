@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 23 — Secretion strategy determines degradation</title>
+<style>
+  :root {
+    --bg: #fbfbfd; --ink: #1d1d1f; --muted: #6e6e73;
+    --axis: #1d1d1f;
+    --bc: #E05040; --ag: #00BCD4; --co: #5C6BC0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .section { max-width: 1040px; margin: 0 auto; padding: 80px 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; max-width: 22ch;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px); line-height: 1.5;
+    color: var(--muted); max-width: 62ch; margin-bottom: 28px;
+  }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 40px; margin: 32px 0 8px; }
+  .stat .num { font-size: clamp(32px, 5vw, 48px); font-weight: 600; letter-spacing: -0.02em; }
+  .stat .num.bc { color: var(--bc); }
+  .stat .num.ag { color: var(--ag); }
+  .stat .lbl { font-size: 14px; color: var(--muted); margin-top: 2px; max-width: 22ch; }
+  .stage {
+    width: 100%; border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+    padding: 24px; margin-top: 8px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .ax-line { stroke: var(--axis); stroke-width: 1; }
+  .tick { stroke: var(--axis); stroke-width: 1; }
+  .tick-lbl { fill: var(--muted); font-size: 12px; }
+  .tick-sub { fill: #a1a1a6; font-size: 10px; }
+  .ax-title { fill: var(--ink); font-size: 14px; font-weight: 500; }
+  .ref { stroke: #cfcfd2; stroke-width: 1; stroke-dasharray: 4 3; }
+  .sep { stroke: #e2e2e4; stroke-width: 1; stroke-dasharray: 2 3; }
+  .grp-lbl { font-size: 13px; font-weight: 700; }
+  .err { stroke-width: 1.6; }
+  .legend { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 18px; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .legend .dot { width: 13px; height: 13px; border-radius: 50%; }
+  .caption {
+    margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 80ch;
+  }
+  .caption b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="eyebrow">Figure 23 · Result 1</div>
+  <h1>How a strain releases its enzymes predicts how fast it degrades.</h1>
+  <p class="lead">
+    Seven <i>Vibrio</i> strains and three consortia, each given alginate
+    particles as the sole carbon source. Broadcasters &mdash; which release
+    enzymes into the water &mdash; outpace aggregators, which keep enzymes at
+    the cell surface.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num bc">78.1%</div><div class="lbl">mean degradation by broadcasters (n&nbsp;=&nbsp;60)</div></div>
+    <div class="stat"><div class="num ag">50.5%</div><div class="lbl">mean degradation by aggregators (n&nbsp;=&nbsp;55)</div></div>
+    <div class="stat"><div class="num">P &lt; 0.001</div><div class="lbl">Welch's t-test, broadcasters vs aggregators</div></div>
+  </div>
+
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 920 540" role="img"
+         aria-label="Volume reduction by strain and consortium"></svg>
+    <div class="legend">
+      <div class="item"><span class="dot" style="background:var(--bc)"></span>Broadcasters</div>
+      <div class="item"><span class="dot" style="background:var(--ag)"></span>Aggregators</div>
+      <div class="item"><span class="dot" style="background:var(--co)"></span>Consortia</div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <b>Secretion strategy determines individual strain degradation efficiency.</b>
+    Volume reduction (%) of alginate particles after ~218&nbsp;h of incubation
+    with individual <i>Vibrio</i> strains and functional consortia in MMM-0-NC
+    medium, alginate as the sole carbon source. Each small dot is one tracked
+    particle; the large circle with error bars shows mean&nbsp;&plusmn;&nbsp;s.e.m.
+    Strains are grouped by enzyme-secretion phenotype &mdash; broadcasters
+    (12B01, 13B01, 1F157), aggregators (ZF270, 9ZC77, 9ZC13, ZF57) &mdash; and
+    three consortia: broadcaster (BC), aggregator (AC) and full community (FC).
+    Volume reduction assumes spherical geometry. The dashed line marks 50%
+    reduction. Dots, mean markers and error bars draw in sequence as the figure
+    is viewed; in this static preview the final state is shown.
+  </p>
+</div>
+
+<script>
+(function () {
+  // ---- Per-treatment data (volume reduction %, computed from raw diameters) ----
+  var D = {
+    "12B01": {g:"bc", n:24, mean:76.97, sem:1.04, pts:[76.79,82.39,75.62,78.41,67.20,82.66,79.49,76.01,71.06,70.41,77.69,80.42,66.82,82.61,83.38,78.90,73.49,82.65,83.89,78.04,74.80,77.59,69.27,77.77]},
+    "13B01": {g:"bc", n:19, mean:77.41, sem:7.12, pts:[84.46,79.25,83.22,85.80,82.02,78.74,87.77,87.11,84.92,83.87,84.64,87.84,88.19,80.66,90.76,80.14,-49.96,83.15,88.21]},
+    "1F157": {g:"bc", n:17, mean:80.51, sem:0.81, pts:[78.39,80.10,77.22,74.64,84.00,82.61,85.91,84.41,80.50,83.83,80.05,81.06,75.50,82.63,81.44,75.65,80.73]},
+    "ZF270": {g:"ag", n:22, mean:27.95, sem:2.36, pts:[39.75,30.06,33.40,32.81,42.85,34.25,38.63,28.37,26.53,26.58,38.69,24.80,0.92,12.00,26.15,28.54,24.89,28.25,29.37,31.80,36.33,0.00]},
+    "9ZC77": {g:"ag", n:5,  mean:73.47, sem:2.43, pts:[78.90,64.53,74.21,73.40,76.30]},
+    "9ZC13": {g:"ag", n:14, mean:77.09, sem:2.11, pts:[75.04,82.85,80.61,54.92,78.70,74.06,72.60,75.51,71.01,78.72,81.88,86.11,82.42,84.78]},
+    "ZF57":  {g:"ag", n:14, mean:51.32, sem:4.96, pts:[18.81,22.26,61.97,72.60,69.78,61.18,58.15,34.08,72.33,66.11,34.80,37.49,48.23,60.67]},
+    "BC":    {g:"co", n:7,  mean:78.51, sem:2.11, pts:[84.26,80.86,74.24,68.02,81.37,82.02,78.77]},
+    "AC":    {g:"co", n:6,  mean:21.24, sem:6.40, pts:[22.73,10.25,9.81,39.05,40.86,4.75]},
+    "FC":    {g:"co", n:10, mean:74.61, sem:2.82, pts:[50.52,71.40,78.01,77.66,77.23,78.92,79.41,75.59,82.02,75.35]}
+  };
+  var order = ["12B01","13B01","1F157","ZF270","9ZC77","9ZC13","ZF57","BC","AC","FC"];
+  var xpos  = {"12B01":0,"13B01":1,"1F157":2,"ZF270":3.5,"9ZC77":4.5,"9ZC13":5.5,"ZF57":6.5,"BC":8.5,"AC":9.5,"FC":10.5};
+  var colors = { bc:"#E05040", ag:"#00BCD4", co:"#5C6BC0" };
+
+  // ---- Geometry ----
+  var W=920, H=540, mL=70, mR=24, mT=54, mB=72;
+  var pW=W-mL-mR, pH=H-mT-mB;
+  var xMin=-0.8, xMax=11.3, yMax=100;
+  var X=function(x){ return mL + (x-xMin)/(xMax-xMin)*pW; };
+  var Y=function(v){ return mT + pH - Math.max(0,Math.min(yMax,v))/yMax*pH; };
+
+  var svg=document.getElementById("chart");
+  var NS="http://www.w3.org/2000/svg";
+  function el(n,a){ var e=document.createElementNS(NS,n); for(var k in a) e.setAttribute(k,a[k]); return e; }
+
+  // ---- Axes ----
+  svg.appendChild(el("line",{class:"ax-line",x1:mL,y1:mT+pH,x2:mL+pW,y2:mT+pH}));
+  svg.appendChild(el("line",{class:"ax-line",x1:mL,y1:mT,x2:mL,y2:mT+pH}));
+  [0,20,40,60,80,100].forEach(function(v){
+    svg.appendChild(el("line",{class:"tick",x1:mL-5,y1:Y(v),x2:mL,y2:Y(v)}));
+    var t=el("text",{class:"tick-lbl",x:mL-11,y:Y(v)+4,"text-anchor":"end"}); t.textContent=v; svg.appendChild(t);
+  });
+  var yt=el("text",{class:"ax-title",x:20,y:mT+pH/2,"text-anchor":"middle",transform:"rotate(-90 20 "+(mT+pH/2)+")"});
+  yt.textContent="Volume reduction (%)"; svg.appendChild(yt);
+
+  // ---- 50% reference + group separators ----
+  svg.appendChild(el("line",{class:"ref",x1:mL,y1:Y(50),x2:mL+pW,y2:Y(50)}));
+  [2.75,7.5].forEach(function(x){
+    svg.appendChild(el("line",{class:"sep",x1:X(x),y1:mT,x2:X(x),y2:mT+pH}));
+  });
+
+  // ---- Group headers ----
+  [["Broadcasters",1.0,"#E05040"],["Aggregators",5.0,"#00BCD4"],["Consortia",9.5,"#5C6BC0"]].forEach(function(g){
+    var t=el("text",{class:"grp-lbl",x:X(g[1]),y:mT-22,"text-anchor":"middle",fill:g[2]});
+    t.textContent=g[0]; svg.appendChild(t);
+  });
+
+  // ---- X tick labels (strain + n) ----
+  order.forEach(function(tr){
+    var x=X(xpos[tr]);
+    svg.appendChild(el("line",{class:"tick",x1:x,y1:mT+pH,x2:x,y2:mT+pH+5}));
+    var t=el("text",{class:"tick-lbl",x:x,y:mT+pH+21,"text-anchor":"middle"}); t.textContent=tr; svg.appendChild(t);
+    var s=el("text",{class:"tick-sub",x:x,y:mT+pH+37,"text-anchor":"middle"}); s.textContent="n="+D[tr].n; svg.appendChild(s);
+  });
+
+  // ---- Deterministic jitter ----
+  function jitter(seed){ var v=Math.sin(seed*12.9898)*43758.5453; return ((v-Math.floor(v))-0.5)*0.5; }
+
+  // ---- Dots (hidden initially) ----
+  var dots=[], seed=1;
+  order.forEach(function(tr){
+    var c=colors[D[tr].g];
+    D[tr].pts.forEach(function(v){
+      var cx=X(xpos[tr]+jitter(seed++)), cy=Y(v);
+      var d=el("circle",{cx:cx,cy:cy,r:4,fill:c}); d.style.opacity=0;
+      d.style.transition="opacity 0.5s ease"; svg.appendChild(d); dots.push(d);
+    });
+  });
+
+  // ---- Mean markers + SEM error bars (hidden initially) ----
+  var marks=[];
+  order.forEach(function(tr){
+    var x=X(xpos[tr]), c=colors[D[tr].g], m=D[tr].mean, e=D[tr].sem;
+    var g=el("g",{}); g.style.opacity=0; g.style.transition="opacity 0.55s ease";
+    g.appendChild(el("line",{class:"err",stroke:c,x1:x,y1:Y(m-e),x2:x,y2:Y(m+e)}));
+    g.appendChild(el("line",{class:"err",stroke:c,x1:x-5,y1:Y(m-e),x2:x+5,y2:Y(m-e)}));
+    g.appendChild(el("line",{class:"err",stroke:c,x1:x-5,y1:Y(m+e),x2:x+5,y2:Y(m+e)}));
+    g.appendChild(el("circle",{cx:x,cy:Y(m),r:8,fill:c,stroke:"#fff","stroke-width":1.6}));
+    svg.appendChild(g); marks.push(g);
+  });
+
+  // ---- Scroll-trigger animation ----
+  var played=false;
+  function play(){
+    if(played) return; played=true;
+    dots.forEach(function(d,i){ setTimeout(function(){ d.style.opacity=0.4; }, 120+i*9); });
+    var after=120+dots.length*9+150;
+    marks.forEach(function(g,i){ setTimeout(function(){ g.style.opacity=1; }, after+i*110); });
+  }
+  if("IntersectionObserver" in window){
+    var obs=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ play(); obs.disconnect(); } });
+    },{threshold:0.3});
+    obs.observe(svg);
+    setTimeout(function(){ if(!played) play(); }, 1200);  // fallback
+  } else { play(); }
+})();
+</script>
+
+</body>
+</html>

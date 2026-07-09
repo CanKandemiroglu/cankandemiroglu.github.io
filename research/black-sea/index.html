@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Black Sea 8.5–8.0 ka · Multi-proxy molecular paleoceanography</title>
+<style>
+  :root {
+    --bg: #fbfbfd;
+    --bg-elev: #ffffff;
+    --bg-soft: #f5f5f7;
+    --text: #1d1d1f;
+    --subtle: #6e6e73;
+    --hairline: rgba(0,0,0,0.08);
+    --accent: #0066cc;
+    --accent-soft: rgba(0,102,204,0.08);
+    --section-pad: clamp(80px, 12vh, 200px);
+    --ease-apple: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-top: 80px;
+    /* Move horizontal-overflow guard to html — keeping it off body avoids
+       breaking position:sticky and trackpad/wheel scrolling */
+    overflow-x: hidden;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-feature-settings: "kern" 1, "liga" 1, "ss01" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.55;
+    /* NO transform / backface-visibility / overflow on body —
+       any of these creates a containing block and breaks position:sticky
+       inside .hero, which is what was eating the scroll input. */
+  }
+  /* Inertia-feel scrollbar (subtle, macOS-like) */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.18);
+    border-radius: 10px;
+    border: 2px solid var(--bg);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.32); }
+
+  /* ---------------- SITE NAV (hidden on load, shows on scroll-up) ---------------- */
+  .site-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    transform: translateY(-100%);
+    transition: transform 0.45s var(--ease-apple), opacity 0.35s var(--ease-apple);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .site-nav.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .site-nav__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 12px clamp(24px, 6vw, 120px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .site-nav__brand {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+    line-height: 1.2;
+  }
+  .site-nav__brand small {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    margin-top: 2px;
+  }
+  .site-nav__list {
+    display: flex;
+    gap: clamp(16px, 2.4vw, 28px);
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .site-nav__link {
+    font-size: 14px;
+    color: var(--subtle);
+    text-decoration: none;
+    transition: color 0.16s var(--ease-apple);
+  }
+  .site-nav__link:hover,
+  .site-nav__link[aria-current="page"] {
+    color: var(--text);
+  }
+  @media (max-width: 720px) {
+    .site-nav__brand small { display: none; }
+    .site-nav__list { gap: 14px; }
+    .site-nav__link { font-size: 13px; }
+  }
+
+  /* ---------------- HERO ---------------- */
+  .hero {
+    position: relative;
+    /* 150vh — a shorter scroll runway so the user reaches the next
+       section quickly and never feels "stuck" on the sticky hero */
+    height: 150vh;
+    width: 100%;
+  }
+  .hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+  }
+  .hero-canvas-frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #viewer {
+    width: min(100vw, 1920px);
+    height: min(100vh, 1080px);
+    aspect-ratio: 16/9;
+    opacity: 0;
+    transform: scale(0.96);
+    transition: opacity 1.6s cubic-bezier(0.22, 1, 0.36, 1), transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+    /* CRITICAL — let scroll/wheel events pass through to the page,
+       3Dmol.js would otherwise capture them for zoom */
+    pointer-events: none;
+    touch-action: pan-y;
+  }
+  /* Allow children (3Dmol canvas) to also pass scroll through */
+  #viewer canvas, #viewer * {
+    pointer-events: none !important;
+    touch-action: pan-y !important;
+  }
+  .hero-canvas-frame { pointer-events: none; }
+  /* Do NOT set pointer-events on .hero-sticky — leaving it default lets
+     wheel/touch events flow to the document, which is what scrolls. */
+  #viewer.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .hero-title-layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+    pointer-events: none;
+  }
+  .hero-title {
+    font-size: clamp(56px, 10vw, 180px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--text);
+    text-align: center;
+    transform-style: preserve-3d;
+    transform: rotateY(45deg) translateZ(-200px);
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+    will-change: transform, opacity;
+  }
+  .hero-subtitle {
+    font-size: clamp(16px, 1.3vw, 24px);
+    font-weight: 400;
+    color: var(--subtle);
+    margin-top: 24px;
+    letter-spacing: 0.01em;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.2s;
+  }
+
+  .hero-caption {
+    position: absolute;
+    bottom: 5vh;
+    left: 5vw;
+    color: var(--subtle);
+    font-size: clamp(12px, 1vw, 16px);
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.6s;
+    pointer-events: none;
+  }
+  .hero-caption.visible { opacity: 1; }
+  .hero-caption strong { color: var(--text); font-weight: 500; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--subtle);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 1s ease 1.2s;
+    animation: hint-bounce 2s ease-in-out infinite;
+  }
+  .scroll-hint.visible { opacity: 0.7; }
+  @keyframes hint-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ---------------- SECTIONS ---------------- */
+  .section {
+    padding: var(--section-pad) clamp(24px, 6vw, 120px);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .section h2 {
+    font-size: clamp(36px, 5vw, 84px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: clamp(24px, 3vh, 48px);
+  }
+  .section .lede {
+    font-size: clamp(20px, 2vw, 32px);
+    line-height: 1.4;
+    color: var(--text);
+    max-width: 38ch;
+    margin-bottom: clamp(16px, 2vh, 32px);
+    letter-spacing: -0.01em;
+  }
+  .section p {
+    font-size: clamp(16px, 1.2vw, 20px);
+    color: var(--subtle);
+    max-width: 60ch;
+  }
+  .section .label {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .section.stub {
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+  .section.stub::after {
+    content: "Section coming soon — direct me which to build next";
+    display: block;
+    margin-top: 32px;
+    padding: 24px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--subtle);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  /* ===== Map Section — Black Sea sediment cores ===== */
+  .map-section {
+    padding: var(--section-pad) 0;
+    background: var(--bg-soft);
+    overflow: hidden;
+  }
+  .map-section .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 6vw, 120px);
+  }
+  .map-intro { max-width: 900px; margin-bottom: clamp(48px, 6vh, 96px); }
+  .map-intro .label {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .map-intro h2 {
+    font-size: clamp(40px, 6vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    color: var(--text);
+    margin-bottom: clamp(20px, 3vh, 40px);
+  }
+  .map-intro .lede {
+    font-size: clamp(20px, 1.8vw, 28px);
+    line-height: 1.42;
+    color: var(--text);
+    max-width: 42ch;
+    margin-bottom: clamp(16px, 2vh, 32px);
+    letter-spacing: -0.005em;
+  }
+  .map-intro p {
+    font-size: clamp(16px, 1.15vw, 19px);
+    color: var(--subtle);
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+
+  /* The framed map card */
+  .map-frame {
+    position: relative;
+    background: #cfdce6;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.06),
+      0 20px 64px rgba(20,40,60,0.14);
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    margin-bottom: clamp(40px, 6vh, 72px);
+  }
+  .map-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .map-frame-cta {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 980px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    transition: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .map-frame-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.16);
+  }
+
+  /* Phone-only static preview card (hidden on larger screens) */
+  .map-preview { display: none; }
+  .map-preview img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .map-preview__cta {
+    position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%);
+    background: rgba(255,255,255,0.94);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    color: var(--text); font-size: 14px; font-weight: 600;
+    padding: 12px 20px; border-radius: 980px; white-space: nowrap;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.18);
+  }
+
+  /* On phones the live map is too short for its own controls, so show the
+     static preview + a big tap-to-open button instead, in a taller card. */
+  @media (max-width: 700px) {
+    .map-frame { aspect-ratio: 4 / 3; }
+    .map-frame .map-live,
+    .map-frame .map-frame-cta { display: none; }
+    .map-preview { display: block; position: absolute; inset: 0; }
+  }
+
+  /* Core info cards beneath the map */
+  .core-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: clamp(20px, 3vh, 40px);
+  }
+  .core-card {
+    background: var(--bg-elev);
+    border-radius: 20px;
+    padding: clamp(24px, 3vw, 36px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 28px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.3s var(--ease-smooth), transform 0.3s var(--ease-smooth);
+  }
+  .core-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.06),
+      0 16px 44px rgba(0,0,0,0.10);
+  }
+  .core-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--core-color, var(--accent));
+    border-radius: 20px 0 0 20px;
+  }
+  .core-card[data-core="7608"] { --core-color: #E63946; }
+  .core-card[data-core="7609"] { --core-color: #457B9D; }
+
+  .core-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .core-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--core-color, var(--accent));
+    box-shadow: 0 0 0 2px #fff inset, 0 0 0 1px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  .core-id {
+    font-size: clamp(20px, 1.6vw, 26px);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+  .core-tag {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    font-weight: 500;
+    margin-left: auto;
+  }
+  .core-meta {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 24px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hairline);
+  }
+  .core-field-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .core-field-value {
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 450;
+    font-variant-numeric: tabular-nums;
+  }
+  .core-desc {
+    font-size: 14px;
+    color: var(--subtle);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .core-pangaea {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .core-pangaea:hover { text-decoration: underline; }
+  .core-pangaea::after { content: "→"; transition: transform 0.2s var(--ease-smooth); }
+  .core-pangaea:hover::after { transform: translateX(3px); }
+
+  .map-cruise {
+    margin-top: clamp(40px, 5vh, 64px);
+    padding: clamp(24px, 3vw, 36px);
+    background: var(--bg-elev);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 28px rgba(0,0,0,0.04);
+    max-width: 720px;
+  }
+  .map-cruise-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .map-cruise h4 {
+    font-size: clamp(18px, 1.5vw, 22px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+  .map-cruise p {
+    font-size: 14px;
+    color: var(--subtle);
+    line-height: 1.55;
+  }
+
+  /* ===== Biomarker Section — Apple-style scroll storytelling ===== */
+  .biomarker-section {
+    padding: var(--section-pad) 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .biomarker-section .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 6vw, 120px);
+  }
+  .biomarker-intro {
+    max-width: 900px;
+    margin-bottom: clamp(60px, 8vh, 140px);
+  }
+  .biomarker-intro .label {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .biomarker-intro h2 {
+    font-size: clamp(40px, 6vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    color: var(--text);
+    margin-bottom: clamp(20px, 3vh, 40px);
+  }
+  .biomarker-intro .lede {
+    font-size: clamp(20px, 1.8vw, 28px);
+    line-height: 1.42;
+    color: var(--text);
+    max-width: 38ch;
+    margin-bottom: clamp(16px, 2vh, 32px);
+    letter-spacing: -0.005em;
+  }
+  .biomarker-intro p {
+    font-size: clamp(16px, 1.15vw, 19px);
+    color: var(--subtle);
+    max-width: 56ch;
+    line-height: 1.6;
+  }
+
+  /* Group card — alternating layout */
+  .bio-group {
+    margin: clamp(48px, 7vh, 120px) 0;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s var(--ease-apple), transform 0.9s var(--ease-apple);
+    will-change: opacity, transform;
+  }
+  .bio-group.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .bio-card {
+    background: var(--bg-elev);
+    border-radius: 28px;
+    padding: clamp(40px, 6vw, 80px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 8px 32px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+  }
+  .bio-card:hover {
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.06),
+      0 18px 56px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+  }
+
+  /* Color accent ribbons for each group */
+  .bio-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--group-color, var(--accent));
+    border-radius: 28px 0 0 28px;
+  }
+  .bio-group[data-group="A"] { --group-color: #007aff; }   /* marine blue */
+  .bio-group[data-group="B"] { --group-color: #af52de; }   /* violet — cyclohexane signature */
+  .bio-group[data-group="C"] { --group-color: #ff9500; }   /* warm orange — soil */
+  .bio-group[data-group="D"] { --group-color: #ff3b30; }   /* red — primed/alkaline */
+  .bio-group[data-group="E"] { --group-color: #5ac8fa; }   /* light teal — hydroxyl */
+  .bio-group[data-group="F"] { --group-color: #30d158; }   /* green — non-GDGT */
+
+  .bio-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: clamp(20px, 3vh, 40px);
+  }
+  .bio-label {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--group-color, var(--accent));
+    font-weight: 600;
+  }
+  .bio-count {
+    font-size: 13px;
+    color: var(--subtle);
+    letter-spacing: 0.04em;
+  }
+  .bio-title {
+    font-size: clamp(28px, 3.4vw, 52px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    color: var(--text);
+    margin-bottom: clamp(16px, 2vh, 28px);
+    max-width: 24ch;
+  }
+  .bio-lede {
+    font-size: clamp(17px, 1.4vw, 22px);
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 52ch;
+    margin-bottom: clamp(20px, 3vh, 36px);
+    letter-spacing: -0.005em;
+  }
+
+  /* Quote box — verbatim from PDF */
+  .bio-quote {
+    border-left: 3px solid var(--group-color, var(--accent));
+    padding: 18px 0 18px 24px;
+    margin: 24px 0 28px;
+    font-size: clamp(15px, 1.1vw, 17px);
+    line-height: 1.6;
+    color: var(--text);
+    font-style: italic;
+    max-width: 60ch;
+  }
+  .bio-quote-attr {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--subtle);
+    font-style: normal;
+    letter-spacing: 0.01em;
+  }
+
+  /* Producer + Proxy chips */
+  .bio-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px 32px;
+    margin-top: clamp(24px, 3vh, 40px);
+    padding-top: clamp(24px, 3vh, 40px);
+    border-top: 1px solid var(--hairline);
+  }
+  .bio-field { display: flex; flex-direction: column; gap: 6px; }
+  .bio-field-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    font-weight: 500;
+  }
+  .bio-field-value {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.5;
+    font-weight: 450;
+  }
+  .bio-field-value em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* Caveat / "What's still being verified" call-out */
+  .bio-caveats {
+    margin-top: clamp(80px, 10vh, 140px);
+    padding: clamp(40px, 5vw, 64px);
+    background: var(--bg-soft);
+    border-radius: 28px;
+  }
+  .bio-caveats h3 {
+    font-size: clamp(28px, 3.2vw, 44px);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    max-width: 28ch;
+  }
+  .bio-caveats > p {
+    font-size: clamp(16px, 1.1vw, 19px);
+    color: var(--subtle);
+    max-width: 56ch;
+    margin-bottom: clamp(32px, 4vh, 48px);
+    line-height: 1.6;
+  }
+  .bio-caveats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .bio-caveat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bio-caveat-num {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .bio-caveat-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .bio-caveat-text strong { font-weight: 600; }
+
+  /* Call-to-action — link to full 35-molecule explorer */
+  .bio-cta {
+    margin-top: clamp(60px, 8vh, 120px);
+    text-align: center;
+  }
+  .bio-cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 980px;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+    box-shadow: 0 1px 4px rgba(0,102,204,0.2);
+  }
+  .bio-cta-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,102,204,0.32);
+  }
+  .bio-cta-link::after { content: "→"; transition: transform 0.3s var(--ease-smooth); }
+  .bio-cta-link:hover::after { transform: translateX(4px); }
+  .bio-cta-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--subtle);
+    letter-spacing: 0.01em;
+  }
+
+  /* ===== Contact Section — Apple-style official ===== */
+  .contact-section {
+    padding: var(--section-pad) 0;
+    background: var(--bg);
+    border-top: 1px solid var(--hairline);
+  }
+  .contact-section .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 6vw, 120px);
+  }
+  .contact-intro { max-width: 780px; margin-bottom: clamp(40px, 5vh, 72px); }
+  .contact-intro .label {
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .contact-intro h2 {
+    font-size: clamp(40px, 6vw, 96px);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    color: var(--text);
+    margin-bottom: clamp(20px, 3vh, 36px);
+  }
+
+  .construction-notice {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    padding: 24px 28px;
+    background: var(--bg-soft);
+    border-radius: 18px;
+    margin-bottom: clamp(40px, 5vh, 64px);
+    max-width: 720px;
+  }
+  .construction-icon {
+    flex: 0 0 auto;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 18px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 600;
+  }
+  .construction-body h4 {
+    font-size: clamp(17px, 1.3vw, 19px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .construction-body p {
+    font-size: 14px;
+    color: var(--subtle);
+    line-height: 1.55;
+  }
+
+  .contact-card {
+    background: var(--bg-elev);
+    border-radius: 24px;
+    padding: clamp(32px, 4vw, 56px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.04),
+      0 12px 40px rgba(0,0,0,0.06);
+    max-width: 720px;
+  }
+  .contact-name {
+    font-size: clamp(24px, 2.2vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .contact-affil {
+    font-size: clamp(15px, 1.1vw, 17px);
+    color: var(--subtle);
+    margin-bottom: clamp(24px, 3vh, 36px);
+  }
+  .contact-divider {
+    height: 1px;
+    background: var(--hairline);
+    margin: clamp(20px, 3vh, 32px) 0;
+  }
+  .contact-prompt {
+    font-size: clamp(15px, 1.15vw, 17px);
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+  .contact-rows {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .contact-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .contact-row-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--subtle);
+    font-weight: 500;
+  }
+  .contact-row-value {
+    font-size: 16px;
+    color: var(--text);
+  }
+  .contact-row-value a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .contact-row-value a:hover { text-decoration: underline; }
+
+  footer {
+    padding: 60px clamp(24px, 6vw, 120px);
+    text-align: center;
+    color: var(--subtle);
+    font-size: 13px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    margin-top: 120px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- ========== SITE NAV (hidden on load; reveals when scrolling UP past the hero) ========== -->
+<header class="site-nav" id="site-nav" aria-hidden="true">
+  <div class="site-nav__inner">
+    <a class="site-nav__brand" href="../../index.html">
+      Osman Can Kandemiroglu
+      <small>Marine Molecular Biogeochemistry</small>
+    </a>
+    <nav>
+      <ul class="site-nav__list">
+        <li><a class="site-nav__link" href="../../index.html">Home</a></li>
+        <li><a class="site-nav__link" href="../../about.html">About</a></li>
+        <li><a class="site-nav__link" href="../index.html" aria-current="page">Research</a></li>
+        <li><a class="site-nav__link" href="../../contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <div class="hero-canvas-frame">
+      <div id="viewer"></div>
+    </div>
+
+    <div class="hero-title-layer">
+      <h1 class="hero-title" id="hero-title">
+        Black Sea<br>8.5–8.0 ka
+      </h1>
+      <div class="hero-subtitle" id="hero-subtitle">
+        Multi-proxy molecular evidence for gradual limnic–marine transition
+      </div>
+    </div>
+
+    <div class="hero-caption" id="hero-caption">
+      <strong>Crenarchaeol</strong><br>
+      Marine archaeal membrane lipid · C₈₆H₁₆₂O₆<br>
+      Holzheimer-revised structure (<em>Angew. Chem. Int. Ed.</em> 2021, 60, 17504)
+    </div>
+
+    <div class="scroll-hint" id="scroll-hint">scroll</div>
+  </div>
+</section>
+
+<!-- ========== § 2 — THE QUESTION ========== -->
+<section class="section" id="question">
+  <div class="label">Why</div>
+  <h2>A 500-year transition,<br>resolved at the molecule.</h2>
+  <p class="lede">
+    Between 8.5 and 8.0 thousand years ago, the Black Sea passed from a freshwater lake to a marine basin. The exact pacing of that change — sudden flood or gradual transgression — has been debated for decades.
+  </p>
+  <p>
+    This work uses 35 verified lipid biomarker structures, drawn from archaeal, bacterial, and eukaryotic producers, to track the limnic-to-marine signal across the chemocline rebuild. Multiple proxies converge on the same temporal pattern, and the molecular evidence supports a gradual transition rather than a catastrophic flooding event.
+  </p>
+</section>
+
+<!-- ========== § 2b — THE PLACE — Black Sea sediment cores ========== -->
+<section class="map-section" id="map">
+  <div class="container">
+
+    <div class="map-intro">
+      <div class="label">Where</div>
+      <h2>Two cores. Two depths.<br>One transition.</h2>
+      <p class="lede">
+        The 8.5–8.0 ka record reads from two sediment cores recovered by R/V <em>Meteor</em> cruise M51/4 on the northwestern Black Sea shelf.
+      </p>
+      <p>
+        <strong>GeoB 7608-1</strong> (1202 m, southeast) and <strong>GeoB 7609-1</strong> (941 m, northwest) sit ~7 km apart on the same continental slope. The paired bathymetry lets us cross-check the limnic-to-marine signal at two depths and rule out site-specific artefacts. Click the map to explore — the interactive viewer shows GEBCO 2024 bathymetry, the river systems draining into the basin, and the exact core positions.
+      </p>
+    </div>
+
+    <div class="map-frame">
+      <iframe class="map-live" src="./blacksea_map.html" title="Black Sea sediment-core bathymetric map" loading="lazy"></iframe>
+      <a class="map-preview" href="./blacksea_map.html" target="_blank" rel="noopener" aria-label="Open the interactive Black Sea map">
+        <img src="./map_assets/map-preview.jpg" alt="Bathymetric map of the Black Sea showing the basin and surrounding terrain" loading="lazy">
+        <span class="map-preview__cta">Open interactive map ↗</span>
+      </a>
+      <a class="map-frame-cta" href="./blacksea_map.html" target="_blank" rel="noopener">Open full map ↗</a>
+    </div>
+
+    <div class="core-grid">
+
+      <div class="core-card" data-core="7608">
+        <div class="core-header">
+          <span class="core-dot"></span>
+          <span class="core-id">GeoB 7608-1</span>
+          <span class="core-tag">SE · Deeper</span>
+        </div>
+        <p class="core-desc">
+          The deeper site captures the fully anoxic euxinic basin signature once the marine inflow established stratification.
+        </p>
+        <div class="core-meta">
+          <div>
+            <div class="core-field-label">Water depth</div>
+            <div class="core-field-value">1202 m</div>
+          </div>
+          <div>
+            <div class="core-field-label">Latitude</div>
+            <div class="core-field-value">43.4867° N</div>
+          </div>
+          <div>
+            <div class="core-field-label">Longitude</div>
+            <div class="core-field-value">30.1967° E</div>
+          </div>
+          <div>
+            <div class="core-field-label">Cruise</div>
+            <div class="core-field-value">M51/4</div>
+          </div>
+        </div>
+        <a class="core-pangaea" href="https://www.pangaea.de/?q=GeoB+7608-1" target="_blank" rel="noopener">
+          Search data on PANGAEA
+        </a>
+      </div>
+
+      <div class="core-card" data-core="7609">
+        <div class="core-header">
+          <span class="core-dot"></span>
+          <span class="core-id">GeoB 7609-1</span>
+          <span class="core-tag">NW · Shallower</span>
+        </div>
+        <p class="core-desc">
+          The shallower site sits closer to the chemocline excursion zone and records the transition with greater temporal resolution.
+        </p>
+        <div class="core-meta">
+          <div>
+            <div class="core-field-label">Water depth</div>
+            <div class="core-field-value">941 m</div>
+          </div>
+          <div>
+            <div class="core-field-label">Latitude</div>
+            <div class="core-field-value">43.5467° N</div>
+          </div>
+          <div>
+            <div class="core-field-label">Longitude</div>
+            <div class="core-field-value">30.1533° E</div>
+          </div>
+          <div>
+            <div class="core-field-label">Cruise</div>
+            <div class="core-field-value">M51/4</div>
+          </div>
+        </div>
+        <a class="core-pangaea" href="https://www.pangaea.de/?q=GeoB+7609-1" target="_blank" rel="noopener">
+          Search data on PANGAEA
+        </a>
+      </div>
+
+    </div>
+
+    <div class="map-cruise">
+      <div class="map-cruise-label">Expedition</div>
+      <h4>R/V Meteor M51/4 · Late Glacial–Holocene survey</h4>
+      <p>Both cores were recovered during R/V <em>Meteor</em> cruise M51/4 along the NW Black Sea continental slope. The site pair was chosen to bracket the transition zone where the modern chemocline excursion preserves the molecular record of the basin's 8.5–8.0 ka reorganisation.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== § 3 — BIOMARKER GROUPS (PDF-verified) ========== -->
+<section class="biomarker-section" id="molecules">
+  <div class="container">
+
+    <div class="biomarker-intro">
+      <div class="label">The Molecules</div>
+      <h2>Six families.<br>Thirty-five biomarkers.<br>One transition.</h2>
+      <p class="lede">Every biomarker on this page traces back to a primary paper read at full text — structure, producer organism, and proxy meaning.</p>
+      <p>The Black Sea 8.5–8.0 ka transition is reconstructed from lipid biomarkers preserved in sediment. Below: each major family, its source organism, what it measures, and a verbatim line from the paper that established it.</p>
+    </div>
+
+    <!-- ─────────────── GROUP A — Isoprenoidal GDGTs ─────────────── -->
+    <div class="bio-group" data-group="A">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group A · Marine archaea</span>
+          <span class="bio-count">4 structures · iGDGT-0/1/2/3</span>
+        </div>
+        <h3 class="bio-title">Isoprenoidal GDGTs.<br>The TEX₈₆ thermometer.</h3>
+        <p class="bio-lede">Four membrane-spanning archaeal tetraethers with 0–3 cyclopentane rings. Ring count rises with growth temperature — the foundation of the most widely used molecular SST proxy.</p>
+
+        <blockquote class="bio-quote">
+          “A significant linear correlation (r² = 0.92) is found between the number of cyclopentane rings in sedimentary membrane lipids derived from marine crenarchaeota and the annual mean sea surface temperatures.”
+          <cite class="bio-quote-attr">— Schouten et al. 2002, EPSL 204, 265–274 (TEX₈₆ origin paper)</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producer</span>
+            <span class="bio-field-value">Marine Group I.1a Thaumarchaeota — <em>Nitrosopumilus maritimus</em> SCM1 axenic culture (Könneke 2005; Schouten 2008)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxy</span>
+            <span class="bio-field-value">TEX₈₆ — sea-surface temperature</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Black Sea signal</span>
+            <span class="bio-field-value">Marine plankton dominance in oxic + suboxic zone (Coolen 2007: up to 98% of total archaea)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── GROUP B — Crenarchaeol family ─────────────── -->
+    <div class="bio-group" data-group="B">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group B · The signature molecule</span>
+          <span class="bio-count">3 structures · crenarchaeol · cren′ · Holzheimer-revised</span>
+        </div>
+        <h3 class="bio-title">Crenarchaeol.<br>The cyclohexane ring that maps the marine signal.</h3>
+        <p class="bio-lede">A 66-membered macrocycle with 22 stereocenters and a cyclohexane–cyclopentane motif found nowhere else in nature. The diagnostic biomarker for all ammonia-oxidizing archaea (AOA).</p>
+
+        <blockquote class="bio-quote">
+          “‘<em>Ca.</em> N. gargensis’ is the first cultivated archaeon to synthesize substantial amounts of the crenarchaeol regioisomer … supports the hypothesis that crenarchaeol is specific to all AOA.”
+          <cite class="bio-quote-attr">— Pitcher et al. 2010, ISME J 4, 542–552</cite>
+        </blockquote>
+
+        <blockquote class="bio-quote">
+          “We propose a revised structure of crenarchaeol, wherein the stereochemistry of the all-carbon quaternary stereocenter [A15′] is inverted compared to the original proposal.”
+          <cite class="bio-quote-attr">— Holzheimer et al. 2021, Angew. Chem. Int. Ed. 60, 17504–17513 (first total synthesis)</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producer</span>
+            <span class="bio-field-value">All AOA — Group I.1a (marine) + Group I.1b (soil / moderate-thermal); <em>N. maritimus</em>, <em>N. gargensis</em>, <em>N. yellowstonii</em></span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxy</span>
+            <span class="bio-field-value">BIT index (marine vs terrestrial) · component of TEX₈₆</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Cren′ structure</span>
+            <span class="bio-field-value">cis-cyclopentane isomer (Sinninghe Damsté 2018) — NOT a regio-isomer despite legacy naming</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── GROUP C — brGDGTs 5-methyl ─────────────── -->
+    <div class="bio-group" data-group="C">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group C · Soil & peat bacteria</span>
+          <span class="bio-count">15 structures · brGDGT Ia → IIIc</span>
+        </div>
+        <h3 class="bio-title">Branched GDGTs.<br>Continental temperature, written by Acidobacteria.</h3>
+        <p class="bio-lede">Bacterial tetraethers built on a linear C₃₀ backbone with <em>syn</em>-positioned methyl branches and 1,3-<em>trans</em> cyclopentane rings. Methylation rises in cold, acid soils — the MBT′₅ME thermometer.</p>
+
+        <blockquote class="bio-quote">
+          “<em>Solibacter usitatus</em> makes a large portion of its cellular membrane (24 ± 9% across all experiments) out of a structurally diverse set of tetraethers including the common brGDGTs Ia, IIa, IIIa, Ib, and IIb.”
+          <cite class="bio-quote-attr">— Halamka et al. 2023, Geobiology 21, 102–118 (first axenic brGDGT culture)</cite>
+        </blockquote>
+
+        <blockquote class="bio-quote">
+          “Herein, we report the first total synthesis of brGDGT Ia, thereby elucidating the relative configuration of the methyl branches as <em>syn</em>.”
+          <cite class="bio-quote-attr">— Mahapatra et al. 2025, Chem. Eur. J. e202500702</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producer</span>
+            <span class="bio-field-value"><em>Solibacter usitatus</em> Ellin6076 (Acidobacteriota SD3) — 15–30 °C, pH 5.0–6.5, 1–21% O₂</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxy</span>
+            <span class="bio-field-value">MBT′₅ME (T) · CBT′ (pH) · BIT (terrestrial input)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Caveat</span>
+            <span class="bio-field-value">Halamka 2023: cyclization does NOT match environmental pH — CBT must be calibrated empirically</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── GROUP D — brGDGTs 6-methyl primed ─────────────── -->
+    <div class="bio-group" data-group="D">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group D · Alkaline / dry soils</span>
+          <span class="bio-count">6 structures · brGDGT IIa′ → IIIc′</span>
+        </div>
+        <h3 class="bio-title">6-methyl primed brGDGTs.<br>The signal that almost wasn't there.</h3>
+        <p class="bio-lede">Until 2013, 5-methyl and 6-methyl brGDGT isomers co-eluted on standard LC. Separation revealed the 6-methyl family preferentially abundant in alkaline, dry, arid soils — and a distinct climate proxy.</p>
+
+        <blockquote class="bio-quote">
+          “Identification of novel penta- and hexamethylated branched glycerol dialkyl glycerol tetraethers in peat using HPLC-MS², GC-MS and GC-SMB-MS.”
+          <cite class="bio-quote-attr">— De Jonge et al. 2013, OG 54, 78–82</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producer</span>
+            <span class="bio-field-value">Acidobacteriota with CCMT-6 methyltransferase — different from CCMT-5 producers (Chen 2022)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxy</span>
+            <span class="bio-field-value">MBT′₆ME · IR (Isomerization Ratio, pH-sensitive)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Black Sea signal</span>
+            <span class="bio-field-value">Catchment-derived terrestrial flux during the limnic-to-marine transition</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── GROUP E — OH-GDGTs ─────────────── -->
+    <div class="bio-group" data-group="E">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group E · Cold-water archaea</span>
+          <span class="bio-count">3 structures · OH-GDGT-0/1/2</span>
+        </div>
+        <h3 class="bio-title">Hydroxylated isoGDGTs.<br>A second AOA thermometer, born in the cold.</h3>
+        <p class="bio-lede">Marine isoprenoidal GDGTs with a tertiary hydroxyl on the biphytane backbone. Enriched in cold and polar waters — and the producer was a 12-year mystery solved only in 2024.</p>
+
+        <blockquote class="bio-quote">
+          “<em>Nitrosopumilus adriaticus</em> NF5 shows a substantially higher relative abundance of OH-isoGDGTs (~49%) compared to <em>Nitrosopumilus piranensis</em> D3C (~5%).”
+          <cite class="bio-quote-attr">— Varma et al. 2024, Biogeosciences 21 (first axenic OH-isoGDGT culture)</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producer</span>
+            <span class="bio-field-value"><em>Nitrosopumilus adriaticus</em> NF5ᵀ + <em>N. piranensis</em> D3Cᵀ (Bayer 2019 IJSEM; Varma 2024)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxy</span>
+            <span class="bio-field-value">RI-OH — cold-water / polar SST</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Structure</span>
+            <span class="bio-field-value">Tertiary –OH at C-3 of biphytane (NMR confirmed; Liu 2012 GCA 89)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── GROUP F — Non-GDGT biomarkers ─────────────── -->
+    <div class="bio-group" data-group="F">
+      <div class="bio-card">
+        <div class="bio-header">
+          <span class="bio-label">Group F · Beyond the tetraethers</span>
+          <span class="bio-count">4 structures · alkenones · n-alkanes · archaeol · iso-diabolic</span>
+        </div>
+        <h3 class="bio-title">Alkenones, leaf waxes, and the C₃₀ monomer.<br>Where the Black Sea complicates the textbook.</h3>
+        <p class="bio-lede">Long-chain ketones from haptophyte algae give the classic UK′₃₇ thermometer. But the Black Sea inverts the standard story — and the manuscript engages with that directly.</p>
+
+        <blockquote class="bio-quote">
+          “Haptophytes related to brackish <em>Isochrysis</em> spp. were the initial sources of alkenones, and appeared immediately after the onset of sapropel deposition (~7550 yrs before present). <em>E. huxleyi</em> colonized the Black Sea shortly after, ~4000 yrs earlier than previously recognized.”
+          <cite class="bio-quote-attr">— Coolen et al. 2009, EPSL 284, 610–621</cite>
+        </blockquote>
+
+        <div class="bio-meta">
+          <div class="bio-field">
+            <span class="bio-field-label">Producers</span>
+            <span class="bio-field-value"><em>Emiliania huxleyi</em> + <em>Isochrysis</em> spp. (alkenones); higher plants C₂₅–C₃₅ (leaf wax); Acidobacteriota subdivisions 1, 3, 4 (iso-diabolic)</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Proxies</span>
+            <span class="bio-field-value">UK′₃₇ (SST) · δD-alkenones (salinity) · C₂₃/C₂₉ ratio (vegetation) · iso-diabolic / brGDGT mass balance</span>
+          </div>
+          <div class="bio-field">
+            <span class="bio-field-label">Critical Black Sea caveat</span>
+            <span class="bio-field-value">Standard <em>E. huxleyi</em>-based UK′₃₇ calibrations cannot be naively applied to Unit II — alkenones come from <em>Isochrysis</em> there. Coolen 2009 changes the interpretation.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── Critical caveats ─────────────── -->
+    <div class="bio-caveats">
+      <h3>What this evidence quietly admits.</h3>
+      <p>Reading the primary literature carefully — not the textbook summary — surfaces ten caveats that shape how every claim above is interpreted. Below: the ones that matter most for the 8.5–8.0 ka window.</p>
+      <div class="bio-caveats-grid">
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">01</span>
+          <span class="bio-caveat-text"><strong>Unit II alkenones aren't from <em>E. huxleyi</em>.</strong> Standard UK′₃₇ calibration may not apply to the 8.5–8.0 ka interval (Coolen 2009).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">02</span>
+          <span class="bio-caveat-text"><strong>Water-column AOM signal doesn't reach sediments.</strong> The Black Sea may underrecord past methane events (Wakeham 2003 GCA).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">03</span>
+          <span class="bio-caveat-text"><strong>CBT pH proxy is mechanistically incomplete.</strong> <em>Solibacter</em> cyclization does NOT track environmental pH (Halamka 2023).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">04</span>
+          <span class="bio-caveat-text"><strong>brGDGT IIIa/IIIb isomers respond to O₂</strong> — not just temperature or pH. A new and underexplored dimension (Halamka 2023).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">05</span>
+          <span class="bio-caveat-text"><strong>Crenarchaeol is not a cold-only marker.</strong> <em>N. yellowstonii</em> makes it at 72 °C; the 2002 "cold crenarchaeota" hypothesis was wrong (Pitcher 2010).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">06</span>
+          <span class="bio-caveat-text"><strong>Crenarchaeol structure was confirmed in 2021, not 2002.</strong> The original NMR proposal had one stereocenter wrong (Holzheimer 2021).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">07</span>
+          <span class="bio-caveat-text"><strong>brGDGT methyl stereochemistry was confirmed in 2025.</strong> For 25 years they were drawn with arbitrary stereo (Mahapatra 2025).</span>
+        </div>
+        <div class="bio-caveat">
+          <span class="bio-caveat-num">08</span>
+          <span class="bio-caveat-text"><strong>OH-GDGT producer was confirmed in 2024.</strong> The first axenic culture closed a 12-year producer gap (Varma 2024; Bayer 2019).</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────── CTA to full explorer ─────────────── -->
+    <div class="bio-cta">
+      <a href="./index_enhanced.html" class="bio-cta-link">Open the full 35-molecule explorer</a>
+      <p class="bio-cta-note">3D viewer · click any structure to expand · ball-and-stick / line / surface views</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== § 4 — STUB: proxies ========== -->
+<section class="section stub" id="proxies">
+  <div class="label">Section 4</div>
+  <h2>Five proxies, one signal.</h2>
+  <p class="lede">TEX₈₆ · BIT · MBT'5ME · Methane Index · UK'₃₇ — what each measures, how they triangulate the transition.</p>
+</section>
+
+<!-- ========== § 5 — STUB: sediment core ========== -->
+<section class="section stub" id="core">
+  <div class="label">Section 5</div>
+  <h2>Reading the core.</h2>
+  <p class="lede">Unit IIa sapropel and the chemocline rebuilding — depth, age, lithology, and the visual moment the basin turned.</p>
+</section>
+
+<!-- ========== § 6 — STUB: timeline ========== -->
+<section class="section stub" id="timeline">
+  <div class="label">Section 6</div>
+  <h2>8.5 to 8.0 ka, in context.</h2>
+  <p class="lede">A geological timeline locating this window inside the Holocene.</p>
+</section>
+
+<!-- ========== § 7 — STUB: methods / reproducibility ========== -->
+<section class="section stub" id="methods">
+  <div class="label">Section 7</div>
+  <h2>Methods &amp; reproducibility.</h2>
+  <p class="lede">Verified BibTeX, build scripts, peer-review records, lab notebook — all open.</p>
+</section>
+
+<!-- ========== § 8 — CONTACT ========== -->
+<section class="contact-section" id="contact">
+  <div class="container">
+
+    <div class="contact-intro">
+      <div class="label">Contact</div>
+      <h2>Get in touch.</h2>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-name">Osman Can Kandemiroglu</div>
+      <div class="contact-affil">University of Bremen (FB5)</div>
+
+      <div class="contact-divider"></div>
+
+      <p class="contact-prompt">
+        Scientific comments, corrections, and collaboration enquiries are very welcome. Please reach out by email — feedback on biomarker assignments, taxonomy, or proxy interpretation is especially appreciated.
+      </p>
+
+      <div class="contact-rows">
+        <div class="contact-row">
+          <span class="contact-row-label">Email</span>
+          <span class="contact-row-value"><a href="mailto:osman@uni-bremen.de?subject=Black%20Sea%20biomarker%20webpage%20%E2%80%94%20scientific%20comment">osman@uni-bremen.de</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Web</span>
+          <span class="contact-row-value"><a href="https://osmancankandemiroglu.com" target="_blank" rel="noopener">osmancankandemiroglu.com</a></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  © 2026 · <a href="https://osmancankandemiroglu.com">osmancankandemiroglu.com</a>
+</footer>
+
+<script src="https://3dmol.org/build/3Dmol-min.js"></script>
+<script>
+  const SDF = `LMGL02050004
+     RDKit          3D
+
+254259  0  0  0  0  0  0  0  0999 V2000
+    8.0529   -5.6465    1.1523 C   0  0  1  0  0  0  0  0  0  0  0  0
+    7.6621   -4.2721    1.7454 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.8531   -3.5132    2.3438 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.4598   -2.1024    2.7992 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.8544    9.3733   -3.1870 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.3581    9.1490   -3.4310 C   0  0  1  0  0  0  0  0  0  0  0  0
+    7.0118    8.3898   -2.2564 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.7034    6.8893   -2.1884 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.3237    6.2605   -0.9334 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.2670    4.7210   -0.9545 C   0  0  1  0  0  0  0  0  0  0  0  0
+    8.6512   -6.5706    2.2229 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.6413    8.4815   -4.7785 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.2087    0.1966    3.5405 C   0  0  0  0  0  0  0  0  0  0  0  0
+    4.1895   10.2271   -4.2648 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.8672  -13.4033   -4.3450 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0771  -12.6511   -4.3764 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.9542  -11.3253   -3.6069 C   0  0  1  0  0  0  0  0  0  0  0  0
+   -2.0178  -10.3501   -4.3386 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.2332  -10.6905   -3.4873 O   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.5135  -11.5317   -2.6238 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.6619   -1.2634    3.2911 C   0  0  1  0  0  0  0  0  0  0  0  0
+   10.2954   -1.8749    4.5464 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.4865  -10.2650   -1.1098 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.3130  -10.4443    0.1789 C   0  0  1  0  0  0  0  0  0  0  0  0
+   -6.7389   -9.8777    0.0187 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.4546   -9.6883    1.3613 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.8191   -8.9949    1.2472 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.8088   -3.1409    0.1457 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.0148   -0.6419   -0.1805 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1934   10.4568   -1.6741 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.1035    9.3831   -0.5699 C   0  0  1  0  0  0  0  0  0  0  0  0
+   -1.3280    8.8242   -0.4477 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.5503    8.0035    0.8286 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0241    7.6056    0.9712 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.8422    7.0518    3.6188 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -7.9899    6.6170    2.6754 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.9827    5.1537    2.2201 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.0921    4.8901    1.1938 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.2255    3.4043    0.7886 C   0  0  1  0  0  0  0  0  0  0  0  0
+  -10.4629    3.2440   -0.1239 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.7595    1.8204   -0.6181 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.3207  -11.9016    0.6455 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.5375    7.4034    2.8595 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -3.2915    6.7238    2.2043 C   0  0  2  0  0  0  0  0  0  0  0  0
+   -8.7574   -7.4620    1.2757 C   0  0  1  0  0  0  0  0  0  0  0  0
+   -7.9530    2.8860    0.1106 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.6535    6.0777    4.7863 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1424    8.2780   -0.7732 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.1085   -1.7975    0.8234 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.9517    0.7524    0.4806 C   0  0  1  0  0  0  0  0  0  0  0  0
+  -12.1930    1.0416    1.3281 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.8474   -4.3412    1.1204 C   0  0  1  0  0  0  0  0  0  0  0  0
+  -12.2928   -4.6388    1.5457 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.9647  -11.0722   -2.3187 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.7610   -5.8779   -0.4047 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.8195    8.0754    2.0360 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0284    9.9437   -3.1065 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.1781   10.9958   -4.0522 O   0  0  0  0  0  0  0  0  0  0  0  0
+    2.9042   10.6324   -3.7929 O   0  0  0  0  0  0  0  0  0  0  0  0
+    6.5048   -5.5310   -0.3341 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3475   13.0366   -5.1333 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8963   11.9466   -4.2013 C   0  0  2  0  0  0  0  0  0  0  0  0
+    2.1645   11.3239   -4.8099 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.0291   12.4750   -6.3909 O   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1178   12.4054   -3.2323 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.1913   -5.5965    0.4927 C   0  0  1  0  0  0  0  0  0  0  0  0
+   -8.7297   -5.3965    0.0808 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.1751   -6.8095    0.0277 C   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.1508   -6.8224    1.4287 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.7453    6.2379    2.2502 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.1756    7.4633    3.5360 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.5133    8.1752    3.7182 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.3338    4.1041   -1.8621 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.6325    4.1078    0.4010 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.1626    4.1932    0.4565 C   0  0  2  0  0  0  0  0  0  0  0  0
+    9.6016    4.0052   -1.0091 C   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0348    2.6629    3.9644 C   0  0  2  0  0  0  0  0  0  0  0  0
+   11.3598    3.4680    1.5229 C   0  0  0  0  0  0  0  0  0  0  0  0
+   11.7501    4.2208    2.7875 C   0  0  0  0  0  0  0  0  0  0  0  0
+   11.3582    3.4783    4.0689 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.8398    3.2052    1.4372 C   0  0  1  0  0  0  0  0  0  0  0  0
+   10.3899    1.1569    3.7573 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.1690    3.2495    2.8274 C   0  0  0  0  0  0  0  0  0  0  0  0
+    9.4324    5.2132    0.7650 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.7049    2.1936    1.0307 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.2640    2.8139    5.2940 C   0  0  0  0  0  0  0  0  0  0  0  0
+    7.2073   -7.5455   -0.3944 C   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.7109  -10.9197   -4.4520 O   0  0  0  0  0  0  0  0  0  0  0  0
+    0.2492  -10.0288   -5.0150 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.6513   -6.6589    1.2815 C   0  0  0  0  0  0  0  0  0  0  0  0
+    5.0430   -7.9032    0.6240 C   0  0  1  0  0  0  0  0  0  0  0  0
+    4.0548   -7.5344   -0.4976 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.3643   -8.7632   -1.1024 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.2964   -8.3547   -2.1236 C   0  0  0  0  0  0  0  0  0  0  0  0
+    0.9196  -10.4866   -1.9532 C   0  0  0  0  0  0  0  0  0  0  0  0
+    1.6773   -9.5456   -2.8942 C   0  0  1  0  0  0  0  0  0  0  0  0
+    0.7758   -8.9871   -4.0223 C   0  0  0  0  0  0  0  0  0  0  0  0
+    6.8518   -6.2733    0.3990 C   0  0  1  0  0  0  0  0  0  0  0  0
+    6.2917   -8.6403    0.1405 C   0  0  0  0  0  0  0  0  0  0  0  0
+    8.8377   -5.4715    0.4031 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.2156   -3.6587    0.9526 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.8933   -4.4002    2.5173 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.6551   -3.4459    1.5991 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.2417   -4.0750    3.1980 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.7038   -2.1699    3.5917 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.9873   -1.5840    1.9551 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.7130    9.8593   -2.2126 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.3215    8.4171   -3.1182 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.8320   10.1402   -3.4560 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.7198    8.8679   -1.3126 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.1003    8.5130   -2.3352 H   0  0  0  0  0  0  0  0  0  0  0  0
+    5.6212    6.7202   -2.1752 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.0968    6.3976   -3.0833 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.7801    6.6338   -0.0563 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.3604    6.6028   -0.8302 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.2628    4.4010   -1.2553 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.6366   -6.2108    2.5369 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.0201   -6.6203    3.1156 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.7952   -7.5893    1.8531 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.7053    8.2415   -4.8783 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.3815    9.1467   -5.6083 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.0667    7.5575   -4.9000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.5323    0.2221    4.4019 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.6336    0.5320    2.6705 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.7888   11.1219   -4.4673 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.0758    9.6519   -5.1903 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.1382  -12.7667   -4.5035 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.3519  -12.4715   -5.4217 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.8675  -13.2757   -3.9490 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.4091  -10.1239   -5.3380 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.9840   -9.4089   -3.7796 H   0  0  0  0  0  0  0  0  0  0  0  0
+   10.4177   -1.2559    2.4948 H   0  0  0  0  0  0  0  0  0  0  0  0
+   10.6591   -2.8893    4.3593 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.1618   -1.2994    4.8836 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.5752   -1.9183    5.3703 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.4620   -9.2012   -1.3815 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.4425  -10.5211   -0.8917 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.8023   -9.8549    0.9527 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.3408  -10.5376   -0.6177 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.6709   -8.9197   -0.5019 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.8146   -9.1379    2.0608 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6235  -10.6775    1.8035 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.4192   -9.3167    2.1090 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.3510   -9.3446    0.3540 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.5141   -3.3078   -0.6782 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.8144   -3.0610   -0.3062 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.1110   -0.7744   -0.7894 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.8672   -0.6930   -0.8699 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5509   11.2409   -1.4840 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.1667   10.9541   -1.5817 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.3452    9.8913    0.3736 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.5693    8.2023   -1.3179 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.0365    9.6624   -0.4506 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.9328    7.0989    0.8053 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -1.2346    8.5940    1.6950 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.6411    8.5114    1.0009 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.3243    7.0525    0.0719 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.1834    7.9981    4.0647 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.9393    6.7991    3.1974 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.0010    7.2756    1.7978 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.1316    4.4943    3.0824 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.0157    4.9067    1.7812 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0469    5.2273    1.6175 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.9109    5.5009    0.3000 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.3870    2.8242    1.7050 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.3364    3.8829   -1.0083 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.3468    3.6320    0.3967 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -9.9538    1.5098   -1.2944 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -11.6639    1.8591   -1.2401 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.7265  -11.9881    1.6582 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.3039  -12.3081    0.6674 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.9266  -12.5333   -0.0120 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.6095    5.8657    2.1789 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.1557   -7.1514    2.1414 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.0850    2.9648    0.7716 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.7368    3.4472   -0.8045 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.0409    1.8275   -0.1516 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.3036    5.0947    4.4598 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.6019    5.9320    5.3155 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.9329    6.4597    5.5152 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.2139    7.6380    0.1117 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.1361    8.7054   -0.9460 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8923    7.6406   -1.6274 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.3911   -1.6394    1.6375 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.1098   -1.8115    1.2639 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.0776    0.7590    1.1419 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.3038    0.3108    2.1350 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.1303    2.0248    1.8040 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -13.1025    1.0156    0.7187 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.2780   -4.0746    2.0209 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.3424   -5.4708    2.2545 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.9118   -4.8983    0.6800 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -12.7496   -3.7780    2.0423 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -6.0145  -10.8467   -2.5277 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.8847  -12.1509   -2.1502 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.8661    9.3144   -3.4192 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.8658    9.3169   -3.1728 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.0873   13.8227   -5.3117 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.5486   13.4945   -4.7011 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.9056   10.6074   -5.5977 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.8029   12.1120   -5.2261 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.6021   11.7155   -6.1627 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.1876   -4.8049    0.8284 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.6315   -4.8994   -0.8889 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -7.0814   -6.8004    0.0337 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -8.5175   -7.3161   -0.8823 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.9537   -7.5186    1.1589 H   0  0  0  0  0  0  0  0  0  0  0  0
+  -10.3015   -6.5455    2.4784 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.7985    5.3443    2.8801 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -5.1160    5.9675    1.2566 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -3.0481    6.7327    4.3452 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -2.3327    8.1565    3.5918 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.4383    9.2062    3.3508 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -4.7807    8.2405    4.7768 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.0210    3.0928   -2.1517 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.5102    4.6628   -2.7852 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.1567    4.6306    1.2368 H   0  0  0  0  0  0  0  0  0  0  0  0
+    7.3070    3.0601    0.4302 H   0  0  0  0  0  0  0  0  0  0  0  0
+   10.3112    4.7924   -1.2891 H   0  0  0  0  0  0  0  0  0  0  0  0
+   10.0970    3.0438   -1.1833 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.8966    2.5123    1.4987 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.7196    4.0234    0.6497 H   0  0  0  0  0  0  0  0  0  0  0  0
+   12.8304    4.4070    2.7934 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.2693    5.2073    2.7798 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.2928    4.2248    4.8712 H   0  0  0  0  0  0  0  0  0  0  0  0
+   12.1835    2.8159    4.3607 H   0  0  0  0  0  0  0  0  0  0  0  0
+   10.9578    0.8282    4.6360 H   0  0  0  0  0  0  0  0  0  0  0  0
+   11.0732    1.0470    2.9088 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.9335    4.2944    3.0766 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.1998    2.7383    2.7827 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.2956    2.3045    5.2618 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.0636    3.8685    5.5167 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.8363    2.4013    6.1324 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.9969   -7.3781   -1.4582 H   0  0  0  0  0  0  0  0  0  0  0  0
+    8.2609   -7.8321   -0.3278 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.0841  -10.6397   -5.3750 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.1829   -9.5328   -5.8924 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.9344   -5.8358    1.3710 H   0  0  0  0  0  0  0  0  0  0  0  0
+    5.9691   -6.9188    2.2966 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.5127   -8.5006    1.3751 H   0  0  0  0  0  0  0  0  0  0  0  0
+    3.2866   -6.8696   -0.0820 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.5579   -6.9710   -1.2922 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.9088   -9.3440   -0.2935 H   0  0  0  0  0  0  0  0  0  0  0  0
+    4.1020   -9.4056   -1.5943 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.7564   -7.6679   -2.8461 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5033   -7.7912   -1.6156 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.5507  -10.8300   -1.1289 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.5914  -11.3908   -2.4723 H   0  0  0  0  0  0  0  0  0  0  0  0
+    0.0396   -9.9953   -1.5251 H   0  0  0  0  0  0  0  0  0  0  0  0
+    2.4949  -10.1121   -3.3586 H   0  0  0  0  0  0  0  0  0  0  0  0
+    1.3602   -8.2604   -4.6014 H   0  0  0  0  0  0  0  0  0  0  0  0
+   -0.0545   -8.4322   -3.5721 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.7771   -9.1315    0.9934 H   0  0  0  0  0  0  0  0  0  0  0  0
+    6.0954   -9.4116   -0.6080 H   0  0  0  0  0  0  0  0  0  0  0  0
+  2  1  1  0
+  3  2  1  0
+  4  3  1  0
+ 21  4  1  0
+  6  5  1  0
+  7  6  1  0
+  8  7  1  0
+  9  8  1  0
+ 10  9  1  0
+ 14  5  1  0
+ 21 13  1  0
+  1 11  1  0
+  6 12  1  0
+ 15 16  1  0
+ 16 17  1  0
+ 17 18  1  0
+ 17 20  1  1
+ 17 19  1  0
+ 21 22  1  0
+ 24 23  1  0
+ 25 24  1  0
+ 26 25  1  0
+ 27 26  1  0
+ 45 27  1  0
+ 28 52  1  0
+ 49 28  1  0
+ 29 49  1  0
+ 50 29  1  0
+ 31 30  1  0
+ 32 31  1  0
+ 33 32  1  0
+ 34 33  1  0
+ 44 34  1  0
+ 35 43  1  0
+ 36 35  1  0
+ 37 36  1  0
+ 38 37  1  0
+ 39 38  1  0
+ 40 39  1  0
+ 41 40  1  0
+ 50 41  1  0
+ 24 42  1  0
+ 39 46  1  0
+ 35 47  1  0
+ 31 48  1  0
+ 50 51  1  0
+ 52 53  1  0
+ 19 54  1  0
+ 23 54  1  0
+ 43 56  1  6
+ 30 57  1  0
+ 57 58  1  0
+ 14 59  1  0
+ 61 62  1  0
+ 62 63  1  0
+ 61 64  1  0
+ 62 65  1  1
+ 62 58  1  0
+ 63 59  1  0
+ 67 66  1  0
+ 68 67  1  0
+ 66 69  1  0
+ 45 68  1  0
+ 69 45  1  0
+ 52 66  1  0
+ 66 55  1  6
+ 71 72  1  0
+ 70 44  1  0
+ 44 71  1  0
+ 43 70  1  0
+ 72 43  1  0
+ 74 75  1  0
+ 75 76  1  0
+ 76 73  1  0
+ 73 10  1  0
+ 10 74  1  0
+ 78 79  1  0
+ 79 80  1  0
+ 80 77  1  0
+ 81 78  1  0
+ 75 81  1  0
+ 77 82  1  0
+ 77 83  1  0
+ 81 83  1  0
+ 75 84  1  1
+ 81 85  1  6
+ 77 86  1  1
+ 13 82  1  0
+ 18 88  1  0
+ 88 89  1  0
+ 87 98  1  0
+ 90 91  1  0
+ 91 99  1  0
+ 98 90  1  0
+ 91 92  1  0
+ 93 92  1  0
+ 94 93  1  0
+ 96 94  1  0
+ 96 95  1  0
+ 97 96  1  0
+ 89 97  1  0
+ 99 87  1  0
+  1 98  1  0
+ 98 60  1  6
+  1100  1  6
+  2101  1  0
+  2102  1  0
+  3103  1  0
+  3104  1  0
+  4105  1  0
+  4106  1  0
+  5107  1  0
+  5108  1  0
+  6109  1  6
+  7110  1  0
+  7111  1  0
+  8112  1  0
+  8113  1  0
+  9114  1  0
+  9115  1  0
+ 10116  1  6
+ 11117  1  0
+ 11118  1  0
+ 11119  1  0
+ 12120  1  0
+ 12121  1  0
+ 12122  1  0
+ 13123  1  0
+ 13124  1  0
+ 14125  1  0
+ 14126  1  0
+ 15127  1  0
+ 16128  1  0
+ 16129  1  0
+ 18130  1  0
+ 18131  1  0
+ 21132  1  6
+ 22133  1  0
+ 22134  1  0
+ 22135  1  0
+ 23136  1  0
+ 23137  1  0
+ 24138  1  1
+ 25139  1  0
+ 25140  1  0
+ 26141  1  0
+ 26142  1  0
+ 27143  1  0
+ 27144  1  0
+ 28145  1  0
+ 28146  1  0
+ 29147  1  0
+ 29148  1  0
+ 30149  1  0
+ 30150  1  0
+ 31151  1  1
+ 32152  1  0
+ 32153  1  0
+ 33154  1  0
+ 33155  1  0
+ 34156  1  0
+ 34157  1  0
+ 35158  1  1
+ 36159  1  0
+ 36160  1  0
+ 37161  1  0
+ 37162  1  0
+ 38163  1  0
+ 38164  1  0
+ 39165  1  1
+ 40166  1  0
+ 40167  1  0
+ 41168  1  0
+ 41169  1  0
+ 42170  1  0
+ 42171  1  0
+ 42172  1  0
+ 44173  1  1
+ 45174  1  1
+ 46175  1  0
+ 46176  1  0
+ 46177  1  0
+ 47178  1  0
+ 47179  1  0
+ 47180  1  0
+ 48181  1  0
+ 48182  1  0
+ 48183  1  0
+ 49184  1  0
+ 49185  1  0
+ 50186  1  1
+ 51187  1  0
+ 51188  1  0
+ 51189  1  0
+ 52190  1  1
+ 53191  1  0
+ 53192  1  0
+ 53193  1  0
+ 54194  1  0
+ 54195  1  0
+ 57196  1  0
+ 57197  1  0
+ 61198  1  0
+ 61199  1  0
+ 63200  1  0
+ 63201  1  0
+ 64202  1  0
+ 67203  1  0
+ 67204  1  0
+ 68205  1  0
+ 68206  1  0
+ 69207  1  0
+ 69208  1  0
+ 70209  1  0
+ 70210  1  0
+ 71211  1  0
+ 71212  1  0
+ 72213  1  0
+ 72214  1  0
+ 73215  1  0
+ 73216  1  0
+ 74217  1  0
+ 74218  1  0
+ 76219  1  0
+ 76220  1  0
+ 78221  1  0
+ 78222  1  0
+ 79223  1  0
+ 79224  1  0
+ 80225  1  0
+ 80226  1  0
+ 82227  1  0
+ 82228  1  0
+ 83229  1  0
+ 83230  1  0
+ 86231  1  0
+ 86232  1  0
+ 86233  1  0
+ 87234  1  0
+ 87235  1  0
+ 89236  1  0
+ 89237  1  0
+ 90238  1  0
+ 90239  1  0
+ 91240  1  1
+ 92241  1  0
+ 92242  1  0
+ 93243  1  0
+ 93244  1  0
+ 94245  1  0
+ 94246  1  0
+ 95247  1  0
+ 95248  1  0
+ 95249  1  0
+ 96250  1  6
+ 97251  1  0
+ 97252  1  0
+ 99253  1  0
+ 99254  1  0
+M  END`;
+  let viewer;
+  let rotateInterval;
+
+  window.addEventListener('load', function() {
+    const el = document.querySelector('#viewer');
+    // nomouse — don't grab wheel/mouse events; page must remain scrollable.
+    viewer = $3Dmol.createViewer(el, {
+      backgroundColor: '#fbfbfd',
+      nomouse: true,
+      disableInteraction: true
+    });
+    viewer.addModel(SDF, 'sdf');
+    // Monochrome Apple-clean style
+    viewer.setStyle({}, {stick: {color: '#1d1d1f', radius: 0.12}});
+    viewer.addStyle({elem: 'O'}, {stick: {color: '#cc3333', radius: 0.14}});
+    // Highlight the cyclohexane ring atoms (signature of crenarchaeol)
+    viewer.addStyle({serial: [72, 73, 74, 75, 76, 78]}, {stick: {color: '#0066cc', radius: 0.18}});
+    viewer.zoomTo();
+    viewer.zoom(1.15, 800);
+    viewer.render();
+
+    // Fade in the molecule shortly after load
+    setTimeout(() => {
+      el.classList.add('visible');
+      document.getElementById('hero-caption').classList.add('visible');
+      document.getElementById('scroll-hint').classList.add('visible');
+      // Begin slow rotation
+      rotateInterval = setInterval(() => {
+        viewer.rotate(0.4, 'y');
+        viewer.render();
+      }, 30);
+    }, 400);
+  });
+
+  // ---------------- Scroll-driven transition (smart rAF, only runs when needed) ----------------
+  const hero = document.getElementById('hero');
+  const viewerEl = document.getElementById('viewer');
+  const titleEl = document.getElementById('hero-title');
+  const subtitleEl = document.getElementById('hero-subtitle');
+  const captionEl = document.getElementById('hero-caption');
+  const hintEl = document.getElementById('scroll-hint');
+
+  const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+  const easeInOutCubic = (t) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+
+  // Smooth interpolation state
+  let targetProgress = 0;
+  let currentProgress = 0;
+  let rafId = null;
+
+  function readScroll() {
+    const heroRect = hero.getBoundingClientRect();
+    const heroHeight = hero.offsetHeight;
+    const scrolled = -heroRect.top;
+    targetProgress = Math.max(0, Math.min(1, scrolled / (heroHeight - window.innerHeight)));
+  }
+
+  function applyProgress(progress) {
+    const moleculeFade = easeOutCubic(Math.max(0, 1 - progress * 1.4));
+    const moleculeScale = 1 - easeInOutCubic(progress) * 0.08;
+    if (viewerEl) {
+      viewerEl.style.opacity = moleculeFade;
+      viewerEl.style.transform = `scale(${moleculeScale}) translateZ(0)`;
+    }
+    if (captionEl) captionEl.style.opacity = moleculeFade * 0.9;
+    if (hintEl) hintEl.style.opacity = moleculeFade * 0.7;
+
+    const titleRaw = Math.max(0, Math.min(1, (progress - 0.35) / 0.5));
+    const titleProgress = easeOutCubic(titleRaw);
+    const rotY = 45 - titleProgress * 45;
+    const translateZ = -200 + titleProgress * 200;
+    if (titleEl) {
+      titleEl.style.transform = `rotateY(${rotY}deg) translateZ(${translateZ}px)`;
+      titleEl.style.opacity = titleProgress;
+    }
+    if (subtitleEl) subtitleEl.style.opacity = titleProgress;
+  }
+
+  function tick() {
+    const diff = targetProgress - currentProgress;
+    // If close enough, snap and stop the loop
+    if (Math.abs(diff) < 0.0005) {
+      currentProgress = targetProgress;
+      applyProgress(currentProgress);
+      rafId = null;
+      return;
+    }
+    currentProgress += diff * 0.18;
+    applyProgress(currentProgress);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function startTick() {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(tick);
+    }
+  }
+
+  function onScroll() {
+    readScroll();
+    startTick();
+  }
+
+  // Passive listeners — never block the scroll thread
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+
+  // Initial paint
+  readScroll();
+  currentProgress = targetProgress;
+  applyProgress(currentProgress);
+
+  // ---------------- Biomarker section — IntersectionObserver fade-in ----------------
+  const bioGroups = document.querySelectorAll('.bio-group');
+  if ('IntersectionObserver' in window) {
+    const bioObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          bioObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -8% 0px'
+    });
+    bioGroups.forEach((g) => bioObserver.observe(g));
+  } else {
+    // Fallback — show all immediately
+    bioGroups.forEach((g) => g.classList.add('in-view'));
+  }
+
+  // ---------------- Site nav: hidden inside the hero zone, visible past it ----------------
+  const siteNav = document.getElementById('site-nav');
+  if (siteNav) {
+    const HERO_THRESHOLD = 0.7; // user must be past 70% of viewport before nav reveals
+    let navVisible = false;
+    let navTicking = false;
+
+    function setNavVisible(show) {
+      if (show === navVisible) return;
+      navVisible = show;
+      siteNav.classList.toggle('is-visible', show);
+      siteNav.setAttribute('aria-hidden', show ? 'false' : 'true');
+    }
+
+    function evalNav() {
+      const pastHero = window.scrollY > window.innerHeight * HERO_THRESHOLD;
+      setNavVisible(pastHero);
+      navTicking = false;
+    }
+    function onNavScroll() {
+      if (navTicking) return;
+      navTicking = true;
+      requestAnimationFrame(evalNav);
+    }
+    window.addEventListener('scroll', onNavScroll, { passive: true });
+    window.addEventListener('resize', onNavScroll, { passive: true });
+    evalNav();
+  }
+
+  // ---------------- Smooth anchor-link scrolling with offset ----------------
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.pageYOffset - 20;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+</body>
+</html>

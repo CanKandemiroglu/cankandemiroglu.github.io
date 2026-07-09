@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scene 1 &mdash; Establishing landscape | Niederrhein nickel project</title>
+  <style>
+    :root {
+      --bg: #fbfbfd;
+      --ink: #1d1d1f;
+      --muted: #6e6e73;
+      --hairline: #d2d2d7;
+      --card: #fff;
+      --nickel: #D55E00;
+      --breyell: #0072B2;
+      --kaldenkirchen: #E69F00;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .scene {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 32px 60px;
+    }
+    .eyebrow {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 22px;
+    }
+    .lead {
+      font-size: clamp(17px, 2vw, 21px);
+      color: var(--muted);
+      max-width: 65ch;
+      margin-bottom: 40px;
+    }
+    .viewport {
+      background: var(--card);
+      border-radius: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.07);
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #0d0d10;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .stage-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      transform: scale(1.0);
+      transform-origin: 50% 60%;
+      transition: transform 9s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform, filter;
+    }
+    .stage-img.zooming {
+      transform: scale(1.08);
+    }
+    .stage-img.stylised {
+      filter: saturate(0.78) brightness(1.04) hue-rotate(-4deg);
+    }
+    /* Caption overlay that fades in after the photograph has held for a moment */
+    .photo-caption {
+      position: absolute;
+      bottom: 16px;
+      left: 18px;
+      right: 18px;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.7s, transform 0.7s;
+      pointer-events: none;
+    }
+    .photo-caption.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .photo-caption .h {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+      color: #fff;
+    }
+    /* Marker arrow pointing at the wellhead, fading in mid-animation */
+    .pointer {
+      position: absolute;
+      top: 44%;
+      left: 17%;
+      width: 80px;
+      height: 80px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pointer.visible { opacity: 1; }
+    .pointer-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 10px;
+      height: 10px;
+      margin: -5px;
+      background: var(--nickel);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(213, 94, 0, 0.25);
+    }
+    .pointer-label {
+      position: absolute;
+      top: -8px;
+      left: 28px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .stage-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding: 0 6px;
+    }
+    .stage-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .stage-label .num { color: var(--ink); font-weight: 600; }
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    button {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 9px 22px;
+      border: 1px solid var(--hairline);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    button:hover { background: #f5f5f7; border-color: #b8b8be; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .caption {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 80ch;
+      border-top: 1px solid var(--hairline);
+      padding-top: 22px;
+      margin-top: 32px;
+    }
+    .caption strong { color: var(--ink); font-weight: 600; }
+    @media (max-width: 720px) {
+      .scene { padding: 48px 20px 40px; }
+      .pointer { width: 60px; height: 60px; top: 30%; left: 15%; }
+      .pointer-label { font-size: 11px; }
+      .photo-caption { font-size: 12px; bottom: 12px; left: 14px; right: 14px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .stage-img, .pointer, .photo-caption {
+        transition: none !important;
+      }
+      .stage-img.zooming { transform: scale(1.0); }
+    }
+  </style>
+</head>
+<body>
+  <section class="scene">
+    <div class="eyebrow">Scene 1 &middot; Establishing landscape</div>
+    <h1>The Wasserwerk is embedded in active agricultural land.</h1>
+    <p class="lead">
+      The production wells of Wasserwerk Breyell (now operated as Wasserwerk Lobberich) and Wasserwerk Kaldenkirchen are sited within farmed terrain at the western margin of the Niederrhein. The proximity between agricultural inputs and groundwater extraction is the precondition for the contamination pathway analysed in Scenes&nbsp;2 to&nbsp;6.
+    </p>
+
+    <div class="viewport">
+      <div class="stage-container" id="stageContainer">
+        <img id="stageImg" class="stage-img"
+             src="assets/L02.png"
+             alt="Photograph at the property boundary of the production well field. A wellhead casing in cast iron sits on a concrete pillar in the foreground, behind a metal gate and a chain-link fence with blue mesh. Beyond the fence lies a recently harvested agricultural field with a red tractor visible at distance preparing the soil. A treeline marks the far horizon. Photograph by Osman Can Kandemiroglu.">
+        <div class="pointer" id="pointer" style="display:none">
+          <span class="pointer-dot"></span>
+          <span class="pointer-label"></span>
+        </div>
+        <div class="photo-caption" id="photoCaption">
+          <div class="h">Wasserwerk property boundary, Niederrhein</div>
+          The production wells stand at the perimeter of farmed land. Surface inputs reach them through the unsaturated zone.
+        </div>
+      </div>
+
+      <div class="stage-meta">
+        <div class="stage-label">
+          <span class="num">1</span> &middot; establishing landscape
+        </div>
+      </div>
+
+      <div class="controls">
+        <button onclick="play()" id="btnPlay">&#9654; Play</button>
+        <button onclick="reset()">&#8635; Reset</button>
+      </div>
+    </div>
+
+    <div class="caption">
+      <strong>Figure (Scene 1).</strong> Photograph of the property boundary of the production-well field of Wasserwerk Breyell (Lobberich), Niederrhein, Germany. The image was taken by Osman Can Kandemiroglu and documents the immediate land-use context of the deep-groundwater extraction wells investigated in the source-attribution study of nickel mobilisation (Kandemiroglu, 2011; Wisotzky, Kandemiroglu &amp; Plassmann, 2012). The agricultural field behind the fence carries the surface inputs (NO<sub>3</sub><sup>&minus;</sup>, SO<sub>4</sub><sup>2&minus;</sup>, Cl<sup>&minus;</sup>, NH<sub>4</sub><sup>+</sup>) implicated in the acidification of the upper aquifer.
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var img = document.getElementById('stageImg');
+      var pointer = document.getElementById('pointer');
+      var caption = document.getElementById('photoCaption');
+      var container = document.getElementById('stageContainer');
+      var btnPlay = document.getElementById('btnPlay');
+      var played = false;
+      var timeouts = [];
+
+      function clearTimeouts() {
+        for (var i = 0; i < timeouts.length; i++) clearTimeout(timeouts[i]);
+        timeouts = [];
+      }
+
+      function play() {
+        if (played) return;
+        played = true;
+        btnPlay.disabled = true;
+        // Begin the Ken-Burns zoom immediately
+        timeouts.push(setTimeout(function () {
+          img.classList.add('zooming');
+        }, 200));
+        // Reveal the wellhead pointer after the camera has begun to settle
+        timeouts.push(setTimeout(function () {
+          pointer.classList.add('visible');
+        }, 2400));
+        // Reveal the caption text overlay
+        timeouts.push(setTimeout(function () {
+          caption.classList.add('visible');
+        }, 3600));
+        // Apply the soft stylised tone in the final phase
+        timeouts.push(setTimeout(function () {
+          img.classList.add('stylised');
+        }, 6500));
+      }
+
+      function reset() {
+        clearTimeouts();
+        played = false;
+        btnPlay.disabled = false;
+        img.classList.remove('zooming');
+        img.classList.remove('stylised');
+        pointer.classList.remove('visible');
+        caption.classList.remove('visible');
+      }
+
+      window.play = play;
+      window.reset = reset;
+
+      // IntersectionObserver: trigger autoplay when the container enters the viewport
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          for (var i = 0; i < entries.length; i++) {
+            if (entries[i].isIntersecting && !played) {
+              play();
+              io.disconnect();
+            }
+          }
+        }, { threshold: 0.3 });
+        io.observe(container);
+      }
+
+      // Autoplay fallback for preview panes that do not scroll
+      setTimeout(function () { if (!played) play(); }, 1200);
+    })();
+  </script>
+</body>
+</html>

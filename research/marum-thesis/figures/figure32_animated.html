@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 32 — Carbon export and the broadcaster paradox</title>
+<style>
+  :root {
+    --bg: #fbfbfd; --ink: #1d1d1f; --muted: #6e6e73;
+    --axis: #1d1d1f; --bc: #0072B2; --ag: #D55E00; --classic: #999999;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .section { max-width: 1040px; margin: 0 auto; padding: 80px 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; max-width: 22ch;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px); line-height: 1.5;
+    color: var(--muted); max-width: 64ch; margin-bottom: 28px;
+  }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 40px; margin: 32px 0 8px; }
+  .stat .num { font-size: clamp(32px, 5vw, 48px); font-weight: 600; letter-spacing: -0.02em; }
+  .stat .num.bc { color: var(--bc); }
+  .stat .num.ag { color: var(--ag); }
+  .stat .lbl { font-size: 14px; color: var(--muted); margin-top: 2px; max-width: 24ch; }
+  .stage {
+    width: 100%; border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+    padding: 24px; margin-top: 8px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .ax-line { stroke: var(--axis); stroke-width: 1; }
+  .tick { stroke: var(--axis); stroke-width: 1; }
+  .grid { stroke: #ececef; stroke-width: 1; }
+  .tick-lbl { fill: var(--muted); font-size: 12px; }
+  .ax-title { fill: var(--ink); font-size: 14px; font-weight: 500; }
+  .curve { fill: none; stroke-width: 2.6; }
+  .curve-classic { fill: none; stroke: var(--classic); stroke-width: 1.4; stroke-dasharray: 6 4; }
+  .depth-line { stroke: #cfcfd2; stroke-width: 1; stroke-dasharray: 3 3; }
+  .curve-lbl { font-size: 13px; font-weight: 600; }
+  .retain { font-size: 13px; font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 18px; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .legend .sw { width: 22px; height: 3px; border-radius: 2px; }
+  .caption {
+    margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 80ch;
+  }
+  .caption b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="eyebrow">Figure 32 · The Broadcaster Paradox</div>
+  <h1>What's good for the bacterium is bad for the climate.</h1>
+  <p class="lead">
+    Strain-specific degradation rates were fed into the Martin curve, the standard
+    model of how carbon flux fades with depth. Faster degradation near the surface
+    means less carbon reaching the deep ocean.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num bc">~11%</div><div class="lbl">carbon retained at 1000&nbsp;m for broadcaster-colonised particles</div></div>
+    <div class="stat"><div class="num ag">~17%</div><div class="lbl">carbon retained at 1000&nbsp;m for aggregator-colonised particles</div></div>
+    <div class="stat"><div class="num">0.95 vs 0.78</div><div class="lbl">Martin flux-attenuation coefficient <i>b</i></div></div>
+  </div>
+
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 820 600" role="img"
+         aria-label="Normalised carbon flux versus ocean depth"></svg>
+    <div class="legend">
+      <div class="item"><span class="sw" style="background:var(--bc)"></span>Broadcaster-colonised (13B01, b = 0.95)</div>
+      <div class="item"><span class="sw" style="background:var(--ag)"></span>Aggregator-colonised (mean, b = 0.78)</div>
+      <div class="item"><span class="sw" style="background:var(--classic);height:2px"></span>Classic Martin curve (b = 0.86)</div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <b>Bacterial enzyme-secretion phenotype governs carbon-flux attenuation.</b>
+    Normalised particulate-organic-carbon flux F(z)/F(z&#8320;) versus depth,
+    predicted by the Martin curve F&nbsp;=&nbsp;(z/z&#8320;)<sup>&minus;b</sup>.
+    Strain-specific degradation rates from ADE-I were converted to
+    flux-attenuation coefficients <i>b</i>: broadcaster-colonised particles
+    (13B01) attenuate faster (b&nbsp;=&nbsp;0.95) than aggregator-colonised
+    particles (mean b&nbsp;=&nbsp;0.78), bracketing the classic Martin value
+    (b&nbsp;=&nbsp;0.86). At 1000&nbsp;m, broadcaster-colonised particles retain
+    only ~11% of initial carbon versus ~17% for aggregator-colonised particles.
+    This is the broadcaster paradox: the faster degraders, fitter as individual
+    bacteria, return carbon to the upper ocean before it can be sequestered at
+    depth. Curves draw in on view; in a static preview the final state is shown.
+  </p>
+</div>
+
+<script>
+(function () {
+  // ---- Martin curve: F(z) = (z/z0)^(-b) ----
+  var Z0 = 100;
+  var curves = [
+    { b: 0.95, color: "#0072B2", label: "Broadcaster",  ret: 11.2 },
+    { b: 0.78, color: "#D55E00", label: "Aggregator",   ret: 16.6 }
+  ];
+  var bClassic = 0.86;
+
+  // ---- Geometry: x = flux 0..1, y = depth 100..4000 (top-down) ----
+  var W = 820, H = 600, mL = 78, mR = 130, mT = 40, mB = 64;
+  var pW = W - mL - mR, pH = H - mT - mB;
+  var zTop = 100, zBot = 4000;
+  var X = function (f) { return mL + f * pW; };
+  var Y = function (z) { return mT + (z - zTop) / (zBot - zTop) * pH; };
+  var flux = function (z, b) { return Math.pow(z / Z0, -b); };
+
+  var svg = document.getElementById("chart");
+  var NS = "http://www.w3.org/2000/svg";
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); return e; }
+
+  // ---- Gridlines + axes ----
+  [0, 0.25, 0.5, 0.75, 1.0].forEach(function (f) {
+    svg.appendChild(el("line", { class: "grid", x1: X(f), y1: mT, x2: X(f), y2: mT + pH }));
+    svg.appendChild(el("line", { class: "tick", x1: X(f), y1: mT, x2: X(f), y2: mT - 5 }));
+    var t = el("text", { class: "tick-lbl", x: X(f), y: mT - 11, "text-anchor": "middle" });
+    t.textContent = f.toFixed(2); svg.appendChild(t);
+  });
+  [100, 1000, 2000, 3000, 4000].forEach(function (z) {
+    svg.appendChild(el("line", { class: "tick", x1: mL - 5, y1: Y(z), x2: mL, y2: Y(z) }));
+    var t = el("text", { class: "tick-lbl", x: mL - 11, y: Y(z) + 4, "text-anchor": "end" });
+    t.textContent = z; svg.appendChild(t);
+  });
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT, x2: mL + pW, y2: mT }));
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT, x2: mL, y2: mT + pH }));
+
+  var xt = el("text", { class: "ax-title", x: mL + pW / 2, y: 18, "text-anchor": "middle" });
+  xt.textContent = "Normalised POC flux  F(z) / F(z\u2080)"; svg.appendChild(xt);
+  var yt = el("text", { class: "ax-title", x: 22, y: mT + pH / 2,
+    "text-anchor": "middle", transform: "rotate(-90 22 " + (mT + pH / 2) + ")" });
+  yt.textContent = "Depth (m)"; svg.appendChild(yt);
+
+  // ---- 1000 m reference line ----
+  svg.appendChild(el("line", { class: "depth-line", x1: mL, y1: Y(1000), x2: mL + pW, y2: Y(1000) }));
+  var dl = el("text", { class: "tick-lbl", x: mL + pW - 4, y: Y(1000) - 7, "text-anchor": "end" });
+  dl.textContent = "1000 m (mesopelagic)"; svg.appendChild(dl);
+
+  // ---- Build a path string for a given b ----
+  function pathFor(b) {
+    var s = "";
+    for (var z = zTop; z <= zBot; z += 20) {
+      s += (s ? " L" : "M") + X(flux(z, b)) + " " + Y(z);
+    }
+    return s;
+  }
+
+  // ---- Classic Martin (drawn faint, static) ----
+  svg.appendChild(el("path", { class: "curve-classic", d: pathFor(bClassic) }));
+
+  // ---- Broadcaster + aggregator curves (animated draw-in) ----
+  var paths = [], extras = [];
+  curves.forEach(function (c, i) {
+    var p = el("path", { class: "curve", stroke: c.color, d: pathFor(c.b) });
+    svg.appendChild(p);
+    var len = p.getTotalLength();
+    p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    p.style.transition = "stroke-dashoffset 1.6s ease";
+    paths.push(p);
+
+    // retention dot + label at 1000 m
+    var rx = X(flux(1000, c.b)), ry = Y(1000);
+    var g = el("g", {}); g.style.opacity = 0; g.style.transition = "opacity 0.5s ease";
+    g.appendChild(el("circle", { cx: rx, cy: ry, r: 5, fill: c.color }));
+    var aggSide = (c.label === "Aggregator");   // place AG label right of its dot
+    var rl = el("text", { class: "retain",
+      x: aggSide ? rx + 12 : rx - 10, y: ry + 4,
+      "text-anchor": aggSide ? "start" : "end", fill: c.color });
+    rl.textContent = "~" + c.ret.toFixed(0) + "%"; g.appendChild(rl);
+    svg.appendChild(g); extras.push(g);
+
+    // curve label — stacked vertically at the bottom so the two never clash
+    var cl = el("text", { class: "curve-lbl", x: X(flux(zBot, c.b)) + 8,
+      y: Y(zBot) + 4 + i * 20, "text-anchor": "start", fill: c.color });
+    cl.textContent = c.label + "  b=" + c.b.toFixed(2);
+    cl.style.opacity = 0; cl.style.transition = "opacity 0.5s ease";
+    svg.appendChild(cl); extras.push(cl);
+  });
+
+  // ---- Animation ----
+  var played = false;
+  function play() {
+    if (played) return; played = true;
+    paths.forEach(function (p) { p.style.strokeDashoffset = 0; });
+    setTimeout(function () {
+      extras.forEach(function (e) { e.style.opacity = 1; });
+    }, 1500);
+  }
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { play(); obs.disconnect(); } });
+    }, { threshold: 0.3 });
+    obs.observe(svg);
+    setTimeout(function () { if (!played) play(); }, 1200);
+  } else { play(); }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The same chemistry, in reverse · Figure 8</title>
+<style>
+  :root {
+    --bg:           #fbfbfd;
+    --ink:          #1d1d1f;
+    --ink-soft:     #424245;
+    --ink-mute:     #6e6e73;
+    --line-faint:   #e8e8ed;
+    --nickel:       #D55E00;
+    --calcite:      #009E73;
+    --manganese:    #CC79A7;
+    --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
+                 system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.003em;
+    padding: 22px 18px 28px;
+  }
+  .fig-wrap { max-width: 1100px; margin: 0 auto; }
+  .fig-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 6px;
+  }
+  .fig-title {
+    font-size: clamp(26px, 3.6vw, 38px);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+  .fig-lead {
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+    max-width: 720px;
+  }
+  .fig-lead .pop-acid    { color: var(--nickel);    font-weight: 600; }
+  .fig-lead .pop-base    { color: var(--calcite);   font-weight: 600; }
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--line-faint);
+    border-radius: 18px;
+    padding: 22px 22px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.04);
+  }
+  svg.diagram { display: block; width: 100%; height: auto; }
+  .caption {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+    margin: 16px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line-faint);
+    max-width: 820px;
+  }
+  .caption em { font-style: italic; }
+  @media (max-width: 600px) { body { padding: 16px 12px; } }
+</style>
+</head>
+<body>
+  <div class="fig-wrap">
+
+    <p class="fig-eyebrow">Discussion · Figure 8</p>
+    <h1 class="fig-title">The same chemistry, in reverse.</h1>
+    <p class="fig-lead">
+      Underground, <span class="pop-acid">acid lets the nickel loose</span>. In the plant, <span class="pop-base">half-burned dolomite catches it again</span>. One equilibrium, run forwards and backwards.
+    </p>
+
+    <div class="chart-card">
+      <svg class="diagram" viewBox="0 0 900 540" role="img"
+           aria-label="Schematic diagram of the mobilise–immobilise mirror. Two columns sit side by side. The left column shows the underground mobilisation pathway in four downward steps: acid input from the surface, pH falling below six point five, calcite cement of the aquifer dissolving, and trace nickel being released into solution. The right column shows the in-plant immobilisation pathway in four downward steps that mirror the left: contact with half-burned dolomite, pH rising back to neutral, fresh calcite and manganese oxide precipitating, and dissolved nickel being captured into both phases. A grey arrow at the bottom centre tracks the dissolved nickel from left to right, from release in the aquifer to capture in the spray-aerated open filter.">
+
+        <!-- Column headers -->
+        <text x="220" y="42" text-anchor="middle"
+              font-size="13" font-weight="700"
+              letter-spacing="0.06em" fill="#6e6e73">
+          UNDERGROUND · MOBILISATION
+        </text>
+        <text x="680" y="42" text-anchor="middle"
+              font-size="13" font-weight="700"
+              letter-spacing="0.06em" fill="#6e6e73">
+          IN THE PLANT · IMMOBILISATION
+        </text>
+
+        <!-- Vertical centre divider -->
+        <line x1="450" y1="60" x2="450" y2="490"
+              stroke="#e8e8ed" stroke-width="1" stroke-dasharray="3 4" />
+
+        <!-- ===== LEFT COLUMN: Underground (Mobilisation) ===== -->
+        <!-- Step 1: Acid input -->
+        <g transform="translate(60,68)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#D55E00" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#D55E00" letter-spacing="0.04em">STEP 1</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            Acid input from the surface
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            atmospheric CO₂ + organic N → H⁺ + NO₃⁻
+          </text>
+        </g>
+
+        <!-- Step 2: pH falls -->
+        <g transform="translate(60,162)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#D55E00" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#D55E00" letter-spacing="0.04em">STEP 2</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            pH falls below 6.5
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            the groundwater turns calcite-aggressive
+          </text>
+        </g>
+
+        <!-- Step 3: Calcite dissolves -->
+        <g transform="translate(60,256)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#D55E00" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#D55E00" letter-spacing="0.04em">STEP 3</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            Calcite of the matrix dissolves
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+            CaCO₃ + H⁺ → Ca²⁺ + HCO₃⁻
+          </text>
+        </g>
+
+        <!-- Step 4: Ni released -->
+        <g transform="translate(60,350)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#D55E00" stroke-width="2" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#D55E00" letter-spacing="0.04em">STEP 4</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#D55E00">
+            Trace Ni²⁺ is released into solution
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            up to 61 µg/L · three times the legal limit
+          </text>
+        </g>
+
+        <!-- Downward chevrons on the left column -->
+        <g fill="none" stroke="#D55E00" stroke-width="1.2" opacity="0.5">
+          <path d="M 220 144 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+          <path d="M 220 238 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+          <path d="M 220 332 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+        </g>
+
+        <!-- ===== RIGHT COLUMN: In the plant (Immobilisation) ===== -->
+        <!-- Step 1: Magnodol contact -->
+        <g transform="translate(520,68)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#009E73" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#009E73" letter-spacing="0.04em">STEP 1</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            Half-burned dolomite contacts the water
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            Magnodol (CaCO₃·MgO) in the spray-aerated open filter
+          </text>
+        </g>
+
+        <!-- Step 2: pH rises -->
+        <g transform="translate(520,162)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#009E73" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#009E73" letter-spacing="0.04em">STEP 2</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            pH rises back to neutral
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            calcite equilibrium re-established · alkalinity restored
+          </text>
+        </g>
+
+        <!-- Step 3: Calcite & MnO2 form -->
+        <g transform="translate(520,256)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#009E73" stroke-width="1.5" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#009E73" letter-spacing="0.04em">STEP 3</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#1d1d1f">
+            Fresh calcite and MnO₂ precipitate
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+            Ca²⁺ + HCO₃⁻ → CaCO₃   ·   Mn²⁺ + O₂ → MnO₂
+          </text>
+        </g>
+
+        <!-- Step 4: Ni captured -->
+        <g transform="translate(520,350)">
+          <rect x="0" y="0" width="320" height="74" rx="10" ry="10"
+                fill="#fff" stroke="#009E73" stroke-width="2" />
+          <text x="16" y="24" font-size="12" font-weight="700"
+                fill="#009E73" letter-spacing="0.04em">STEP 4</text>
+          <text x="16" y="46" font-size="15" font-weight="600" fill="#009E73">
+            Ni²⁺ is captured by both phases
+          </text>
+          <text x="16" y="64" font-size="12" fill="#6e6e73">
+            r² = 0.66 onto MnO₂   ·   r² = 0.86 into new CaCO₃
+          </text>
+        </g>
+
+        <!-- Downward chevrons on the right column -->
+        <g fill="none" stroke="#009E73" stroke-width="1.2" opacity="0.5">
+          <path d="M 680 144 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+          <path d="M 680 238 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+          <path d="M 680 332 l -6 -6 m 6 6 l 6 -6 m -6 6 l 0 -10"/>
+        </g>
+
+        <!-- ===== Curved arrow at the bottom: dissolved Ni travels L → R ===== -->
+        <defs>
+          <marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5"
+                  markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#6e6e73"/>
+          </marker>
+        </defs>
+        <path d="M 220 444 C 220 490, 680 490, 680 444"
+              stroke="#6e6e73" stroke-width="1.5" fill="none"
+              stroke-dasharray="5 4"
+              marker-end="url(#arrowhead)"/>
+        <text x="450" y="495" text-anchor="middle"
+              font-size="13" font-weight="600" fill="#1d1d1f"
+              font-style="italic">
+          dissolved Ni²⁺ travels from aquifer to plant
+        </text>
+        <text x="450" y="515" text-anchor="middle"
+              font-size="11" fill="#6e6e73">
+          and is removed below the 20 µg/L limit before distribution
+        </text>
+      </svg>
+    </div>
+
+    <p class="caption">
+      Schematic of the mobilise–immobilise mirror that emerges from the data presented in Figures 4 through 7. In the aquifer (left column), acid input from the surface acidifies the groundwater, the calcite cement of the older main terrace dissolves, and trace nickel is released into solution at concentrations up to 61 µg/L. In the spray-aerated open filter (right column), contact with half-burned dolomite (Magnodol, CaCO₃·MgO) raises the pH, fresh calcite reprecipitates, and manganese is oxidised to MnO₂. The same dissolved Ni²⁺ released underground is captured by both newly formed phases, with the published correlations r² = 0.66 for the manganese-oxide fraction and r² = 0.86 for the carbonate-bound fraction; the treated water consistently meets the 20 µg/L TrinkwV limit.&nbsp;*
+    </p>
+  </div>
+</body>
+</html>

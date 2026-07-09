@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acidification, not pyrite, releases the nickel — Figure 4</title>
+<style>
+  :root {
+    --bg:           #fbfbfd;
+    --ink:          #1d1d1f;
+    --ink-soft:     #424245;
+    --ink-mute:     #6e6e73;
+    --line-faint:   #e8e8ed;
+    --breyell:      #0072B2;
+    --kaldenkirchen:#E69F00;
+    --nickel:       #D55E00;
+    --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
+                 system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.003em;
+    padding: 22px 18px 28px;
+  }
+  .fig-wrap { max-width: 1100px; margin: 0 auto; }
+  .fig-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 6px;
+  }
+  .fig-title {
+    font-size: clamp(26px, 3.6vw, 38px);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+  .fig-lead {
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+    max-width: 640px;
+  }
+  .fig-lead .pop { color: var(--nickel); font-weight: 600; }
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--line-faint);
+    border-radius: 18px;
+    padding: 22px 22px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.04);
+  }
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 22px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 22px 4px 0;
+  }
+  .legend-item > * + * { margin-left: 8px; }
+  .legend-swatch {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--breyell);
+  }
+  .legend-swatch.is-kaldenkirchen { border-color: var(--kaldenkirchen); }
+  .legend-tri {
+    display: inline-block;
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 9px solid #1d1d1f;
+    margin-bottom: 2px;
+  }
+  svg.chart { display: block; width: 100%; height: auto; }
+  .caption {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+    margin: 16px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line-faint);
+    max-width: 760px;
+  }
+  .caption em { font-style: italic; }
+  .caption .src { display: block; margin-top: 6px; }
+  @media (max-width: 600px) { body { padding: 16px 12px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-anim { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="fig-wrap">
+
+    <p class="fig-eyebrow">Result 2 · Figure 4</p>
+    <h1 class="fig-title">Acidification, not pyrite, releases the nickel.</h1>
+    <p class="fig-lead">
+      Below <span class="pop">pH 6.5</span>, nickel mobilises. Above it, the water stays clean.
+    </p>
+
+    <div class="chart-card">
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-swatch" aria-hidden="true"></span>Breyell · BTB 1–2</span>
+        <span class="legend-item"><span class="legend-swatch is-kaldenkirchen" aria-hidden="true"></span>Kaldenkirchen · KTB 1–8</span>
+      </div>
+      <svg id="chart" class="chart" viewBox="0 0 800 500" role="img"
+           aria-label="Scatter plot of nickel concentration against pH for 35 groundwater samples with quantified nickel concentrations from the production wells of the two waterworks. A vertical dashed line marks the pH 6.5 mobilisation threshold from the peer-reviewed publication; a horizontal dashed line marks the 20 micrograms per litre drinking-water limit. All samples lie at pH below 6.9, the great majority at pH below 6.5.">
+      </svg>
+    </div>
+
+    <p class="caption">
+      Nickel versus pH for the 35 quantified groundwater samples from the production wells of Wasserwerke Breyell (BTB 1–2) and Kaldenkirchen (KTB 4). Above pH 6.5 the samples below the detection limit are omitted; the elevated population lies entirely at pH below 6.9, the great majority at pH below 6.5. In the Breyell wells nickel and iron are uncorrelated, which excludes pyrite oxidation as the source.&nbsp;*
+    </p>
+  </div>
+
+<script>
+  (function () {
+    'use strict';
+
+    // Quantified samples (Ni > 10 µg/L)
+    var quant = [
+      ['BTB1', 26, 6.3], ['BTB1', 34, 6.0], ['BTB1', 36, 6.3], ['BTB1', 38, 5.9],
+      ['BTB1', 40, 6.1], ['BTB1', 41, 6.3], ['BTB1', 44, 6.9], ['BTB1', 46, 6.0],
+      ['BTB1', 46, 6.1], ['BTB1', 47, 6.2], ['BTB1', 48, 6.3], ['BTB1', 61, 6.2],
+      ['BTB2', 20, 6.1], ['BTB2', 22, 6.0], ['BTB2', 22, 6.2], ['BTB2', 23, 6.3],
+      ['BTB2', 26, 6.2], ['BTB2', 27, 6.2], ['BTB2', 34, 6.3], ['BTB2', 35, 6.3],
+      ['BTB2', 43, 6.1], ['BTB2', 43, 6.2], ['BTB2', 44, 6.3], ['BTB2', 44, 6.5],
+      ['BTB2', 58, 6.0],
+      ['KTB4', 19, 5.5], ['KTB4', 20, 5.7], ['KTB4', 21, 5.7], ['KTB4', 21, 5.8],
+      ['KTB4', 22, 5.6], ['KTB4', 22, 5.8], ['KTB4', 23, 5.5], ['KTB4', 30, 5.7],
+      ['KTB4', 31, 5.8]
+    ];
+    // Non-detects (Ni ≤ 10 µg/L). Plotted at LOD/2 = 5.
+    var censored = [];
+
+    var quantBTB = [], quantKTB = [];
+    quant.forEach(function (r) {
+      var rec = { well: r[0], ni: r[1], ph: r[2] };
+      if (r[0].slice(0,3) === 'BTB') quantBTB.push(rec); else quantKTB.push(rec);
+    });
+    var censoredBTB = [], censoredKTB = [];
+    censored.forEach(function (r) {
+      var rec = { well: r[0], ph: r[1] };
+      if (r[0].slice(0,3) === 'BTB') censoredBTB.push(rec); else censoredKTB.push(rec);
+    });
+
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var W = 800, H = 500;
+    var M = { top: 36, right: 36, bottom: 56, left: 60 };
+    var plotW = W - M.left - M.right;
+    var plotH = H - M.top - M.bottom;
+    var xMin = 5.0, xMax = 7.5, yMin = 0, yMax = 70;
+    function x(ph) { return M.left + (ph - xMin) / (xMax - xMin) * plotW; }
+    function y(ni) { return M.top  + (yMax - ni) / (yMax - yMin) * plotH; }
+    function el(name, attrs, parent) {
+      var n = document.createElementNS(SVG_NS, name);
+      if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(n);
+      return n;
+    }
+    var svg = document.getElementById('chart');
+
+    // Light horizontal gridlines
+    var gGrid = el('g', null, svg);
+    for (var v = 0; v <= 70; v += 10) {
+      el('line', {
+        x1: M.left, x2: W - M.right,
+        y1: y(v), y2: y(v),
+        stroke: '#ececef', 'stroke-width': 1
+      }, gGrid);
+    }
+
+    // Axes
+    el('line', { x1: M.left, x2: W - M.right, y1: y(0), y2: y(0), stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+    el('line', { x1: M.left, x2: M.left, y1: M.top - 4, y2: y(0), stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+
+    [5.0, 5.5, 6.0, 6.5, 7.0, 7.5].forEach(function (t) {
+      var xp = x(t);
+      el('line', { x1: xp, x2: xp, y1: y(0), y2: y(0) + 5, stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+      var lbl = el('text', {
+        x: xp, y: y(0) + 22,
+        'text-anchor': 'middle',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245', 'font-variant-numeric': 'tabular-nums'
+      }, svg);
+      lbl.textContent = t.toFixed(1);
+    });
+    var xTitle = el('text', {
+      x: M.left + plotW / 2, y: H - 8,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    xTitle.textContent = 'pH';
+
+    [0, 10, 20, 30, 40, 50, 60, 70].forEach(function (t) {
+      var yp = y(t);
+      el('line', { x1: M.left - 5, x2: M.left, y1: yp, y2: yp, stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+      var lbl = el('text', {
+        x: M.left - 9, y: yp + 4,
+        'text-anchor': 'end',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245', 'font-variant-numeric': 'tabular-nums'
+      }, svg);
+      lbl.textContent = t;
+    });
+    var yTitle = el('text', {
+      x: -(M.top + plotH / 2), y: 18,
+      transform: 'rotate(-90)',
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    yTitle.textContent = 'Nickel [µg/L]';
+
+    // Reference lines
+    var limitY  = y(20);
+    var threshX = x(6.5);
+    var limitLine = el('line', {
+      x1: M.left, x2: W - M.right,
+      y1: limitY, y2: limitY,
+      stroke: '#1d1d1f', 'stroke-width': 1.5,
+      'stroke-dasharray': '6 4',
+      'class': 'chart-anim limit-line'
+    }, svg);
+    var threshLine = el('line', {
+      x1: threshX, x2: threshX,
+      y1: M.top, y2: y(0),
+      stroke: '#1d1d1f', 'stroke-width': 1.5,
+      'stroke-dasharray': '6 4',
+      'class': 'chart-anim thresh-line'
+    }, svg);
+
+    // Quantified markers (hollow circles)
+    function addCircles(series, color) {
+      var g = el('g', { 'class': 'markers chart-anim' }, svg);
+      series.forEach(function (p, i) {
+        var c = el('circle', {
+          cx: x(p.ph), cy: y(p.ni), r: 4.2,
+          fill: '#fff', stroke: color, 'stroke-width': 2,
+          'data-well': p.well, 'data-ph': p.ph, 'data-ni': p.ni
+        }, g);
+        c._delay = i * 20;
+      });
+      return g;
+    }
+    var quantBTBg = addCircles(quantBTB, '#0072B2');
+    var quantKTBg = addCircles(quantKTB, '#E69F00');
+
+    // Censored markers (downward triangles at y = 5)
+    // Use a tighter spread along x so overlapping samples at near-equal pH remain visible.
+    function addTriangles(series, color) {
+      var g = el('g', { 'class': 'markers chart-anim' }, svg);
+      series.forEach(function (p, i) {
+        var cx = x(p.ph), cy = y(5);
+        var s = 5;  // triangle half-base
+        var h = 7;  // triangle height
+        // Triangle pointing downward: apex at bottom
+        var d = 'M ' + (cx - s) + ' ' + (cy - h/2) +
+                ' L ' + (cx + s) + ' ' + (cy - h/2) +
+                ' L ' + cx       + ' ' + (cy + h/2) + ' Z';
+        var t = el('path', {
+          d: d, fill: '#fff', stroke: color, 'stroke-width': 1.6,
+          'stroke-linejoin': 'round',
+          'data-well': p.well, 'data-ph': p.ph, 'data-ni': '≤ 10'
+        }, g);
+        t._delay = i * 18;
+      });
+      return g;
+    }
+    var censBTBg = addTriangles(censoredBTB, '#0072B2');
+    var censKTBg = addTriangles(censoredKTB, '#E69F00');
+
+    // 20 µg/L limit label (left side, above the line)
+    el('rect', {
+      x: M.left + 4, y: limitY - 18, width: 142, height: 16,
+      fill: '#fff', 'class': 'chart-anim'
+    }, svg);
+    var limitLabel = el('text', {
+      x: M.left + 8, y: limitY - 6,
+      'text-anchor': 'start',
+      'font-size': 11.5, 'font-weight': 600,
+      fill: '#1d1d1f', 'class': 'chart-anim'
+    }, svg);
+    limitLabel.textContent = '20 µg/L · TrinkwV limit';
+
+    // pH 6.5 threshold label — top of chart, centred on the line
+    el('rect', {
+      x: threshX - 100, y: M.top - 22, width: 200, height: 16,
+      fill: '#fff', 'class': 'chart-anim'
+    }, svg);
+    var threshLabel = el('text', {
+      x: threshX, y: M.top - 10,
+      'text-anchor': 'middle',
+      'font-size': 11.5, 'font-weight': 600,
+      fill: '#1d1d1f', 'class': 'chart-anim'
+    }, svg);
+    threshLabel.textContent = 'pH 6.5 · mobilisation threshold';
+
+    // Tooltip
+    var tipG = el('g', { opacity: 0, 'pointer-events': 'none' }, svg);
+    el('rect', { x: 0, y: 0, width: 140, height: 44, rx: 8, ry: 8, fill: 'rgba(29, 29, 31, 0.92)' }, tipG);
+    var tipT1 = el('text', { x: 10, y: 18, 'font-size': 12, 'font-weight': 600, fill: '#fff' }, tipG);
+    var tipT2 = el('text', { x: 10, y: 34, 'font-size': 11, fill: 'rgba(255,255,255,0.78)' }, tipG);
+    function showTip(target) {
+      var bbox = target.getBBox();
+      var cx = bbox.x + bbox.width / 2;
+      var cy = bbox.y + bbox.height / 2;
+      var ni = target.getAttribute('data-ni');
+      tipT1.textContent = target.getAttribute('data-well') + ' · ' + ni + (ni === '≤ 10' ? ' µg/L' : ' µg/L');
+      tipT2.textContent = 'pH ' + target.getAttribute('data-ph');
+      var tipX = cx + 12, tipY = cy - 50;
+      if (tipX + 140 > W - 4) tipX = cx - 152;
+      if (tipY < 4) tipY = cy + 14;
+      tipG.setAttribute('transform', 'translate(' + tipX + ',' + tipY + ')');
+      tipG.setAttribute('opacity', 1);
+    }
+    function hideTip() { tipG.setAttribute('opacity', 0); }
+    [quantBTBg, quantKTBg, censBTBg, censKTBg].forEach(function (g) {
+      g.querySelectorAll('circle,path').forEach(function (m) {
+        m.style.cursor = 'pointer';
+        m.addEventListener('mouseenter', function () { showTip(m); });
+        m.addEventListener('mouseleave', hideTip);
+        m.addEventListener('focus',      function () { showTip(m); });
+        m.addEventListener('blur',       hideTip);
+        m.setAttribute('tabindex', '0');
+      });
+    });
+
+    // Animation: visible by default; play() briefly hides + reveals
+    var played = false;
+    function play() {
+      if (played) return;
+      played = true;
+      var ease = getComputedStyle(document.body).getPropertyValue('--ease') || 'cubic-bezier(0.16,1,0.3,1)';
+      try {
+        var tlen = y(0) - M.top;
+        threshLine.style.strokeDasharray  = '6 4, ' + tlen;
+        threshLine.style.strokeDashoffset = tlen;
+        threshLine.getBoundingClientRect();
+        threshLine.style.transition = 'stroke-dashoffset 420ms ' + ease;
+        threshLine.style.strokeDashoffset = '0';
+      } catch (e) {}
+      try {
+        var llen = (W - M.right) - M.left;
+        limitLine.style.strokeDasharray  = '6 4, ' + llen;
+        limitLine.style.strokeDashoffset = llen;
+        limitLine.getBoundingClientRect();
+        limitLine.style.transition = 'stroke-dashoffset 420ms ' + ease;
+        limitLine.style.strokeDashoffset = '0';
+      } catch (e) {}
+      setTimeout(function () {
+        [quantBTBg, quantKTBg, censBTBg, censKTBg].forEach(function (g) {
+          g.querySelectorAll('circle,path').forEach(function (m) {
+            var d = m._delay || 0;
+            m.style.transformBox = 'fill-box';
+            m.style.transformOrigin = 'center';
+            m.style.transform = 'scale(0)';
+            m.style.opacity = 0;
+            setTimeout(function () {
+              m.style.transition = 'transform 0.32s ' + ease + ', opacity 0.28s ' + ease;
+              m.style.transform = 'scale(1)';
+              m.style.opacity = 1;
+            }, d);
+          });
+        });
+      }, 400);
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) play(); });
+      }, { threshold: 0.3 });
+      io.observe(svg);
+    }
+    setTimeout(play, 1200);
+  })();
+</script>
+</body>
+</html>

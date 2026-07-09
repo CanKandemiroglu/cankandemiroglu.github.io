@@ -1,0 +1,33 @@
+{
+  "journals": [
+    "limnology-oceanography-methods",
+    "methods-in-ecology-and-evolution",
+    "nature",
+    "science",
+    "plos-one",
+    "elsevier-standard",
+    "frontiers-in-marine-science",
+    "copernicus-egu",
+    "agu-journals",
+    "biogeosciences",
+    "communications-earth-environment",
+    "deep-sea-research-part-i",
+    "earth-and-planetary-science-letters",
+    "earth-system-science-data",
+    "estuarine-coastal-and-shelf-science",
+    "geochimica-et-cosmochimica-acta",
+    "global-biogeochemical-cycles",
+    "global-change-biology",
+    "ices-journal-of-marine-science",
+    "journal-of-phycology",
+    "marine-chemistry",
+    "marine-ecology-progress-series",
+    "marine-geology",
+    "ocean-science",
+    "organic-geochemistry",
+    "paleoceanography-and-paleoclimatology",
+    "pnas",
+    "progress-in-oceanography",
+    "scientific-reports"
+  ]
+}

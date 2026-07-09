@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Instant Visualization of Organic Matter Transformation in the Ocean — Osman Can Kandemiroglu</title>
+  <meta name="description" content="M.Sc. thesis (MARUM, University of Bremen): how marine Vibrio bacteria degrade alginate particles, and how their enzyme-secretion phenotype shapes ocean carbon export." />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="../../index.html">
+        Osman Can Kandemiroglu
+        <small>Marine Molecular Biogeochemistry</small>
+      </a>
+      <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav>
+        <ul class="nav__list">
+          <li><a class="nav__link" href="../../index.html">Home</a></li>
+          <li><a class="nav__link" href="../../about.html">About</a></li>
+          <li><a class="nav__link" href="../index.html" aria-current="page">Research</a></li>
+          <li><a class="nav__link" href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================ HERO -->
+    <section class="paper-head">
+      <div class="container">
+        <p class="eyebrow paper-head__eyebrow reveal">M.Sc. thesis · MARUM &amp; MPI Bremen &amp; BIOM · 2026</p>
+        <h1 class="paper-head__title reveal">
+          How bacteria decide the fate of ocean carbon.
+        </h1>
+        <p class="lede page-head__lede reveal" style="margin-top:22px;">
+          Some marine bacteria broadcast their enzymes into the water. Others stay
+          attached and dig in. That single difference changes how much carbon the
+          ocean buries.
+        </p>
+        <p class="paper-head__authors reveal" style="margin-top:28px;">Osman Can Kandemiroglu</p>
+        <p class="paper-head__affil reveal">
+          University of Bremen · Faculty of Geosciences (FB5) ·
+          Hehemann Lab, MPI Marine Microbiology &amp; Hinrichs Lab, MARUM
+        </p>
+      </div>
+    </section>
+
+    <!-- Hero visual — alginate particle degraded by V. cyclitrophicus ZF270 (40×) -->
+    <figure class="cover reveal">
+      <div class="cover__frame">
+        <img src="figures/cover.jpg"
+             alt="Phase-contrast micrograph of a single alginate particle being degraded by Vibrio cyclitrophicus ZF270 at 40× magnification." />
+      </div>
+      <figcaption class="cover__caption">
+        The alginate particle was degraded by the marine <em>Vibrio</em> strain
+        <em>V. cyclitrophicus</em> ZF270. 40× magnification.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ ABSTRACT -->
+    <section class="container">
+      <div class="abstract reveal">
+        <p class="abstract__label">Abstract</p>
+        <div class="abstract__text">
+          <p>
+            <strong>Why does organic matter resist degradation in the ocean?</strong>
+            The biological carbon pump moves 4–10 gigatonnes of carbon into the
+            deep sea every year, yet only about <strong>1%</strong> reaches the
+            seafloor — the rest is intercepted and remineralised by
+            particle-attached bacteria. The standard explanation has been
+            chemical: some polymers are simply harder for microbes to cleave.
+            This thesis tests a complementary, ecological explanation: that the
+            bottleneck sits in the <em>microbial behaviour</em> on the particle
+            surface, not only in the chemistry of the polymer.
+          </p>
+          <p>
+            Six marine <em>Vibrio</em> strains spanning the
+            broadcaster–aggregator enzyme-secretion spectrum were tracked
+            degrading calcium-alginate gel particles (20–650 µm) across five
+            experiments (ADE&nbsp;I–V), under controlled phosphate, ammonia and
+            amino-acid gradients, alone and in mixed communities.
+            <strong>Phosphate limitation</strong> and
+            <strong>community assembly</strong> emerge as two independent buffers:
+            each, on its own, can collapse the broadcaster degradation advantage
+            and allow a fraction of particulate organic carbon to escape
+            remineralisation. The trait that maximises individual bacterial
+            fitness also minimises deep-ocean carbon export.
+          </p>
+        </div>
+        <p class="abstract__keywords">
+          <strong>Keywords</strong>
+          Marine carbon pump · alginate · <em>Vibrio</em> · enzyme secretion ·
+          broadcasters vs. aggregators · polysaccharide degradation · phosphate
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ FIRST LOOK — THE PARTICLES -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">First, the particles.</h2>
+
+          <p class="reveal">
+            Before any biology, the experiment needed a substrate. Marine snow — the
+            sinking particles the biological carbon pump depends on — is messy, variable
+            and impossible to control in the laboratory. The model used here is a
+            <strong>calcium-alginate gel bead</strong>: synthesised by emulsifying
+            alginate with calcium carbonate in mineral oil, then triggering internal
+            gelation with acid. The result is a sphere the size of natural marine snow,
+            with a known polymer composition and a known degradation enzymology.
+          </p>
+
+          <p class="reveal">
+            Getting these particles consistent took work. <strong>Thirteen synthesis
+            experiments</strong> were run; <strong>three</strong> of those batches met
+            the size, sphericity and stability criteria and were used downstream.
+            Particles in the 20–650 µm range were size-sorted by sequential wet
+            sieving (200, 100, 50, 20 µm meshes). The image below shows four
+            representative particles from one of the qualified batches, captured at
+            10× under phase-contrast microscopy with line-tool diameter measurements.
+            Across the full ADE&nbsp;I–V campaign, <strong>more than 1,600
+            particles</strong> were tracked by time-lapse imaging.
+          </p>
+
+          <dl class="specs reveal">
+            <div class="specs__item"><dt>Synthesis runs</dt><dd>13 → 3</dd></div>
+            <div class="specs__item"><dt>Size range</dt><dd>20–650 µm</dd></div>
+            <div class="specs__item"><dt>Particles measured</dt><dd>&gt; 1,600</dd></div>
+            <div class="specs__item"><dt>&gt; 100 µm by volume</dt><dd>91.3%</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure: the particles, under the microscope -->
+    <figure class="fig reveal" style="max-width: var(--maxw-wide); margin: 0 auto clamp(40px, 6vw, 64px); padding: 0 var(--gutter);">
+      <button class="fig__viewer" type="button">
+        <img src="figures/particles-overview.png"
+             alt="Phase-contrast micrograph of four alginate gel particles ranging roughly 84 to 355 micrometres in diameter, each annotated with a measurement line and scale bar." />
+      </button>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; font-size: 14px; color: var(--ink-mute); text-align: center; line-height: 1.55;">
+        <strong>Fig. 1.</strong> <em>The substrate, sized.</em>
+        Phase-contrast micrograph (10×) of four representative calcium-alginate
+        particles from a qualified batch, with line-tool diameter measurements
+        spanning roughly 98–255 µm. Click the image to enlarge.
+      </figcaption>
+    </figure>
+
+    <!-- Vimeo video — alginate degradation in action -->
+    <section class="section--tight" style="padding-bottom: clamp(48px, 7vw, 80px);">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal" style="text-align:center; max-width: 24ch; margin: 0 auto;">Alginate degradation by marine <em>Vibrio</em> bacteria — watch it happen.</h2>
+
+          <p class="reveal" style="text-align:center; margin-top: 16px;">
+            Time-lapse microscopy turns the slow chemistry of polysaccharide
+            degradation into something you can see: bacteria colonise a particle,
+            and over hours to days the alginate is enzymatically cleaved and the
+            sphere shrinks. The clip below shows that process directly.
+          </p>
+
+          <div class="video-frame reveal">
+            <iframe src="https://player.vimeo.com/video/1138159473?title=0&amp;byline=0&amp;portrait=0&amp;dnt=1"
+                    title="Alginate Degradation by Marine Vibrio Bacteria"
+                    loading="lazy"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                    allowfullscreen></iframe>
+          </div>
+
+          <p style="max-width: 60ch; margin: 18px auto 0; text-align: center; font-size: 14px; color: var(--ink-mute); line-height: 1.55;" class="reveal">
+            <em>Alginate Degradation by Marine Vibrio Bacteria.</em>
+            Time-lapse microscopy of a single calcium-alginate particle under attack
+            by a marine <em>Vibrio</em> strain — one of the &gt; 1,600 particles
+            tracked across the five alginate-degradation experiments (ADE I–V).
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ INTRODUCTION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">The central question</h2>
+
+          <p class="reveal">
+            <em>Why does organic matter resist degradation in the ocean?</em>
+            This is the question posed by the
+            <strong>CONCENTRATE</strong> programme (DFG TRR 420) and the one
+            this thesis is built around. The biological carbon pump exports
+            4–10 Gt C yr⁻¹ to depth, but only about 1% of the carbon fixed by
+            surface photosynthesis ever reaches the seafloor — the rest is
+            remineralised by bacteria on sinking particles. The standard
+            explanation has been chemical: some polymers are intrinsically
+            harder to break down. This thesis tests a different explanation —
+            that the bottleneck sits in the <strong>microbial ecology</strong>
+            of the particle surface.
+          </p>
+
+          <p class="reveal">
+            Two enzyme-secretion strategies dominate marine polysaccharide-
+            degrading bacteria.
+            <strong>Broadcasters</strong> release their alginate-degrading
+            enzymes into the surrounding water — fast, but wasteful.
+            <strong>Aggregators</strong> keep the same enzymes tethered to the
+            cell surface — slower, but more efficient at capturing the products.
+            Under what conditions does each strategy win, and how does the
+            answer shape the fraction of particulate organic carbon that
+            survives the trip to depth?
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ MODEL SYSTEM -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">The model system</h2>
+
+          <p class="reveal">
+            Calcium-alginate gel particles, <strong>50–650 µm</strong> across, stand
+            in for sinking marine snow. Six <em>Vibrio</em> strains were filmed
+            degrading them over <strong>8–25 days</strong> using time-lapse
+            microscopy, across five experiments (ADE&nbsp;I–V).
+          </p>
+
+          <dl class="specs reveal">
+            <div class="specs__item"><dt>Particles</dt><dd>50–650 µm</dd></div>
+            <div class="specs__item"><dt>Strains</dt><dd>6 × <em>Vibrio</em></dd></div>
+            <div class="specs__item"><dt>Experiments</dt><dd>ADE I–V</dd></div>
+            <div class="specs__item"><dt>Imaging</dt><dd>8–25 days · time-lapse</dd></div>
+          </dl>
+
+          <p class="reveal">
+            The molecular tool that does the cutting is a <strong>PL7 alginate
+            lyase</strong>. Below, the crystal structure of one such enzyme —
+            drag to rotate, scroll to zoom.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure 2 — 3D enzyme (interactive) -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure2_viewer.html"
+              loading="lazy"
+              title="Figure 2 — PL7 Alginate Lyase Crystal Structure"
+              style="min-height:780px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 2.</strong> Crystal structure of a PL7 alginate lyase (PDB 2ZAB) — the
+        molecular tool that cleaves alginate. Cartoon coloured by secondary structure;
+        catalytic residues highlighted. Drag to rotate, scroll to zoom.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ RESULT 1 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Broadcasters are faster.</h2>
+
+          <p class="reveal">
+            When alginate is the only food available, broadcaster strains degrade
+            roughly <strong>1.6× faster</strong> than aggregators. The broadcaster
+            <em>13B01</em> removed about <strong>75% of a particle's volume in
+            8 days</strong>.
+          </p>
+
+          <blockquote class="pullquote reveal">
+            "78% vs 50% — secretion strategy, not species, predicts who degrades fastest."
+          </blockquote>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure 20 — 13B01 dissolving a particle -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure20_animated.html"
+              loading="lazy"
+              title="Figure 20 — Alginate degradation time-course by 13B01"
+              style="min-height:980px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 3.</strong> Broadcaster 13B01 reduces a single alginate particle
+        to about a quarter of its starting volume over 8 days. Animates on scroll.
+      </figcaption>
+    </figure>
+
+    <!-- Figure 23 — secretion strategy sorts the strains -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure23_animated.html"
+              loading="lazy"
+              title="Figure 23 — Secretion strategy as the dominant axis"
+              style="min-height:980px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 4.</strong> Across all six strains, secretion strategy sorts the
+        outcomes — broadcasters cluster above the line, aggregators below.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ RESULT 2 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Phosphate is the switch.</h2>
+
+          <p class="reveal">
+            The broadcaster advantage is not fixed. At <strong>0.2 mM phosphate</strong>
+            it is large — <strong>82.5% vs 39.3%</strong> volume reduction. Remove
+            phosphate entirely, and the advantage <strong>disappears</strong> — both
+            phenotypes converge.
+          </p>
+
+          <blockquote class="pullquote reveal">
+            "Phosphate doesn't just feed the bacteria — it decides whether their strategy matters."
+          </blockquote>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure 26 / 27 — phosphate switch -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure26_27_animated.html"
+              loading="lazy"
+              title="Figure 26/27 — Phosphate switch"
+              style="min-height:980px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 5.</strong> Degradation across the phosphate gradient.
+        The broadcaster–aggregator gap opens and closes as phosphate changes.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ RESULT 3 (text only, no figure) -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Phosphate is <em>uniquely</em> the switch.</h2>
+
+          <p class="reveal">
+            Nitrogen and amino acids were tested the same way. Both boosted growth — but
+            neither closed or opened the broadcaster gap. <strong>Only phosphate does.</strong>
+            That makes phosphate a specific metabolic control, not a generic nutrient effect.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ RESULT 4 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Communities buffer the difference.</h2>
+
+          <p class="reveal">
+            In mixed co-cultures the picture changes again. The
+            <strong>2.2×</strong> monoculture advantage between two broadcaster
+            strains <strong>collapses to 1.05×</strong> when other strains are
+            present. The benefit traces to one specific gene — <em>PL7G</em> —
+            not to the broad "broadcaster" label. All eight co-culture combinations
+            degraded <em>more</em> than expected: cooperation, not competition, dominates.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure 28 — co-culture composition × phosphate -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure28_animated.html"
+              loading="lazy"
+              title="Figure 28 — Co-culture synergy"
+              style="min-height:980px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 6.</strong> Co-culture composition and phosphate availability
+        jointly set degradation efficiency.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ DISCUSSION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">The broadcaster paradox.</h2>
+
+          <p class="reveal">
+            Here is the twist. <strong>Faster is not better for carbon storage.</strong>
+            Broadcasters degrade particles quickly <em>near the surface</em> — which
+            means the carbon is released as CO₂ before it can sink. Aggregators are
+            slower, but can fully dissolve particles deeper down.
+          </p>
+
+          <p class="reveal">
+            A simple settling model predicts that broadcaster-colonised particles
+            retain only <strong>~11%</strong> of their carbon at 1000 m, versus
+            <strong>~17%</strong> for aggregator-colonised particles. Bacterial
+            fitness and carbon sequestration pull in opposite directions.
+          </p>
+
+          <blockquote class="pullquote reveal">
+            "What's good for the bacterium is bad for the climate."
+          </blockquote>
+        </article>
+      </div>
+    </section>
+
+    <!-- Figure 32 — settling model -->
+    <figure class="fig fig--iframe reveal">
+      <iframe src="figures/figure32_animated.html"
+              loading="lazy"
+              title="Figure 32 — Settling model"
+              style="min-height:980px;"></iframe>
+      <figcaption style="max-width: var(--maxw-prose); margin: 14px auto 0; padding: 0 var(--gutter); font-size:14px; color:var(--ink-mute); text-align:center;">
+        <strong>Fig. 7.</strong> The settling model — degradation phenotype shapes
+        particle sinking, and through it the carbon flux with depth.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ CONCLUSION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Conclusion</h2>
+
+          <p class="reveal">
+            The question posed by CONCENTRATE — <em>why does organic matter
+            resist degradation in marine environments?</em> — finds a partial
+            answer in the data presented here: phosphate limitation and community
+            buffering together constrain bacterial degradation efficiency,
+            allowing a fraction of particulate organic carbon to escape
+            remineralisation and reach the deep ocean.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ REFERENCES -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Built on</h2>
+
+          <ol class="refs reveal">
+            <li>Kandemiroglu, O. C. (2026). Instant Visualization of Organic Matter Transformation in the Ocean. <em>M.Sc. thesis, University of Bremen.</em></li>
+            <li>Alcolombri et al. (2021). Sinking enhances the degradation of organic particles by marine bacteria. <em>Nature Geoscience.</em></li>
+            <li>Hehemann et al. (2016). Adaptive radiation by waves of gene transfer leads to fine-scale resource partitioning. <em>Nature Communications.</em></li>
+            <li>Badur et al. (2017). Fine-scale genetic and physiological variation reveals unknown enzyme functions. <em>Journal of Biological Chemistry.</em></li>
+            <li>D'Souza et al. (2023). Cell aggregation is associated with enzyme secretion strategies. <em>ISME Journal.</em></li>
+            <li>Enke et al. (2019). Modular assembly of polysaccharide-degrading marine microbial communities. <em>Current Biology.</em></li>
+            <li>Xu et al. (2026). Phosphate deprivation restricts bacterial degradation of fucoidan. <em>Nature Microbiology.</em></li>
+          </ol>
+
+          <nav class="page-nav">
+            <a class="page-nav__prev" href="../bochum-thesis/index.html">M.Sc. thesis · Bochum</a>
+            <a class="page-nav__next" href="../index.html">All projects</a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__copy">© <span id="y">2026</span> Osman Can Kandemiroglu · Bremen</div>
+      <div class="footer__links">
+        <a href="../../about.html">About</a>
+        <a href="../index.html">Research</a>
+        <a href="../../contact.html">Contact</a>
+        <a href="../../impressum.html">Impressum</a>
+        <a href="../../datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Auto-resize iframe figures to their internal content height (same-origin only).
+    (function () {
+      var iframes = document.querySelectorAll('.fig--iframe iframe');
+      function fit(iframe) {
+        try {
+          var doc = iframe.contentDocument || iframe.contentWindow.document;
+          if (!doc || !doc.body) return;
+          var h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+          if (h && Math.abs(h - iframe.clientHeight) > 4) {
+            iframe.style.height = h + 'px';
+          }
+        } catch (e) { /* cross-origin or not ready */ }
+      }
+      iframes.forEach(function (f) {
+        f.addEventListener('load', function () {
+          fit(f);
+          // Poll briefly to catch late-rendered content (e.g., 3Dmol viewer).
+          var n = 0;
+          var iv = setInterval(function () { fit(f); if (++n > 12) clearInterval(iv); }, 400);
+        });
+      });
+      window.addEventListener('resize', function () { iframes.forEach(fit); });
+    })();
+  </script>
+</body>
+</html>

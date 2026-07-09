@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Origin of nickel in the raw groundwater, and its quantitative removal during water treatment — Osman Can Kandemiroglu</title>
+  <meta name="description" content="M.Sc. thesis (Ruhr-Universität Bochum, 2011): why traces of nickel appear in the deep Lower Rhine groundwater at two Nettetal waterworks, and how the spray-aerated open filter removes it during treatment." />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <style>
+    /* page-specific additions on top of the shared design system */
+    .equation { margin: 1.8em 0; padding: 18px 20px; background: var(--bg-section); border-radius: var(--radius-sm); }
+    .equation .eq-body { display: block; font-family: var(--font-mono); font-size: clamp(13px, 1.6vw, 15px); color: var(--ink); line-height: 1.5; overflow-x: auto; white-space: nowrap; }
+    .equation .eq-label { display: block; margin-top: 10px; font-size: 13px; color: var(--ink-mute); line-height: 1.5; }
+    .equation .eq-label strong { color: var(--ink); font-weight: 600; }
+    sup.cite { font-size: 0.66em; line-height: 0; font-weight: 600; }
+    sup.cite a { color: var(--accent); }
+    sup.cite a:hover { border-bottom: 1px solid currentColor; }
+    /* interactive figure heights (charts are self-contained, not auto-resized) */
+    .fig--iframe.h-crosssection iframe { height: 980px; }
+    .fig--iframe.h-timeseries   iframe { height: 1100px; }
+    .fig--iframe.h-scatter      iframe { height: 1100px; }
+    .fig--iframe.h-mirror       iframe { height: 1180px; }
+    @media (max-width: 600px) {
+      .fig--iframe.h-crosssection iframe { height: 720px; }
+      .fig--iframe.h-timeseries   iframe { height: 900px; }
+      .fig--iframe.h-scatter      iframe { height: 900px; }
+      .fig--iframe.h-mirror       iframe { height: 1450px; }
+    }
+    /* animated visual-narrative scenes */
+    .scene-grid { display: grid; gap: 28px; margin: 2.4em 0; }
+    .scene-frame { border-radius: var(--radius); overflow: hidden; background: #000; box-shadow: 0 4px 24px -14px rgba(0,0,0,0.18); }
+    .scene-frame iframe { display: block; width: 100%; height: 720px; border: 0; }
+    .scene-meta { margin-top: 14px; font-size: 14px; color: var(--ink-mute); line-height: 1.55; }
+    .scene-meta strong { color: var(--ink); font-weight: 600; margin-right: 4px; }
+    .scene-meta a { color: var(--accent); white-space: nowrap; }
+    @media (max-width: 900px) { .scene-frame iframe { height: 460px; } }
+    .fig figcaption .fig-open { display: inline-block; margin-left: 8px; color: var(--accent); white-space: nowrap; font-weight: 500; }
+    .fig figcaption .fig-open:hover { border-bottom: 1px solid currentColor; }
+    /* interactive hero cover (Apple product-page feel) */
+    .cover--interactive .cover__frame { overflow: hidden; }
+    .cover--interactive .cover__parallax { position: absolute; inset: -5%; will-change: transform; }
+    .cover--interactive .cover__frame img { transform-origin: center; animation: coverKen 26s ease-in-out 0.6s infinite alternate; }
+    @keyframes coverKen { from { transform: scale(1.0); } to { transform: scale(1.06); } }
+    .cover--interactive .cover__caption { transition: opacity 0.5s var(--ease-out); }
+    @media (prefers-reduced-motion: reduce) {
+      .cover--interactive .cover__frame img { animation: none; }
+      .cover--interactive .cover__parallax { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav__inner">
+      <a class="nav__brand" href="../../index.html">
+        Osman Can Kandemiroglu
+        <small>Marine Molecular Biogeochemistry</small>
+      </a>
+      <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav>
+        <ul class="nav__list">
+          <li><a class="nav__link" href="../../index.html">Home</a></li>
+          <li><a class="nav__link" href="../../about.html">About</a></li>
+          <li><a class="nav__link" href="../../research/index.html" aria-current="page">Research</a></li>
+          <li><a class="nav__link" href="../../contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================ HERO -->
+    <section class="paper-head">
+      <div class="container">
+        <h1 class="paper-head__title reveal">
+          The rock lets the nickel go. The filter takes it back.
+        </h1>
+        <p class="lede page-head__lede reveal" style="margin: 22px auto 0; max-width: 60ch;">
+          In the deep aquifer beneath Nettetal, slightly acidic groundwater dissolves the natural carbonate minerals of the Quaternary gravels and frees the nickel locked inside them. In the treatment plant, the very same chemistry runs in reverse — and the nickel is built back into solid mineral before the water reaches the tap.
+        </p>
+        <p class="paper-head__authors reveal" style="margin-top:28px;">Osman Can Kandemiroglu</p>
+      </div>
+    </section>
+
+    <!-- Hero visual — FESEM micrograph of the spent filter solids (grain-scale evidence) -->
+    <figure class="cover cover--interactive reveal">
+      <div class="cover__frame">
+        <div class="cover__parallax">
+          <img src="cover.jpg"
+               alt="Scanning electron micrograph of spent filter material (sample F2-8): sharp, faceted calcite crystals with iron-oxide coatings marked by green squares; 10 µm scale bar, Ruhr-Universität Bochum." />
+        </div>
+      </div>
+      <figcaption class="cover__caption">
+        Where the chemistry becomes visible: a scanning electron micrograph of spent filter material from the Nachfilter at Wasserwerk Breyell (sample F2-8). The sharp, faceted crystals are calcite; the green squares mark iron-oxide coatings on the crystal surfaces. EDX analysis of this sample detected no nickel — it is exactly this kind of solid-phase SEM–EDX work that distinguished the nickel-bearing filter zones from the nickel-free ones. RUB Zentrales REM · 10 µm scale bar.
+      </figcaption>
+    </figure>
+
+    <!-- ============================================================ ABSTRACT -->
+    <section class="container">
+      <div class="abstract reveal">
+        <p class="abstract__label">Abstract</p>
+        <div class="abstract__text">
+          <p>
+            <strong>What turns clean-looking groundwater into water that fails its nickel limit — and what quietly puts it right again?</strong>
+            Raw-water nickel concentrations at production wells BTB 1 and BTB 2 (Wasserwerk Breyell) and KTB 4 (Wasserwerk Kaldenkirchen) rose to 30–58 µg/L between 1995 and 2009, exceeding the 20 µg/L drinking-water limit of the German Trinkwasserverordnung (TrinkwV) in the raw water. Two mobilisation hypotheses were tested against the 26-year hydrochemical record. Pyrite oxidation in the deeper Quaternary aquifer was rejected for the Breyell wells on the basis of the absence of correlation between dissolved nickel and dissolved iron. Acid-driven desorption and dissolution of the carbonate cement of the older main terrace was supported on the basis of a sharp mobilisation threshold at pH 6.5 and PHREEQC-2-computed calcite undersaturation reaching SI = −3.6.
+          </p>
+          <p>
+            The mechanism of nickel immobilisation was elucidated through 13 depth-resolved solid-phase samples from the second-stage filter at Wasserwerk Breyell (a spray-aerated open filter packed with half-burned dolomite, German: <em>Akdolit-Magnodol</em>, CaCO₃·MgO). Nickel is sequestered through two reactions operating in parallel within the same filter stage: co-precipitation with manganese oxide (Ni–Mn correlation r² = 0.66 in aqua-regia digests per DIN EN 13346 / DIN 38414-S7) and incorporation into freshly reprecipitated calcite (Ni–Ca correlation r² = 0.86 in Tessier-step-2 sodium-acetate / acetic-acid carbonate extracts).
+          </p>
+        </div>
+        <p class="abstract__keywords">
+          <strong>Keywords</strong>
+          Nickel · groundwater acidification · calcite dissolution · PHREEQC-2 · manganese-oxide co-precipitation · drinking-water treatment · Lower Rhine
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================ INTRODUCTION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Nickel, and no one to blame.</h2>
+
+          <p class="reveal">
+            Elevated nickel concentrations in raw groundwater from sites with no documented anthropogenic contamination have been reported across the Lower Rhine region<sup class="cite"><a href="#ref-4">4</a></sup>, the Quaternary terraces of the Rhine at Wesel, the Bielefeld–Sennesand multilevel piezometer<sup class="cite"><a href="#ref-4">4</a>,<a href="#ref-3">3</a></sup>, and a sand aquifer in Denmark<sup class="cite"><a href="#ref-7">7</a></sup>. In every case, dissolved-nickel concentrations rise as pH falls below approximately 6, reaching tens to low hundreds of µg/L at minimum pH values of 4.5–5.5. Two mechanistic pathways are described in the literature: acid-driven desorption and dissolution from non-sulfide phases (Equations 1 and 2 below) and oxygen- or nitrate-driven oxidation of trace-metal-bearing pyrite (Equation 3 below). Distinguishing between the two pathways is necessary both for predicting the future development of raw-water nickel concentrations and for designing appropriate management responses.
+          </p>
+
+          <p class="reveal">
+            The first pathway is described by Cremer<sup class="cite"><a href="#ref-4">4</a></sup> for the iron-hydroxide surface complexes that coat the grains of Quaternary terrace sediments. Proton exchange at the surface displaces structurally adsorbed Ni²⁺ into solution:
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">≡Fe–ONi⁺ + H⁺ &nbsp;⇌&nbsp; ≡Fe–OH + Ni²⁺</span>
+            <span class="eq-label"><strong>Equation 1</strong> — Acid-driven desorption of Ni²⁺ from iron-hydroxide surfaces.<sup class="cite"><a href="#ref-4">4</a>,<a href="#ref-2">2</a></sup></span>
+          </div>
+
+          <p class="reveal">
+            A second, structurally analogous reaction applies to trace-metal-substituted carbonate minerals, in which a small mole fraction of structural Ca²⁺ is replaced by Ni²⁺. Proton attack dissolves the carbonate and releases the substituted nickel stoichiometrically with calcium:
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">Ca₀.₉₉₅Ni₀.₀₀₅CO₃(s) + H⁺ &nbsp;⇌&nbsp; 0.995 Ca²⁺ + 0.005 Ni²⁺ + HCO₃⁻</span>
+            <span class="eq-label"><strong>Equation 2</strong> — Acid-driven dissolution of Ni-substituted calcite.<sup class="cite"><a href="#ref-2">2</a></sup></span>
+          </div>
+
+          <p class="reveal">
+            The competing pathway is the oxidation of pyrite by oxygen or nitrate, which becomes relevant where redox fronts advance into previously anoxic aquifer storeys. Pyrite in the Lower Rhine sediments incorporates trace nickel, cobalt and zinc into the iron sulfide lattice. Oxidation releases these elements alongside iron, sulfate and protons, and is recognisable in the raw-water record by a coupled rise in dissolved sulfate.
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">Fe₀.₉₂Ni₀.₀₁Co₀.₀₁Zn₀.₀₆S₂(s) + 3.5 O₂ + H₂O &nbsp;⇌&nbsp; 0.92 Fe²⁺ + 0.01 Ni²⁺ + 0.01 Co²⁺ + 0.06 Zn²⁺ + 2 SO₄²⁻ + 2 H⁺</span>
+            <span class="eq-label"><strong>Equation 3</strong> — Pyrite oxidation with trace-metal release. This pathway is <strong>excluded for Wasserwerk Breyell</strong> on the basis of the absence of correlation between dissolved nickel and dissolved iron in the raw water.</span>
+          </div>
+
+          <p class="reveal">
+            The present study evaluates which of the two pathways operates at Wasserwerk Breyell and at Wasserwerk Kaldenkirchen against an analytical record comprising approximately 40 000 individual measurements across 1506 sampling events from 73 monitoring points between 1983 and 2009.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ SETTING -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">A window in the clay.</h2>
+
+          <p class="reveal">
+            The Venlo Block beneath Nettetal carries a Quaternary fluvial sequence in which permeable gravel aquifers alternate with low-permeability clay aquitards<sup class="cite"><a href="#ref-4">4</a></sup>. The shallower aquifer (younger main terrace, horizon 16/12) is fed by infiltration from the agricultural surface and is hydraulically separated from the production horizon by the Tegelen clay (<em>Tegelenton</em>), a regional aquitard. The production wells of both Stadtwerke Nettetal waterworks are screened in the deeper aquifer (older main terrace, horizon 12/11D), which is underlain by the Reuver C clay.
+          </p>
+
+          <p class="reveal">
+            At Wasserwerk Kaldenkirchen, the Tegelen clay is locally absent over a circular zone of approximately 600 m diameter near production well KTB 4, forming a <em>geological window</em> (<em>geologisches Fenster</em>) through which the shallow and the deeper aquifer are hydraulically connected. The production-driven hydraulic head gradient drives downward leakage of acidified, oxygen- and nitrate-bearing shallow groundwater through this window into the production horizon. Elevated sulfate, chloride and nitrate concentrations in KTB 4, characteristic of agricultural fertiliser application at the surface, confirm the leakage pathway. The interactive cross-section below schematises the stratigraphy of profile I–J at Kaldenkirchen III; the toggles reveal the geological window, the leakage flow, and the acidification front separately and in combination.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-crosssection reveal">
+        <iframe src="figures/crosssection_aquifer_system.html" loading="lazy"
+                title="Figure 1 — Interactive hydrogeological cross-section of Kaldenkirchen III"></iframe>
+        <figcaption>
+          <strong>Fig. 1.</strong> Interactive hydrogeological cross-section of Kaldenkirchen III, showing the layered Quaternary aquifer stack and the geological window in the Tegelen clay aquitard. Use the toggles to reveal the window, the leakage flow and the acidification front.
+          <a class="fig-open" href="figures/crosssection_aquifer_system.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ RESULT 1 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Fifteen years above the line.</h2>
+
+          <p class="reveal">
+            <strong>Raw-water nickel at BTB 2 and KTB 4 exceeded the 20 µg/L limit for roughly fifteen years — yet the treated water never did.</strong>
+            Routine monitoring at Wasserwerk Breyell production well BTB 2 documented a sustained increase in raw-water nickel concentrations from 10 µg/L in 1995 (the laboratory limit of quantification) to a peak of 58 µg/L in 2005. Over the same period, Wasserwerk Kaldenkirchen production well KTB 4, located adjacent to the geological window in the Tegelen clay, increased to approximately 30 µg/L and oscillated around the limit. The remaining production wells at both sites remained below the limit throughout the study period. The temporal pattern is consistent with a gradual hydrochemical change in the production horizon rather than with an episodic contamination event. The treated water leaving the plant remained below the limit at all times, owing to dilution with raw water from unaffected wells and to the removal mechanisms described in the two filter results below.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-timeseries reveal">
+        <iframe src="figures/figure03_nickel_timeseries.html" loading="lazy"
+                title="Figure 2 — Raw-water nickel time series"></iframe>
+        <figcaption>
+          <strong>Fig. 2.</strong> Raw-water nickel time series for BTB 2 and KTB 4 between 1995 and 2008.
+          <a class="fig-open" href="figures/figure03_nickel_timeseries.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ RESULT 2 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Everything turns at pH 6.5.</h2>
+
+          <p class="reveal">
+            When the raw-water samples are ordered by pH rather than by date, the population separates into two distinct regimes. Above pH 6.5, dissolved nickel is at or below the laboratory limit of quantification (approximately 10 µg/L). Below pH 6.5, dissolved nickel increases systematically as pH decreases, reaching 58 µg/L at the lowest measured pH. The threshold matches the literature value for non-contaminated Quaternary aquifers in the Lower Rhine and the Sennesand region<sup class="cite"><a href="#ref-4">4</a>,<a href="#ref-2">2</a></sup>. The operative mobilisation reaction is the acid-driven dissolution of trace-Ni-substituted calcite in the cement of the older main terrace (Equation 2 above).
+          </p>
+
+          <blockquote class="pullquote reveal">
+            Above pH 6.5 the water runs clean. Below it, the rock starts giving up its nickel.
+          </blockquote>
+
+          <p class="reveal">
+            In the Breyell production wells, dissolved nickel and dissolved iron are not correlated. This observation rules out the pyrite-oxidation pathway (Equation 3) as a significant source for those wells: oxidation of the Lower Rhine pyrite phases would release nickel and iron together in their stoichiometric ratio of 0.01 : 0.92, generating a strong positive Ni–Fe correlation in the raw-water record. The absence of this correlation is direct empirical evidence that the operative pathway at Wasserwerk Breyell is acidification of the calcite-bearing matrix, not sulfide oxidation.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-scatter reveal">
+        <iframe src="figures/figure04_nickel_vs_ph.html" loading="lazy"
+                title="Figure 3 — Dissolved nickel against pH"></iframe>
+        <figcaption>
+          <strong>Fig. 3.</strong> Dissolved nickel against pH in 35 quantified raw-water samples from BTB 1, BTB 2 and KTB 4.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ RESULT 3 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">The model points to the same wells.</h2>
+
+          <p class="reveal">
+            For each of 423 raw-water analyses, the saturation index of calcite (SI<sub>calcite</sub> = log[IAP / K<sub>sp</sub>]) was computed with PHREEQC-2<sup class="cite"><a href="#ref-5">5</a></sup> using the WATEQ4F thermodynamic database. An SI of zero corresponds to thermodynamic equilibrium with the carbonate phase; positive values indicate supersaturation; negative values indicate the calcite-aggressive (<em>kalkaggressiv</em>) regime in which the water is thermodynamically capable of dissolving the calcite cement on contact. As pH decreases, SI<sub>calcite</sub> decreases monotonically across the entire sample population. The three nickel-bearing production wells (BTB 1, BTB 2 and KTB 4) occupy the strongest undersaturation regime observed, reaching SI<sub>calcite</sub> = −3.6. The remaining seven Kaldenkirchen production wells (KTB 1–3, KTB 5–8), located where the Tegelen clay is intact, cluster around the equilibrium line at near-neutral pH and carry no detectable nickel. The thermodynamic computation therefore corroborates the empirical pH-threshold observation above.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-scatter reveal">
+        <iframe src="figures/figure05_calcite_si_vs_ph.html" loading="lazy"
+                title="Figure 4 — Calcite saturation index against pH"></iframe>
+        <figcaption>
+          <strong>Fig. 4.</strong> PHREEQC-2-computed calcite saturation index against pH for 55 raw-water samples.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ RESULT 4 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">In the filter, nickel meets manganese.</h2>
+
+          <p class="reveal">
+            The treatment train at Wasserwerk Breyell comprises two filter stages. The first is a closed pressure filter that follows oxidator aeration, in which dissolved iron is removed by oxidation to ferric hydroxide and partial manganese removal proceeds at the still-acidic raw-water pH. The second stage is the spray-aerated open filter (German: <em>Fall-Verdüsungs-Filter</em>), in which the water is atomised through a ring of nozzles, dissolved CO₂ is stripped from the falling droplets through gas exchange with ambient air (Equation 4), and the falling water contacts a bed of half-burned dolomite (Akdolit-Magnodol, CaCO₃·MgO). The Magnodol dissolves, consumes the residual carbonic acid, and re-establishes the lime–carbonic-acid equilibrium (Equation 5).
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">CO₂(aq) &nbsp;⇌&nbsp; CO₂(g)</span>
+            <span class="eq-label"><strong>Equation 4</strong> — Physical deacidification: stripping of dissolved CO₂ during spray atomisation.<sup class="cite"><a href="#ref-1">1</a></sup></span>
+          </div>
+
+          <div class="equation reveal">
+            <span class="eq-body">CaCO₃·MgO + H₂O + 3 H₂CO₃ &nbsp;⇌&nbsp; Ca²⁺ + Mg²⁺ + 4 HCO₃⁻ + 2 H₂O</span>
+            <span class="eq-label"><strong>Equation 5</strong> — Chemical deacidification: dissolution of half-burned dolomite (Magnodol).<sup class="cite"><a href="#ref-1">1</a>,<a href="#ref-3">3</a></sup></span>
+          </div>
+
+          <p class="reveal">
+            At the elevated pH established in this second filter stage, dissolved Mn²⁺ is oxidised by dissolved oxygen and precipitates as manganese dioxide (MnO₂(s), <em>Braunstein</em>) per Equation 6:
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">Mn²⁺ + ½ O₂ + H₂O &nbsp;⇌&nbsp; MnO₂(s) + 2 H⁺</span>
+            <span class="eq-label"><strong>Equation 6</strong> — Oxidation of dissolved Mn²⁺ to MnO₂(s); the dissolved Ni²⁺ is co-precipitated onto the freshly formed manganese-oxide surface.</span>
+          </div>
+
+          <p class="reveal">
+            When the spent filter material was extracted for routine replacement in January 2011, 13 depth-resolved solid samples were digested in aqua regia (<em>Königswasser</em>, DIN EN 13346 / DIN 38414-S7) and the digests were analysed by ICP-MS. Nickel and manganese concentrations co-vary with a coefficient of determination of r² = 0.66, and SEM-EDX micrographs recorded on a LEO/Zeiss 1530 Gemini field-emission instrument localise the nickel signal on the freshly formed manganese-oxide surfaces that coat the dolomite grains. The observed Ni–Mn correlation is therefore mechanistically consistent with co-precipitation of dissolved Ni²⁺ onto the MnO₂ surface formed by Equation 6 in situ.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-scatter reveal">
+        <iframe src="figures/figure06_nickel_vs_manganese.html" loading="lazy"
+                title="Figure 5 — Nickel against manganese in filter solids"></iframe>
+        <figcaption>
+          <strong>Fig. 5.</strong> Nickel against manganese in 13 aqua-regia digests of spent filter solids from the spray-aerated open filter.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ RESULT 5 -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">And it meets new-formed chalk.</h2>
+
+          <p class="reveal">
+            The manganese-oxide co-precipitation pathway above does not account for the entire mass of nickel sequestered in the spray-aerated open filter. A complementary fraction is incorporated into freshly precipitated calcite. As the half-burned dolomite dissolves and the pH rises (Equation 5), calcite reprecipitates from the elevated Ca²⁺ and HCO₃⁻ concentrations now present in solution (Equation 7). The reprecipitation reaction proceeds in parallel with manganese-oxide formation within the same filter stage.
+          </p>
+
+          <div class="equation reveal">
+            <span class="eq-body">2 HCO₃⁻ + 2 Ca²⁺ + Mg(OH)₂ &nbsp;⇌&nbsp; 2 CaCO₃(s) + 2 H₂O + Mg²⁺</span>
+            <span class="eq-label"><strong>Equation 7</strong> — Calcite reprecipitation in the spray-aerated open filter (<em>Enthärtung</em>); dissolved Ni²⁺ is incorporated into the newly formed CaCO₃ phase.</span>
+          </div>
+
+          <p class="reveal">
+            To resolve the carbonate-bound nickel fraction separately from the manganese-oxide-bound fraction, the same solid samples were subsequently extracted with 1 M sodium-acetate / acetic-acid solution at pH 5 for 24 hours, in accordance with the Tessier et al.<sup class="cite"><a href="#ref-6">6</a></sup> step 2 protocol that dissolves only the carbonate phase while leaving the iron- and manganese-oxide phases intact. In 10 of the 13 samples for which the carbonate extraction yielded measurable concentrations, the released calcium and nickel concentrations co-vary with r² = 0.86. The observation provides quantitative evidence that dissolved Ni²⁺ is incorporated into the lattice of the freshly precipitated calcite, in addition to the co-precipitation onto MnO₂ above. The two pathways operate simultaneously and together account for the quantitative removal of nickel from the treated water stream.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-scatter reveal">
+        <iframe src="figures/figure07_nickel_vs_calcium.html" loading="lazy"
+                title="Figure 6 — Nickel against calcium in filter solids"></iframe>
+        <figcaption>
+          <strong>Fig. 6.</strong> Nickel against calcium in 10 Tessier-step-2 carbonate extracts of spent filter solids from the spray-aerated open filter.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ DISCUSSION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">One reaction, run backwards.</h2>
+
+          <p class="reveal">
+            The acid-driven dissolution of the trace-Ni-bearing calcite cement (Equation 2) and the calcite reprecipitation in the spray-aerated open filter (Equation 7) describe the forward and the reverse direction of the same lime–carbonic-acid equilibrium. In the deeper Quaternary aquifer beneath Wasserwerk Breyell, surface-derived acid input lowers the pH of the production horizon below 6.5; the calcite phase of the older main terrace becomes thermodynamically undersaturated, dissolves, and releases the structurally substituted trace nickel into solution at concentrations up to 58 µg/L. In the second filter stage of the waterworks, the half-burned dolomite dissolves (Equation 5), consumes the residual carbonic acid, and elevates the alkalinity. Calcite reprecipitates from the resulting Ca²⁺ and HCO₃⁻ population (Equation 7), and the same dissolved Ni²⁺ that was mobilised underground is incorporated into the newly formed CaCO₃. Simultaneously, dissolved Mn²⁺ is oxidised to MnO₂ (Equation 6), and dissolved Ni²⁺ is co-precipitated onto the freshly formed oxide surface. The treated water leaves the plant at near-neutral pH, in calcite equilibrium, with dissolved nickel below the 20 µg/L limit.
+          </p>
+
+          <blockquote class="pullquote reveal">
+            What the acid dissolves underground, the filter rebuilds — and the nickel is trapped inside.
+          </blockquote>
+
+          <p class="reveal">
+            Two limitations of the present interpretation are acknowledged. First, the rate at which raw-water nickel concentrations rose differed between the two Breyell production wells (BTB 1 increased faster than BTB 2) without a clear hydrochemical explanation; localised heterogeneity in the carbonate-cement content of the older main terrace is the most plausible explanation, but cannot be resolved from the available data. Second, the upstream source of the acid input is not unambiguously characterised in this work. Atmospheric deposition, nitrification of agricultural ammonium fertiliser at the surface, and the natural decomposition of the Quaternary peat horizons of the Niederrhein are all plausible contributors, and their relative weighting cannot be settled from the production-well record alone.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <figure class="fig fig--iframe h-mirror reveal">
+        <iframe src="figures/figure08_discussion_mirror.html" loading="lazy"
+                title="Figure 7 — The mobilise–immobilise mirror"></iframe>
+        <figcaption>
+          <strong>Fig. 7.</strong> The mobilise–immobilise mirror, mapping each underground mobilisation step to its in-plant immobilisation counterpart.
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ============================================================ CONCLUSION -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">What we know now.</h2>
+
+          <p class="reveal">
+            The geochemical trigger for the elevated raw-water nickel at Wasserwerk Breyell and at Wasserwerk Kaldenkirchen has been identified as the acid-driven dissolution of the trace-Ni-substituted calcite cement of the older main terrace. The mobilisation threshold is sharply defined at pH 6.5 and is thermodynamically corroborated by PHREEQC-2-computed calcite undersaturation in the nickel-bearing production wells (SI<sub>calcite</sub> down to −3.6). The competing pyrite-oxidation hypothesis is excluded for the Breyell wells by the absence of correlation between dissolved nickel and dissolved iron. The mechanism of nickel removal during treatment is the joint action of MnO₂ co-precipitation (r² = 0.66 for the aqua-regia-extractable Ni–Mn pair, Equation 6) and CaCO₃ co-precipitation (r² = 0.86 for the carbonate-extractable Ni–Ca pair, Equation 7), both reactions operating within the spray-aerated open filter packed with half-burned dolomite.
+          </p>
+
+          <p class="reveal">
+            The practical recommendation that follows is simple: monitor raw-water pH and the PHREEQC-2 calcite saturation index<sup class="cite"><a href="#ref-5">5</a></sup> as leading indicators of incipient nickel mobilisation. Once these parameters begin to fall, dissolved nickel concentrations will follow — and the two-stage filter is already configured to remove the mobilised nickel quantitatively before the water is distributed. The geochemistry of both the release underground and the recapture in the plant is now mechanistically understood.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============================================================ VISUAL NARRATIVE -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">See it, scale by scale.</h2>
+
+          <p class="reveal">
+            Four autoplaying scenes trace the investigation across scale: from the agricultural land surface that primes the problem, to the waterworks that treats the raw water, into the open filter where nickel is captured, and finally to the electron-microscope evidence at the scale of a single filter grain. Each panel runs on its own — open any scene full screen for the standalone experience.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="container container--wide">
+      <div class="scene-grid">
+        <figure style="margin:0;">
+          <div class="scene-frame reveal">
+            <iframe src="animation/scene01_landscape.html" loading="lazy"
+                    title="Scene 1 — Establishing landscape"></iframe>
+          </div>
+          <figcaption class="scene-meta">
+            <strong>Scene 1 · Establishing landscape.</strong> The Wasserwerk is embedded in active agricultural land.
+            <a href="animation/scene01_landscape.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+          </figcaption>
+        </figure>
+
+        <figure style="margin:0;">
+          <div class="scene-frame reveal">
+            <iframe src="animation/scene07_waterworks_exterior.html" loading="lazy"
+                    title="Scene 2 — Arrival at the waterworks"></iframe>
+          </div>
+          <figcaption class="scene-meta">
+            <strong>Scene 2 · Arrival at the waterworks.</strong> The raw water reaches the treatment hall of Wasserwerk Breyell (Lobberich).
+            <a href="animation/scene07_waterworks_exterior.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+          </figcaption>
+        </figure>
+
+        <figure style="margin:0;">
+          <div class="scene-frame reveal">
+            <iframe src="animation/scene08_inside_filter_hall.html" loading="lazy"
+                    title="Scene 3 — Inside the open filter"></iframe>
+          </div>
+          <figcaption class="scene-meta">
+            <strong>Scene 3 · Inside the open filter.</strong> Half-burned dolomite (Akdolit-Magnodol, CaCO₃·MgO), where nickel is captured by manganese-oxide co-precipitation and calcite reprecipitation.
+            <a href="animation/scene08_inside_filter_hall.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+          </figcaption>
+        </figure>
+
+        <figure style="margin:0;">
+          <div class="scene-frame reveal">
+            <iframe src="animation/scene09_grain.html" loading="lazy"
+                    title="Scene 4 — Grain-scale evidence"></iframe>
+          </div>
+          <figcaption class="scene-meta">
+            <strong>Scene 4 · Grain-scale evidence.</strong> FESEM micrograph and EDX spectrum of filter sample F2-3: Ni 1.82 %, Mn 44.43 %, Ca 3.10 % by mass — the highest nickel reading in the dataset.
+            <a href="animation/scene09_grain.html" target="_blank" rel="noopener">Open full screen &#8599;</a>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- ============================================================ REFERENCES -->
+    <section class="section section--tight">
+      <div class="container">
+        <article class="article">
+
+          <h2 class="reveal">Built on</h2>
+
+          <ol class="refs reveal">
+            <li id="ref-1">Kandemiroglu, O. C. (2011). <em>Untersuchungen zur Herkunft des Nickels im Rohwasser der Wasserwerke Breyell und Kaldenkirchen der Stadtwerke Nettetal GmbH sowie zum hydrochemischen Verhalten des Nickels bei der Wasseraufbereitung.</em> M.Sc. thesis, Ruhr-Universität Bochum.</li>
+            <li id="ref-2">Wisotzky, F., Kandemiroglu, O. C. &amp; Plassmann, C. (2012). Nickelfreisetzung in das Grundwasser und dessen Bindung bei der Wasseraufbereitung zu Trinkwasser (Nettetal/Niederrhein). <em>gwf-Wasser|Abwasser, 153</em>(7/8), 824–832.</li>
+            <li id="ref-3">Wisotzky, F. (2011). <em>Angewandte Grundwasserchemie, Hydrogeologie und hydrogeochemische Modellierung.</em> Springer-Verlag, Berlin and Heidelberg.</li>
+            <li id="ref-4">Cremer, N. (2002). <em>Schwermetalle im Grundwasser Nordrhein-Westfalens unter besonderer Berücksichtigung des Nickels in tieferen Grundwasserleitern der Niederrheinischen Bucht.</em> Besondere Mitteilungen zum Deutschen Gewässerkundlichen Jahrbuch, 60.</li>
+            <li id="ref-5">Parkhurst, D. L. &amp; Appelo, C. A. J. (1999). <em>User's guide to PHREEQC (version 2).</em> U.S. Geological Survey Water-Resources Investigations Report 99-4259.</li>
+            <li id="ref-6">Tessier, A., Campbell, P. G. C. &amp; Bisson, M. (1979). Sequential extraction procedure for the speciation of particulate trace metals. <em>Analytical Chemistry, 51</em>(7), 844–851.</li>
+            <li id="ref-7">Kjøller, C., Larsen, F. &amp; Postma, D. (2000). Nickel mobilization in a sandy aquifer in response to groundwater acidification. In <em>Groundwater 2000</em> (pp. 259–260).</li>
+          </ol>
+
+          <p style="margin-top:1.4em; font-size:13px; color:var(--ink-faint); line-height:1.6;" class="reveal">
+            Figure data, with the exception of the Fig. 2 time series, are reproduced from the peer-reviewed publication<sup class="cite"><a href="#ref-2">2</a></sup>. The Fig. 2 time series is sourced from the thesis<sup class="cite"><a href="#ref-1">1</a></sup>, with values pixel-extracted from the rasterised figure. Fig. 4 saturation-index values were digitised at ±0.1 in both pH and SI. The r² coefficients in Figs. 5 and 6 are reproduced verbatim from the peer-reviewed publication; ordinary-least-squares fits computed from the digitised points differ by less than 0.03, within the digitisation tolerance.
+          </p>
+
+          <nav class="page-nav">
+            <a class="page-nav__prev" href="../../research/marum-thesis/index.html">M.Sc. thesis · Bremen (MARUM)</a>
+            <a class="page-nav__next" href="../../research/index.html">All projects</a>
+          </nav>
+
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__copy">© <span id="y">2026</span> Osman Can Kandemiroglu · Bochum</div>
+      <div class="footer__links">
+        <a href="../../about.html">About</a>
+        <a href="../../research/index.html">Research</a>
+        <a href="../../contact.html">Contact</a>
+        <a href="../../impressum.html">Impressum</a>
+        <a href="../../datenschutz.html">Datenschutz</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+    // Footer year + a self-contained reveal fallback (works even if main.js differs)
+    (function () {
+      var y = document.getElementById('y'); if (y) y.textContent = new Date().getFullYear();
+      var els = document.querySelectorAll('.reveal');
+      if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('is-visible'); }); return; }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-visible'); io.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -8% 0px' });
+      els.forEach(function (e) { io.observe(e); });
+    })();
+
+    // Interactive hero cover — scroll parallax + zoom + subtle mouse parallax
+    (function () {
+      var cover = document.querySelector('.cover--interactive');
+      if (!cover) return;
+      var px = cover.querySelector('.cover__parallax');
+      var cap = cover.querySelector('.cover__caption');
+      if (!px) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var mx = 0, my = 0, cmx = 0, cmy = 0;   // mouse target / eased
+      var scrollY = 0, scrollScale = 1;
+
+      function onScroll() {
+        var r = cover.getBoundingClientRect();
+        var h = r.height || 1;
+        var p = Math.min(Math.max(-r.top / h, 0), 1);   // 0 at top of view → 1 once scrolled its own height
+        scrollY = p * h * 0.18;                           // image lifts as you scroll
+        scrollScale = 1 + p * 0.10;                       // and gently zooms
+        if (cap) cap.style.opacity = String(Math.max(1 - p * 1.6, 0));
+      }
+      cover.addEventListener('pointermove', function (e) {
+        if (e.pointerType === 'touch') return;
+        var r = cover.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width - 0.5;
+        my = (e.clientY - r.top) / r.height - 0.5;
+      });
+      cover.addEventListener('pointerleave', function () { mx = 0; my = 0; });
+
+      function tick() {
+        cmx += (mx - cmx) * 0.08;
+        cmy += (my - cmy) * 0.08;
+        var tx = cmx * -18;
+        var ty = scrollY + cmy * -12;
+        px.style.transform = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + scrollScale.toFixed(4) + ')';
+        requestAnimationFrame(tick);
+      }                                                                                                     

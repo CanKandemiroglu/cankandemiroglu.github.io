@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure 20 — Alginate degradation by 13B01</title>
+<style>
+  :root {
+    --bg: #fbfbfd; --ink: #1d1d1f; --muted: #6e6e73;
+    --axis: #1d1d1f; --grid: #d8d8da;
+    --w1: #56B4E9; --w2: #E69F00; --w3: #009E73; --mean: #111111;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased;
+  }
+  .section { max-width: 1000px; margin: 0 auto; padding: 80px 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 44px); font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; max-width: 20ch;
+  }
+  .lead {
+    font-size: clamp(17px, 2vw, 21px); line-height: 1.5;
+    color: var(--muted); max-width: 62ch; margin-bottom: 28px;
+  }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 40px; margin: 32px 0 8px; }
+  .stat .num { font-size: clamp(34px, 5vw, 52px); font-weight: 600; letter-spacing: -0.02em; }
+  .stat .lbl { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .stage {
+    width: 100%; border-radius: 18px; background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.08);
+    padding: 24px; margin-top: 8px;
+  }
+  svg { display: block; width: 100%; height: auto; }
+  .ax-line { stroke: var(--axis); stroke-width: 1; }
+  .tick { stroke: var(--axis); stroke-width: 1; }
+  .tick-lbl { fill: var(--muted); font-size: 13px; }
+  .ax-title { fill: var(--ink); font-size: 14px; font-weight: 500; }
+  .ref { stroke: #999; stroke-width: 1; stroke-dasharray: 4 3; }
+  .traj { fill: none; stroke-width: 2; opacity: 0.55; }
+  .mean-line { fill: none; stroke: var(--mean); stroke-width: 2.5; }
+  .err { stroke: var(--mean); stroke-width: 1.5; }
+  .anno { fill: var(--ink); font-size: 14px; font-weight: 600; }
+  .legend { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 20px; }
+  .legend .item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); }
+  .legend .sw { width: 22px; height: 3px; border-radius: 2px; }
+  .legend .sq { width: 12px; height: 12px; }
+  .caption {
+    margin-top: 32px; padding-top: 22px; border-top: 1px solid rgba(0,0,0,0.08);
+    font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 78ch;
+  }
+  .caption b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="eyebrow">Figure 20 · Result 1</div>
+  <h1>Time-course of alginate particle degradation by strain 13B01.</h1>
+  <p class="lead">
+    Alginate particles were incubated with the broadcaster strain
+    <i>V. splendidus</i> 13B01, with alginate as the sole carbon source, and
+    tracked by microscopy over 194 hours.
+  </p>
+
+  <div class="stat-row">
+    <div class="stat"><div class="num">74.8%</div><div class="lbl">of particle volume degraded</div></div>
+    <div class="stat"><div class="num">25.2%</div><div class="lbl">volume remaining (± 0.6)</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">particles tracked</div></div>
+  </div>
+
+  <div class="stage">
+    <svg id="chart" viewBox="0 0 760 520" role="img"
+         aria-label="Particle volume remaining over time for strain 13B01"></svg>
+    <div class="legend">
+      <div class="item"><span class="sw" style="background:var(--w1)"></span>Well A9</div>
+      <div class="item"><span class="sw" style="background:var(--w2)"></span>Well A10</div>
+      <div class="item"><span class="sw" style="background:var(--w3)"></span>Well A11</div>
+      <div class="item"><span class="sq" style="background:var(--mean)"></span>Mean ± s.d.</div>
+    </div>
+  </div>
+
+  <p class="caption">
+    <b>Broadcaster strain 13B01 degrades ~75% of alginate particle volume within
+    194&nbsp;hours.</b> Three individual particle trajectories track the decline
+    from initial volume to ~25% remaining, with replicate markers and the
+    mean&nbsp;&plusmn;&nbsp;s.d. annotation revealed in sequence as the figure is
+    viewed. Alginate particles (batch Nr.&nbsp;7.1, 3% w/v) were incubated with
+    <i>V. splendidus</i> 13B01 in MMM-0-NC minimal medium, with alginate as the
+    sole carbon source. Particle volume was calculated from Feret-diameter
+    measurements at three timepoints &mdash; T0 (0&nbsp;h), T1 (~18.6&nbsp;h),
+    T2 (~194.7&nbsp;h) &mdash; normalised to initial volume, assuming spherical
+    geometry, V&nbsp;=&nbsp;(4/3)&pi;(D/2)&sup3;.
+  </p>
+</div>
+
+<script>
+(function () {
+  // ---- Data: diameters (um) -> normalised volume (%) ----
+  var raw = {
+    A9:  { t: [0, 18.7167, 194.65],     d: [562.161, 392.650, 357.862] },
+    A10: { t: [0, 18.6333, 194.5667],   d: [196.566, 131.603, 123.222] },
+    A11: { t: [0, 18.5167, 194.75],     d: [187.801, 126.160, 118.636] }
+  };
+  var wells = ["A9", "A10", "A11"];
+  var colors = { A9: "#56B4E9", A10: "#E69F00", A11: "#009E73" };
+
+  var series = {};
+  wells.forEach(function (w) {
+    var d0 = raw[w].d[0];
+    series[w] = raw[w].t.map(function (t, i) {
+      return { t: t, v: Math.pow(raw[w].d[i] / d0, 3) * 100 };
+    });
+  });
+  var mean = [0, 1, 2].map(function (i) {
+    var vals = wells.map(function (w) { return series[w][i].v; });
+    var m = (vals[0] + vals[1] + vals[2]) / 3;
+    var sd = Math.sqrt(vals.reduce(function (s, v) { return s + (v - m) * (v - m); }, 0) / 2);
+    var t = wells.reduce(function (s, w) { return s + series[w][i].t; }, 0) / 3;
+    return { t: t, v: m, sd: sd };
+  });
+
+  // ---- Geometry ----
+  var W = 760, H = 520, mL = 72, mR = 30, mT = 36, mB = 68;
+  var pW = W - mL - mR, pH = H - mT - mB;
+  var xMax = 210, yMax = 115;
+  var X = function (t) { return mL + (t / xMax) * pW; };
+  var Y = function (v) { return mT + pH - (v / yMax) * pH; };
+
+  var svg = document.getElementById("chart");
+  var NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // ---- Axes ----
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT + pH, x2: mL + pW, y2: mT + pH }));
+  svg.appendChild(el("line", { class: "ax-line", x1: mL, y1: mT, x2: mL, y2: mT + pH }));
+
+  [0, 25, 50, 75, 100, 125, 150, 175, 200].forEach(function (t) {
+    svg.appendChild(el("line", { class: "tick", x1: X(t), y1: mT + pH, x2: X(t), y2: mT + pH + 5 }));
+    var lb = el("text", { class: "tick-lbl", x: X(t), y: mT + pH + 22, "text-anchor": "middle" });
+    lb.textContent = t; svg.appendChild(lb);
+  });
+  [0, 20, 40, 60, 80, 100].forEach(function (v) {
+    svg.appendChild(el("line", { class: "tick", x1: mL - 5, y1: Y(v), x2: mL, y2: Y(v) }));
+    var lb = el("text", { class: "tick-lbl", x: mL - 11, y: Y(v) + 4, "text-anchor": "end" });
+    lb.textContent = v; svg.appendChild(lb);
+  });
+
+  var xt = el("text", { class: "ax-title", x: mL + pW / 2, y: H - 14, "text-anchor": "middle" });
+  xt.textContent = "Time (h)"; svg.appendChild(xt);
+  var yt = el("text", { class: "ax-title", x: 18, y: mT + pH / 2,
+    "text-anchor": "middle", transform: "rotate(-90 18 " + (mT + pH / 2) + ")" });
+  yt.textContent = "Volume remaining (%)"; svg.appendChild(yt);
+
+  // ---- 100% reference line ----
+  svg.appendChild(el("line", { class: "ref", x1: mL, y1: Y(100), x2: mL + pW, y2: Y(100) }));
+
+  // ---- Trajectory paths (hidden until triggered) ----
+  var paths = [], dots = [];
+  wells.forEach(function (w) {
+    var pts = series[w];
+    var dStr = "M" + X(pts[0].t) + " " + Y(pts[0].v);
+    for (var i = 1; i < pts.length; i++) dStr += " L" + X(pts[i].t) + " " + Y(pts[i].v);
+    var p = el("path", { class: "traj", stroke: colors[w], d: dStr });
+    svg.appendChild(p);
+    var len = p.getTotalLength();
+    p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    p.style.transition = "stroke-dashoffset 1.4s ease";
+    paths.push(p);
+    pts.forEach(function (pt) {
+      var c = el("circle", { cx: X(pt.t), cy: Y(pt.v), r: 4, fill: colors[w] });
+      c.style.opacity = 0; c.style.transition = "opacity 0.5s ease";
+      svg.appendChild(c); dots.push(c);
+    });
+  });
+
+  // ---- Mean line + squares + error bars ----
+  var mStr = "M" + X(mean[0].t) + " " + Y(mean[0].v);
+  for (var i = 1; i < mean.length; i++) mStr += " L" + X(mean[i].t) + " " + Y(mean[i].v);
+  var mPath = el("path", { class: "mean-line", d: mStr });
+  svg.appendChild(mPath);
+  var mLen = mPath.getTotalLength();
+  mPath.style.strokeDasharray = mLen; mPath.style.strokeDashoffset = mLen;
+  mPath.style.transition = "stroke-dashoffset 1.4s ease 0.3s";
+
+  var meanMarks = [];
+  mean.forEach(function (m) {
+    var g = el("g", {});
+    if (m.sd > 0.01) {
+      g.appendChild(el("line", { class: "err", x1: X(m.t), y1: Y(m.v - m.sd), x2: X(m.t), y2: Y(m.v + m.sd) }));
+      g.appendChild(el("line", { class: "err", x1: X(m.t) - 4, y1: Y(m.v - m.sd), x2: X(m.t) + 4, y2: Y(m.v - m.sd) }));
+      g.appendChild(el("line", { class: "err", x1: X(m.t) - 4, y1: Y(m.v + m.sd), x2: X(m.t) + 4, y2: Y(m.v + m.sd) }));
+    }
+    g.appendChild(el("rect", { x: X(m.t) - 5, y: Y(m.v) - 5, width: 10, height: 10, fill: "#111111" }));
+    g.style.opacity = 0; g.style.transition = "opacity 0.5s ease";
+    svg.appendChild(g); meanMarks.push(g);
+  });
+
+  // ---- Final-value annotation ----
+  var last = mean[2];
+  var annoG = el("g", {});
+  var at = el("text", { class: "anno", x: X(last.t) - 14, y: Y(last.v) - 26, "text-anchor": "end" });
+  at.textContent = last.v.toFixed(1) + " \u00b1 " + last.sd.toFixed(1) + "%";
+  annoG.appendChild(at);
+  annoG.appendChild(el("path", {
+    d: "M" + (X(last.t) - 12) + " " + (Y(last.v) - 24) + " Q" + (X(last.t) - 4) + " " + (Y(last.v) - 16) + " " + (X(last.t) - 2) + " " + (Y(last.v) - 8),
+    fill: "none", stroke: "#1d1d1f", "stroke-width": 1
+  }));
+  annoG.style.opacity = 0; annoG.style.transition = "opacity 0.6s ease";
+  svg.appendChild(annoG);
+
+  // ---- Animation ----
+  var played = false;
+  function play() {
+    if (played) return; played = true;
+    paths.forEach(function (p) { p.style.strokeDashoffset = 0; });
+    mPath.style.strokeDashoffset = 0;
+    dots.forEach(function (c, i) {
+      setTimeout(function () { c.style.opacity = 0.55; }, 600 + i * 90);
+    });
+    meanMarks.forEach(function (g, i) {
+      setTimeout(function () { g.style.opacity = 1; }, 1100 + i * 220);
+    });
+    setTimeout(function () { annoG.style.opacity = 1; }, 2000);
+  }
+
+  if ("IntersectionObserver" in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { play(); obs.disconnect(); } });
+    }, { threshold: 0.35 });
+    obs.observe(svg);
+    setTimeout(function () { if (!played) play(); }, 1200);  // auto-play fallback
+  } else {
+    play();
+  }
+})();
+</script>
+
+</body>
+</html>

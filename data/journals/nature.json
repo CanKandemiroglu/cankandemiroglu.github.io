@@ -1,0 +1,15 @@
+{
+  "id": "nature",
+  "title": "Nature",
+  "publisher": "Nature Portfolio (Springer Nature)",
+  "canvas": { "single_column_mm": 89, "double_column_mm": 183, "max_height_mm": 247 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 1200 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 600 },
+  "formats_accepted": ["pdf", "eps", "ai"],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Editable vector art (PDF/EPS/AI) strongly preferred; line art 600-1200 dpi, photographs 300 dpi. Single column 89 mm, double column 183 mm, max height 247 mm. Labels 5-7 pt at final size.",
+  "source_url": "https://www.nature.com/nature/for-authors/formatting-guide",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

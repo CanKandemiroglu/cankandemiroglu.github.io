@@ -1,0 +1,15 @@
+{
+  "id": "science",
+  "title": "Science",
+  "publisher": "AAAS",
+  "canvas": { "single_column_mm": 57, "double_column_mm": 121, "max_height_mm": 230 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 1200 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 600 },
+  "formats_accepted": ["pdf", "eps", "ai"],
+  "colour_mode": "RGB",
+  "min_font_pt": 6,
+  "font_family_hint": "Helvetica/Arial",
+  "notes": "Three column widths: 1 column ~57 mm, 2 column ~121 mm, full width ~184 mm. Editable vector preferred; fonts 6-8 pt (Helvetica) at final size, minimum 6 pt.",
+  "source_url": "https://www.science.org/content/page/science-journals-instructions-authors",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

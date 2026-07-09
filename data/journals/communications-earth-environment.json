@@ -1,0 +1,30 @@
+{
+  "id": "communications-earth-environment",
+  "title": "Communications Earth & Environment",
+  "publisher": "Springer Nature",
+  "canvas": {
+    "single_column_mm": 88,
+    "double_column_mm": 180,
+    "max_height_mm": 240
+  },
+  "raster_dpi": {
+    "photo": 300,
+    "combination": 600,
+    "line": 600
+  },
+  "map_target": {
+    "recommended_format": "pdf",
+    "recommended_dpi": 600
+  },
+  "formats_accepted": [
+    "pdf",
+    "eps",
+    "tiff"
+  ],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "Nature Portfolio open-access earth-science title: combination/line up to 600 dpi or vector; single column ~88 mm, double ~180 mm; RGB.",
+  "source_url": "https://www.nature.com/commsenv/submission-guidelines",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}

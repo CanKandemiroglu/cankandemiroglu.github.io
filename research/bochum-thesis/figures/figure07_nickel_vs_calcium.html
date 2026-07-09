@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nickel binds to the fresh calcite, too · Figure 7</title>
+<style>
+  :root {
+    --bg:           #fbfbfd;
+    --ink:          #1d1d1f;
+    --ink-soft:     #424245;
+    --ink-mute:     #6e6e73;
+    --line-faint:   #e8e8ed;
+    --calcite:      #009E73;
+    --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "SF Pro Text", "Helvetica Neue", Helvetica, Arial,
+                 system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.003em;
+    padding: 22px 18px 28px;
+  }
+  .fig-wrap { max-width: 1100px; margin: 0 auto; }
+  .fig-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin: 0 0 6px;
+  }
+  .fig-title {
+    font-size: clamp(26px, 3.6vw, 38px);
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 14px;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+  .fig-lead {
+    font-size: clamp(16px, 2vw, 19px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+    max-width: 660px;
+  }
+  .fig-lead .pop { color: var(--calcite); font-weight: 600; }
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--line-faint);
+    border-radius: 18px;
+    padding: 22px 22px 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.04);
+  }
+  .legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 22px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 22px 4px 0;
+  }
+  .legend-item > * + * { margin-left: 8px; }
+  .legend-swatch {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--calcite);
+  }
+  .legend-line {
+    display: inline-block;
+    width: 22px;
+    height: 0;
+    border-top: 2px solid var(--calcite);
+    margin-bottom: 2px;
+  }
+  svg.chart { display: block; width: 100%; height: auto; }
+  .caption {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+    margin: 16px 0 0;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line-faint);
+    max-width: 780px;
+  }
+  .caption em { font-style: italic; }
+  @media (max-width: 600px) { body { padding: 16px 12px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-anim { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="fig-wrap">
+
+    <p class="fig-eyebrow">Result 5 · Figure 7</p>
+    <h1 class="fig-title">Nickel binds to the fresh calcite, too.</h1>
+    <p class="fig-lead">
+      A mild acetic-acid extraction dissolves only the carbonate phase. Calcium and nickel come out <span class="pop">together</span> — the same nickel is also locked into the new calcite formed from the half-burned dolomite.
+    </p>
+
+    <div class="chart-card">
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-swatch" aria-hidden="true"></span>Filter-solid sample · Na-acetate extract</span>
+        <span class="legend-item"><span class="legend-line" aria-hidden="true"></span>Linear regression · r² = 0.86</span>
+      </div>
+      <svg id="chart" class="chart" viewBox="0 0 800 500" role="img"
+           aria-label="Scatter plot of nickel against calcium concentration in 10 carbonate-bound extracts from filter solids of the spray-aerated open filter of Wasserwerk Breyell. Both axes are in milligrams per litre of the sodium-acetate / acetic-acid extractant. A strong positive correlation is visible. A linear regression line passes through the cloud with a published coefficient of determination of zero point eight six.">
+      </svg>
+    </div>
+
+    <p class="caption">
+      Nickel concentration plotted against calcium concentration in 10 carbonate-bound extracts from filter solids of the spray-aerated open filter (German: <em>Fall-Verdüsungs-Filter</em>) of Wasserwerk Breyell. The samples were leached with 1 M sodium-acetate / acetic-acid solution at pH 5 for 24 hours, following the Tessier et al. (1979) step 2 protocol for the carbonate-bound fraction, and analysed by ICP-MS; both axes are reported in mg/L of the extractant. The strong positive correlation (r² = 0.86) indicates that dissolved Ni²⁺ is incorporated into the calcite that precipitates as the half-burned dolomite (Magnodol, CaCO₃·MgO) dissolves and raises the pH.&nbsp;*
+    </p>
+  </div>
+
+<script>
+  (function () {
+    'use strict';
+
+    // Data: publication Bild 6, n = 10 carbonate-bound extracts
+    // Each row: [Ca mg/L of extractant, Ni mg/L of extractant]
+    var raw = [
+      [ 5150,  240],
+      [ 7100,  280],
+      [ 7700,  480],
+      [ 7900,  430],
+      [ 8850,  390],
+      [ 9850,  720],
+      [12000, 1420],
+      [12400, 1450],
+      [12500, 1150],
+      [12900, 1230]
+    ];
+
+    // OLS regression for the visual trend line
+    var n = raw.length;
+    var sx = 0, sy = 0;
+    raw.forEach(function (p) { sx += p[0]; sy += p[1]; });
+    var mx = sx / n, my = sy / n;
+    var sxy = 0, sxx = 0;
+    raw.forEach(function (p) {
+      sxy += (p[0] - mx) * (p[1] - my);
+      sxx += (p[0] - mx) * (p[0] - mx);
+    });
+    var slope = sxy / sxx;
+    var intercept = my - slope * mx;
+
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var W = 800, H = 500;
+    var M = { top: 36, right: 40, bottom: 56, left: 84 };
+    var plotW = W - M.left - M.right;
+    var plotH = H - M.top - M.bottom;
+    var xMin = 0, xMax = 14000;
+    var yMin = 0, yMax = 1500;
+    function x(v) { return M.left + (v - xMin) / (xMax - xMin) * plotW; }
+    function y(v) { return M.top  + (yMax - v) / (yMax - yMin) * plotH; }
+    function el(name, attrs, parent) {
+      var n2 = document.createElementNS(SVG_NS, name);
+      if (attrs) for (var k in attrs) n2.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(n2);
+      return n2;
+    }
+    var svg = document.getElementById('chart');
+
+    // Horizontal gridlines
+    var gGrid = el('g', null, svg);
+    [0, 300, 600, 900, 1200, 1500].forEach(function (v) {
+      el('line', {
+        x1: M.left, x2: W - M.right,
+        y1: y(v), y2: y(v),
+        stroke: '#ececef', 'stroke-width': 1
+      }, gGrid);
+    });
+
+    // Axes
+    el('line', { x1: M.left, x2: W - M.right, y1: y(0), y2: y(0),
+                 stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+    el('line', { x1: M.left, x2: M.left, y1: M.top - 4, y2: y(0),
+                 stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+
+    // x-axis ticks (Ca 0 to 14000, step 2000)
+    var xTicks = [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000];
+    xTicks.forEach(function (t) {
+      var xp = x(t);
+      el('line', { x1: xp, x2: xp, y1: y(0), y2: y(0) + 5,
+                   stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+      var lbl = el('text', {
+        x: xp, y: y(0) + 22,
+        'text-anchor': 'middle',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245', 'font-variant-numeric': 'tabular-nums'
+      }, svg);
+      lbl.textContent = (t / 1000).toString() + (t === 0 ? '' : 'k');
+    });
+    var xTitle = el('text', {
+      x: M.left + plotW / 2, y: H - 8,
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    xTitle.textContent = 'Calcium [mg/L extract]';
+
+    // y-axis ticks (Ni 0 to 1500, step 300)
+    var yTicks = [0, 300, 600, 900, 1200, 1500];
+    yTicks.forEach(function (t) {
+      var yp = y(t);
+      el('line', { x1: M.left - 5, x2: M.left, y1: yp, y2: yp,
+                   stroke: '#1d1d1f', 'stroke-width': 1.2 }, svg);
+      var lbl = el('text', {
+        x: M.left - 9, y: yp + 4,
+        'text-anchor': 'end',
+        'font-size': 12, 'font-weight': 500,
+        fill: '#424245', 'font-variant-numeric': 'tabular-nums'
+      }, svg);
+      lbl.textContent = t;
+    });
+    var yTitle = el('text', {
+      x: -(M.top + plotH / 2), y: 22,
+      transform: 'rotate(-90)',
+      'text-anchor': 'middle',
+      'font-size': 12, 'font-weight': 500, fill: '#6e6e73'
+    }, svg);
+    yTitle.textContent = 'Nickel [mg/L extract]';
+
+    // Regression line — clipped to the observed Ca range [5150, 12900]
+    var caObsMin = 5150;
+    var caObsMax = 12900;
+    var lineX0 = x(caObsMin);
+    var lineY0 = y(intercept + slope * caObsMin);
+    var lineX1 = x(caObsMax);
+    var lineY1 = y(intercept + slope * caObsMax);
+    var regLine = el('line', {
+      x1: lineX0, x2: lineX1,
+      y1: lineY0, y2: lineY1,
+      stroke: '#009E73', 'stroke-width': 1.8,
+      'class': 'chart-anim reg-line'
+    }, svg);
+
+    // Markers
+    var markersG = el('g', { 'class': 'markers chart-anim' }, svg);
+    raw.forEach(function (p, i) {
+      var c = el('circle', {
+        cx: x(p[0]), cy: y(p[1]), r: 4.6,
+        fill: '#fff', stroke: '#009E73', 'stroke-width': 2,
+        'data-ca': p[0], 'data-ni': p[1]
+      }, markersG);
+      c._delay = i * 50;
+    });
+
+    // r-squared label inside plot area (bottom-right)
+    el('rect', {
+      x: W - M.right - 158, y: y(0) - 50,
+      width: 154, height: 38, rx: 8, ry: 8,
+      fill: '#fff', stroke: '#e8e8ed', 'stroke-width': 1,
+      'class': 'chart-anim'
+    }, svg);
+    var r2T1 = el('text', {
+      x: W - M.right - 148, y: y(0) - 32,
+      'font-size': 13, 'font-weight': 600,
+      fill: '#1d1d1f'
+    }, svg);
+    r2T1.textContent = 'r² = 0.86';
+    var r2T2 = el('text', {
+      x: W - M.right - 148, y: y(0) - 18,
+      'font-size': 11,
+      fill: '#6e6e73'
+    }, svg);
+    r2T2.textContent = 'n = 10 · Bild 6';
+
+    // Tooltip
+    var tipG = el('g', { opacity: 0, 'pointer-events': 'none' }, svg);
+    el('rect', { x: 0, y: 0, width: 168, height: 44, rx: 8, ry: 8,
+                 fill: 'rgba(29, 29, 31, 0.92)' }, tipG);
+    var tipT1 = el('text', { x: 10, y: 18, 'font-size': 12, 'font-weight': 600, fill: '#fff' }, tipG);
+    var tipT2 = el('text', { x: 10, y: 34, 'font-size': 11, fill: 'rgba(255,255,255,0.78)' }, tipG);
+
+    function showTip(c) {
+      var cx = +c.getAttribute('cx');
+      var cy = +c.getAttribute('cy');
+      tipT1.textContent = 'Ni ' + c.getAttribute('data-ni') + ' mg/L';
+      tipT2.textContent = 'Ca ' + c.getAttribute('data-ca') + ' mg/L';
+      var tipX = cx + 12, tipY = cy - 50;
+      if (tipX + 168 > W - 4) tipX = cx - 180;
+      if (tipY < 4) tipY = cy + 14;
+      tipG.setAttribute('transform', 'translate(' + tipX + ',' + tipY + ')');
+      tipG.setAttribute('opacity', 1);
+    }
+    function hideTip() { tipG.setAttribute('opacity', 0); }
+    markersG.querySelectorAll('circle').forEach(function (c) {
+      c.style.cursor = 'pointer';
+      c.addEventListener('mouseenter', function () { showTip(c); });
+      c.addEventListener('mouseleave', hideTip);
+      c.addEventListener('focus',      function () { showTip(c); });
+      c.addEventListener('blur',       hideTip);
+      c.setAttribute('tabindex', '0');
+    });
+
+    // Animation
+    var played = false;
+    function play() {
+      if (played) return;
+      played = true;
+      var ease = getComputedStyle(document.body).getPropertyValue('--ease') || 'cubic-bezier(0.16,1,0.3,1)';
+      markersG.querySelectorAll('circle').forEach(function (c) {
+        var d = c._delay || 0;
+        c.style.transformBox = 'fill-box';
+        c.style.transformOrigin = 'center';
+        c.style.transform = 'scale(0)';
+        c.style.opacity = 0;
+        setTimeout(function () {
+          c.style.transition = 'transform 0.32s ' + ease + ', opacity 0.28s ' + ease;
+          c.style.transform = 'scale(1)';
+          c.style.opacity = 1;
+        }, d);
+      });
+      try {
+        var dx = lineX1 - lineX0, dy = lineY1 - lineY0;
+        var L = Math.sqrt(dx * dx + dy * dy);
+        regLine.style.strokeDasharray  = L;
+        regLine.style.strokeDashoffset = L;
+        regLine.getBoundingClientRect();
+        setTimeout(function () {
+          regLine.style.transition = 'stroke-dashoffset 700ms ' + ease;
+          regLine.style.strokeDashoffset = '0';
+        }, 600);
+      } catch (e) {}
+    }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) play(); });
+      }, { threshold: 0.3 });
+      io.observe(svg);
+    }
+    setTimeout(play, 1200);
+  })();
+</script>
+</body>
+</html>

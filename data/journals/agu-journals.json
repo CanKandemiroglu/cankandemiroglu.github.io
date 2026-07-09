@@ -1,0 +1,15 @@
+{
+  "id": "agu-journals",
+  "title": "AGU journals (JGR: Oceans, Geochemistry Geophysics Geosystems)",
+  "publisher": "American Geophysical Union (published by Wiley)",
+  "canvas": { "single_column_mm": 95, "double_column_mm": 190, "max_height_mm": 230 },
+  "raster_dpi": { "photo": 300, "combination": 600, "line": 1200 },
+  "map_target": { "recommended_format": "pdf", "recommended_dpi": 600 },
+  "formats_accepted": ["pdf", "eps", "ai"],
+  "colour_mode": "RGB",
+  "min_font_pt": 7,
+  "font_family_hint": "Arial/Helvetica",
+  "notes": "AGU graphic requirements: max figure width ~190 mm, single column ~95 mm. Editable vector (PDF/EPS/AI) preferred; photos 300 dpi, line/combination art up to 600-1200 dpi. Labels 8-10 pt, minimum 7 pt.",
+  "source_url": "https://www.agu.org/publish-with-us/publish/author-resources/graphic-requirements",
+  "last_verified": "VERIFY-BEFORE-SHIP"
+}
