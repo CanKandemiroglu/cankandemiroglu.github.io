@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="omelette-owns-print" content="1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ background:oklch(0.93 0.006 250); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  a{ color:var(--accent, oklch(0.52 0.09 235)); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+  @page{ size:A4; margin:12mm 14mm; }
+  @media print{
+    body{ background:#fff; }
+    .desk{ background:#fff !important; padding:0 !important; display:block !important; }
+    .sheet{ box-shadow:none !important; margin:0 !important; width:auto !important; min-height:0 !important; padding:0 !important; }
+  }
+</style>
+</helmet>
+<div class="desk" style="min-height:100vh; background:oklch(0.93 0.006 250); display:flex; justify-content:center; padding:26px 18px;">
+  <article class="sheet" style="--accent:{{ accent }}; width:210mm; min-height:297mm; background:#fff; padding:12mm 14mm; box-shadow:0 8px 34px rgba(18,24,42,.14); color:oklch(0.32 0.02 255); font-family:'IBM Plex Sans',system-ui,sans-serif; font-size:9.4pt; line-height:1.36; text-wrap:pretty;">
+
+    <header style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; padding-bottom:12px; border-bottom:2px solid oklch(0.24 0.02 255);">
+      <div style="min-width:0;">
+        <h1 style="margin:0; font-family:'Spectral',serif; font-weight:600; font-size:27pt; line-height:1.0; letter-spacing:-0.012em; color:oklch(0.2 0.02 255);">Osman Can Kandemiroglu</h1>
+        <p style="margin:8px 0 0; font-family:'Spectral',serif; font-style:italic; font-weight:400; font-size:12pt; color:oklch(0.42 0.02 255);">Marine molecular biogeochemist — mass spectrometry imaging, lipid &amp; glyco-biosignatures</p>
+      </div>
+      <sc-if value="{{ showTag }}" hint-placeholder-val="{{ true }}">
+        <div style="flex:none; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:7.4pt; line-height:1.55; color:oklch(0.46 0.02 255); border:1px solid oklch(0.85 0.01 250); border-radius:2px; padding:7px 10px; white-space:nowrap;">
+          <div style="font-weight:500; letter-spacing:0.1em; color:var(--accent, oklch(0.52 0.09 235));">APPLICATION</div>
+          <div style="color:oklch(0.28 0.02 255); font-weight:500;">SFB 1759 · subproject C01</div>
+          <div>Enceladus · praedoc</div>
+          <div style="color:oklch(0.58 0.02 255);">Ref. SFB1759-C01-NK</div>
+        </div>
+      </sc-if>
+    </header>
+
+    <div style="display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:6px; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.44 0.02 255);">
+      <span style="white-space:nowrap;">osman@uni-bremen.de</span>
+      <span style="white-space:nowrap;">+49 152 3711 8098</span>
+      <span style="white-space:nowrap;">Nationality: German</span>
+      <span style="white-space:nowrap;">Turkish (native) · German C1 · English C1</span>
+      <span style="white-space:nowrap;">Certificates: English C1 (UniCert III) · German C1 (Goethe-Zertifikat, TestDaF)</span>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:4px 15px; margin-top:3px; font-family:'IBM Plex Mono',monospace; font-size:7.9pt;">
+      <a href="https://www.linkedin.com/in/osman-can-kandemiroglu" style="white-space:nowrap;">linkedin.com/in/osman-can-kandemiroglu</a>
+      <a href="https://www.researchgate.net/profile/Osman-Can-Kandemiroglu" style="white-space:nowrap;">researchgate.net/profile/Osman-Can-Kandemiroglu</a>
+    </div>
+
+    <p style="margin:7px 0 0; font-size:9.1pt; line-height:1.36; color:oklch(0.3 0.02 255);">Marine molecular biogeochemist and geophysical engineer who combines <b style="font-weight:600; color:oklch(0.22 0.02 255);">high-resolution organic mass spectrometry</b> (FT-ICR-MS, MALDI/LDI imaging, GC-MS, HPLC-MS) and lipid-biomarker analysis with a <b style="font-weight:600; color:oklch(0.22 0.02 255);">hydrothermal-systems background</b> and hands-on <b style="font-weight:600; color:oklch(0.22 0.02 255);">experimental instrument-building</b>. I am eager to learn <b style="font-weight:600; color:oklch(0.22 0.02 255);">LILBID and impact-ionization mass spectrometry</b> to detect lipids and fatty acids in ice grains and to trace organics from <b style="font-weight:600; color:oklch(0.22 0.02 255);">Enceladus's hydrothermal vent systems</b> into the plume — the aim of <b style="font-weight:600; color:oklch(0.22 0.02 255);">SFB 1759 subproject C01</b> (Enceladus). As a trained geophysicist (seismic-signal interpretation) and an engineer who builds experimental systems from scratch, I am as comfortable on the instrument and physics side as on the molecular side.</p>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">Core methods &amp; techniques</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px 20px;">
+        <div style="flex:1 1 45%; min-width:210px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:8.7pt; color:oklch(0.23 0.02 255);">High-resolution mass spectrometry</div>
+          <div style="font-size:8.1pt; line-height:1.34; color:oklch(0.4 0.02 255); margin-top:1px;"><b style="color:oklch(0.28 0.02 255);">FT-ICR-MS</b>; MALDI/LDI-FT-ICR MS imaging (Bruker solariX XR); GC-MS; HPLC-MS (APCI); GC-IRMS / compound-specific stable-isotope analysis</div>
+        </div>
+        <div style="flex:1 1 45%; min-width:210px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:8.7pt; color:oklch(0.23 0.02 255);">Experimental &amp; cultivation biogeochemistry</div>
+          <div style="font-size:8.1pt; line-height:1.34; color:oklch(0.4 0.02 255); margin-top:1px;">Marine bacterial cultivation (<i>Vibrio</i> spp.); long-term &amp; anaerobic incubations; ¹³C stable-isotope probing; alginate model-particle synthesis (emulsification / internal gelation); <b style="color:oklch(0.28 0.02 255);">building experimental set-ups from scratch</b></div>
+        </div>
+        <div style="flex:1 1 45%; min-width:210px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:8.7pt; color:oklch(0.23 0.02 255);">Lipid-biomarker &amp; organic geochemistry</div>
+          <div style="font-size:8.1pt; line-height:1.34; color:oklch(0.4 0.02 255); margin-top:1px;">Total lipid extraction (ultrasonication, centrifugation); open-column liquid chromatography; derivatisation / silylation; hydrocarbons, sterols, GDGTs, intact polar lipids, hopanoids, alkenones, pigments / carotenoids, quinones</div>
+        </div>
+        <div style="flex:1 1 45%; min-width:210px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:8.7pt; color:oklch(0.23 0.02 255);">Microscale imaging &amp; geochemical mapping</div>
+          <div style="font-size:8.1pt; line-height:1.34; color:oklch(0.4 0.02 255); margin-top:1px;">MS imaging (molecular mapping); µ-XRF elemental mapping; microsensor profiling (O₂, H₂S, pH, redox); time-lapse microscopy</div>
+        </div>
+        <div style="flex:1 1 45%; min-width:210px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:8.7pt; color:oklch(0.23 0.02 255);">Aqueous &amp; instrumental (earlier training)</div>
+          <div style="font-size:8.1pt; line-height:1.34; color:oklch(0.4 0.02 255); margin-top:1px;">Aqueous geochemical modelling (PhreeqC, AquaChem); <b style="color:oklch(0.28 0.02 255);">ICP-MS</b>, GF-AAS, FE-SEM–EDX; borehole geophysical logging (full-waveform sonic, acoustic televiewer, gamma-ray)</div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">Research &amp; professional experience</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; line-height:1.4; color:oklch(0.52 0.02 255); padding-top:2pt;">Oct 2024 – Dec 2025</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.3pt; color:oklch(0.2 0.02 255);">Master's Researcher — Organic Geochemistry &amp; Marine Glycobiochemistry</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.9pt; color:oklch(0.44 0.02 255); margin-top:1px;">AG Hinrichs (MARUM) &amp; AG Hehemann (MPI–Marine Microbiology), University of Bremen</div>
+          <p style="margin:2px 0 0; font-size:8.6pt; line-height:1.36; color:oklch(0.33 0.02 255);">Designed and built a laboratory model of the marine carbon cycle from synthetic alginate microparticles and marine <i>Vibrio</i> bacteria, and tracked particle degradation in real time by time-lapse microscopy. Thesis: <i>"Instant visualisation of organic matter transformation in the ocean."</i> Supervisors: Prof. K.-U. Hinrichs, Prof. J.-H. Hehemann.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; line-height:1.4; color:oklch(0.52 0.02 255); padding-top:2pt;">Aug 2023 – Sep 2024</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.3pt; color:oklch(0.2 0.02 255);">Researcher — Geoscientific Research Project</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.9pt; color:oklch(0.44 0.02 255); margin-top:1px;">AG Hinrichs, MARUM, University of Bremen</div>
+          <p style="margin:2px 0 0; font-size:8.6pt; line-height:1.36; color:oklch(0.33 0.02 255);">Mapped microscale molecular distributions across redox zones by LDI/MALDI-FT-ICR-MS imaging integrated with µ-XRF and microsensor profiling; identified pigments (Chl-<i>f</i>), quinones (PQ9:9) and candidate far-red-light-adapted cyanobacteria. Framed explicitly as an <b style="font-weight:600; color:oklch(0.24 0.02 255);">early-Earth / Mars analogue and biosignature-detection</b> study. Project: <i>"Light-driven structuring of a hypersaline microbial mat (Mallorca)."</i> Since graduating, developing software to read and process LDI/MALDI-FT-ICR-MS imaging datasets (in preparation, 2026).</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; line-height:1.4; color:oklch(0.52 0.02 255); padding-top:2pt;">May 2022 – Jan 2023</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.3pt; color:oklch(0.2 0.02 255);">Research Assistant — Organic Geochemistry Laboratory</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.9pt; color:oklch(0.44 0.02 255); margin-top:1px;">Alfred-Wegener-Institut (AWI), Marine Geology &amp; Palaeontology</div>
+          <p style="margin:2px 0 0; font-size:8.6pt; line-height:1.36; color:oklch(0.33 0.02 255);">Ran bulk and biomarker organic-geochemical analysis of sediments from IODP Expedition 374 and cruises PS81 and PS119 — total lipid extraction, open-column chromatography and silylation, followed by GC-MS and HPLC-MS analysis and interpretation.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; line-height:1.4; color:oklch(0.52 0.02 255); padding-top:2pt;">2016 – 2018</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.3pt; color:oklch(0.2 0.02 255);">Graduate Researcher (Hydrogeochemistry) &amp; Teaching Assistant</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.9pt; color:oklch(0.44 0.02 255); margin-top:1px;">Ruhr-University Bochum, Applied Geology / Hydrogeology</div>
+          <p style="margin:2px 0 0; font-size:8.6pt; line-height:1.36; color:oklch(0.33 0.02 255);">Investigated trace-element and organic-pollutant behaviour in groundwater and drinking-water treatment, with hydrogeochemical modelling in PhreeqC / AquaChem. Taught inorganic and organic hydrochemistry; led field courses, including a 10-day geothermal / hydrogeology course in Argentina; supervised an MSc thesis and co-wrote funding proposals.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">Education</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; color:oklch(0.52 0.02 255); padding-top:2pt;">2020 – 2026</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.4pt; color:oklch(0.2 0.02 255);">M.Sc. Marine Geosciences <span style="font-weight:400; color:oklch(0.48 0.02 255);">— University of Bremen</span></div>
+          <p style="margin:2px 0 0; font-size:8.8pt; line-height:1.4; color:oklch(0.35 0.02 255);">Molecular geobiology, biogeochemistry and marine environmental archives; thesis at MARUM / MPI-Marine Microbiology.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; color:oklch(0.52 0.02 255); padding-top:2pt;">2008 – 2011</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.4pt; color:oklch(0.2 0.02 255);">M.Sc. Applied Geology / Hydrogeology <span style="font-weight:400; color:oklch(0.48 0.02 255);">— Ruhr-University Bochum</span></div>
+          <p style="margin:2px 0 0; font-size:8.8pt; line-height:1.4; color:oklch(0.35 0.02 255);">Thesis on the origin and water-treatment behaviour of nickel in groundwater (ICP-MS, GF-AAS, FE-SEM–EDX, PhreeqC).</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; color:oklch(0.52 0.02 255); padding-top:2pt;">2002 – 2006</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.4pt; color:oklch(0.2 0.02 255);">B.Sc. Geophysical Engineering <span style="font-weight:400; color:oklch(0.48 0.02 255);">— University of Kocaeli, Turkey</span></div>
+          <p style="margin:2px 0 0; font-size:8.8pt; line-height:1.4; color:oklch(0.35 0.02 255);">Petroleum geophysics, seismology and engineering geology; thesis on earthquake-induced soil liquefaction.</p>
+        </div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid;">
+        <div style="flex:0 0 30mm; font-family:'IBM Plex Mono',monospace; font-size:7.7pt; color:oklch(0.52 0.02 255); padding-top:2pt;">2019 – 2021</div>
+        <div style="flex:1; min-width:0;">
+          <div style="font-weight:600; font-size:9.4pt; color:oklch(0.2 0.02 255);">Guest Student, Geochemistry <span style="font-weight:400; color:oklch(0.48 0.02 255);">— Utrecht University</span></div>
+          <p style="margin:2px 0 0; font-size:8.8pt; line-height:1.4; color:oklch(0.35 0.02 255);">Organic Geochemistry; Microbes &amp; Biogeochemistry; Physical Chemistry.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">Publications &amp; conference contributions</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+
+      <div style="font-family:'Spectral',serif; font-style:italic; font-size:9pt; color:oklch(0.32 0.02 255); margin:4px 0 3px;">Peer-reviewed journal article</div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2012</div>
+        <div style="flex:1; min-width:0; font-size:8.7pt; line-height:1.36; color:oklch(0.32 0.02 255);">Wisotzky, F., <b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> &amp; Plassmann, C. <span style="font-family:'Spectral',serif; font-style:italic;">Nickelfreisetzung in das Grundwasser und dessen Bindung bei der Wasseraufbereitung zu Trinkwasser (Nettetal/Niederrhein).</span> <i>gwf Wasser | Abwasser</i>, 153(7), 828–832.</div>
+      </div>
+
+      <div style="font-family:'Spectral',serif; font-style:italic; font-size:9pt; color:oklch(0.32 0.02 255); margin:4px 0 3px;">Conference contributions &amp; posters</div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2025</div>
+        <div style="flex:1; min-width:0; font-size:8.7pt; line-height:1.36; color:oklch(0.32 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b>, Gu, B. &amp; Hehemann, J.-H. <span style="font-family:'Spectral',serif; font-style:italic;">Instant Visualization of Polysaccharide Degradation by Marine Bacteria.</span> Poster, <span style="color:oklch(0.24 0.02 255);">Ocean Floor Symposium 2025, MARUM — Center for Marine Environmental Sciences, University of Bremen.</span></div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2018</div>
+        <div style="flex:1; min-width:0; font-size:8.7pt; line-height:1.36; color:oklch(0.32 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> &amp; Wisotzky, F. <span style="font-family:'Spectral',serif; font-style:italic;">Vorkommen von organischen Spurenstoffen (Arzneimittel, Pestizide) im Grundwasserleitern in Nordrhein-Westfalen.</span> Conference paper, <span style="color:oklch(0.24 0.02 255);">26th Conference of the FH-DGGV (Fachsektion Hydrogeologie in der DGGV)</span> — "Grundwasser im Umfeld von Bergbau, Energie und urbanen Räumen", Ruhr-University Bochum, 21–24 March 2018.</div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2012</div>
+        <div style="flex:1; min-width:0; font-size:8.7pt; line-height:1.36; color:oklch(0.32 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b>, Loewe, R. &amp; Wisotzky, F. <span style="font-family:'Spectral',serif; font-style:italic;">Hydrogeochemische Untersuchungen im Raum Nettetal zur Klärung der Nickelmobilität im Grundwasser und bei der Wasseraufbereitung.</span> Poster, <span style="color:oklch(0.24 0.02 255);">Bochumer Grundwassertag 2012, Ruhr-University Bochum.</span></div>
+      </div>
+
+      <div style="font-family:'Spectral',serif; font-style:italic; font-size:9pt; color:oklch(0.32 0.02 255); margin:4px 0 3px;">Technical reports &amp; theses</div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2026</div>
+        <div style="flex:1; min-width:0; font-size:8.6pt; line-height:1.4; color:oklch(0.34 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> <span style="font-family:'Spectral',serif; font-style:italic;">Instant Visualization of Organic Matter Transformation in the Ocean.</span> M.Sc. thesis, University of Bremen (MARUM / MPI-Marine Microbiology).</div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2025</div>
+        <div style="flex:1; min-width:0; font-size:8.6pt; line-height:1.4; color:oklch(0.34 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> <span style="font-family:'Spectral',serif; font-style:italic;">Multi-proxy Evidence for Gradual Limnic–Marine Transition in the Black Sea at 8.5–8.0 ka.</span> Technical report.</div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid; margin-bottom:2px;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2022</div>
+        <div style="flex:1; min-width:0; font-size:8.6pt; line-height:1.4; color:oklch(0.34 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> <span style="font-family:'Spectral',serif; font-style:italic;">Coupled pore-water geochemistry and ¹³C-labelled lipid biomarkers reveal active methane-oxidizing communities across the redox zonation of the Helgoland Mud Area (German Bight, North Sea).</span> Technical report.</div>
+      </div>
+      <div style="display:flex; gap:11px; break-inside:avoid;">
+        <div style="flex:0 0 15mm; font-family:'IBM Plex Mono',monospace; font-size:7.9pt; color:oklch(0.5 0.02 255); padding-top:1pt;">2011</div>
+        <div style="flex:1; min-width:0; font-size:8.6pt; line-height:1.4; color:oklch(0.34 0.02 255);"><b style="font-weight:600; color:oklch(0.2 0.02 255);">Kandemiroglu, O. C.</b> <span style="font-family:'Spectral',serif; font-style:italic;">Untersuchungen zur Herkunft des Nickels im Rohwasser der Wasserwerke Breyell und Kaldenkirchen der Stadtwerke Nettetal GmbH sowie zum hydrochemischen Verhalten des Nickels bei der Wasseraufbereitung.</span> M.Sc. thesis, Ruhr-University Bochum. <span style="color:oklch(0.5 0.02 255);">Full list — <a href="https://www.researchgate.net/profile/Osman-Can-Kandemiroglu">ResearchGate profile</a>.</span></div>
+      </div>
+    </section>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">Field, teaching, awards &amp; service</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px 22px;">
+        <div style="flex:1 1 45%; min-width:220px; break-inside:avoid;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.02 255); margin-bottom:2px;">Field campaigns &amp; teaching</div>
+          <p style="margin:0; font-size:8.1pt; line-height:1.34; color:oklch(0.35 0.02 255);">Near-surface geothermal drilling and multi-method borehole logging (full-waveform sonic, acoustic televiewer, gamma-ray) across 12 wells, International Geothermal Centre, Bochum; geothermal &amp; hydrogeology field courses in Argentina and Italy (Larderello &amp; Elba). Taught Inorganic &amp; Organic Hydrochemistry, Introduction to Hydrogeology and Geology for Civil Engineers (RUB, 2016–2018); supervised BSc and MSc theses.</p>
+        </div>
+        <div style="flex:1 1 45%; min-width:220px; break-inside:avoid;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.02 255); margin-bottom:2px;">Awards</div>
+          <p style="margin:0; font-size:8.1pt; line-height:1.34; color:oklch(0.35 0.02 255);">DAAD Master's-Thesis Scholarship (2009–10); Ruth &amp; Gerd Massenberg Scholarship, Geothermal Congress (2016); Research School Teaching Assistantship, RUB (2017–18).</p>
+        </div>
+        <div style="flex:1 1 45%; min-width:220px; break-inside:avoid;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.02 255); margin-bottom:2px;">Memberships</div>
+          <p style="margin:0; font-size:8.1pt; line-height:1.34; color:oklch(0.35 0.02 255);">Deutsche Astrobiologische Gesellschaft (DAbG, 2022); European Astrobiology Network Association (EANA, 2023); European Association of Organic Geochemists (EAOG, 2024); European Geosciences Union (EGU, 2016); The Geochemical Society (2023).</p>
+        </div>
+        <div style="flex:1 1 45%; min-width:220px; break-inside:avoid;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.02 255); margin-bottom:2px;">Workshops &amp; assemblies</div>
+          <p style="margin:0; font-size:8.1pt; line-height:1.34; color:oklch(0.35 0.02 255);">Magellan³ Workshop (IODP³ / MagellanPlus) — sub-seafloor observatories &amp; deep-biosphere / crustal processes, Mid-Atlantic Ridge flank, MARUM Bremen (Mar 2026); DAbG annual workshops (2022, 2024, 2025); "Stable Isotopes in Ecology" (GLOMAR / MARUM, 2022); EGU General Assembly (Vienna, 2019).</p>
+        </div>
+        <div style="flex:1 1 100%; break-inside:avoid;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.4pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:oklch(0.5 0.02 255); margin-bottom:2px;">Science communication &amp; service</div>
+          <p style="margin:0; font-size:8.1pt; line-height:1.34; color:oklch(0.35 0.02 255);"><a href="https://www.osmancankandemiroglu.com">Personal research webpage (osmancankandemiroglu.com)</a>, science animation, analogue photography and short film; Faculty Council member (U Bremen FB5, 2024–); <a href="https://www.uni-bremen.de/studium/orientieren-bewerben/studienorientierung/studienlotsinnen/studienlotsinnen-stellen-sich-vor">study guide (Studienlotse)</a> &amp; <a href="https://up2date.uni-bremen.de/en/article/student-guides-show-you-the-way">orientation mentor</a>, Marine Geosciences (2023–); science outreach to regional schools, RUB International Office (2016–18).</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-top:7px;">
+      <div style="display:flex; align-items:center; gap:10px; margin:0 0 4px;">
+        <h2 style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:8.2pt; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent, oklch(0.52 0.09 235)); white-space:nowrap;">References</h2>
+        <span style="flex:1; height:1px; background:oklch(0.88 0.01 250);"></span>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:12px 24px;">
+        <div style="flex:1 1 44%; min-width:230px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:9.2pt; color:oklch(0.2 0.02 255);">Dr. Juliane Müller</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.6pt; color:oklch(0.42 0.02 255);">Alfred-Wegener-Institut (AWI), Bremerhaven</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.8pt; color:oklch(0.46 0.02 255); margin-top:2px;">juliane.mueller@awi.de · +49 471 4831 1238</div>
+        </div>
+        <div style="flex:1 1 44%; min-width:230px; break-inside:avoid;">
+          <div style="font-weight:600; font-size:9.2pt; color:oklch(0.2 0.02 255);">Prof. Dr. Stefan Wohnlich</div>
+          <div style="font-family:'Spectral',serif; font-style:italic; font-size:8.6pt; color:oklch(0.42 0.02 255);">Ruhr-University Bochum, Applied Geology / Hydrogeology</div>
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:7.8pt; color:oklch(0.46 0.02 255); margin-top:2px;">stefan.wohnlich@rub.de · +49 172 5858833</div>
+        </div>
+      </div>
+    </section>
+
+  </article>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:830,&quot;height&quot;:1180},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(0.52 0.09 235)&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;oklch(0.52 0.09 235)&quot;,&quot;oklch(0.5 0.1 250)&quot;,&quot;oklch(0.48 0.07 200)&quot;,&quot;oklch(0.32 0.02 260)&quot;]},&quot;showTargetTag&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Header&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? 'oklch(0.52 0.09 235)',
+      showTag: this.props.showTargetTag ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

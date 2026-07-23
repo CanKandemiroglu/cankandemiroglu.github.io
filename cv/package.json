@@ -1,0 +1,16 @@
+{
+  "name": "cv-pdf-export",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Render the CV design to an exact vector PDF with headless Chromium.",
+  "scripts": {
+    "pdf": "node render-pdf.mjs"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^1.0.2",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.1.200",
+    "playwright": "^1.48.0"
+  }
+}
